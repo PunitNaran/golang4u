@@ -5,9 +5,9 @@ publish_mode: editorial_workflow
 media_folder: "static/img"
 public_folder: "/img"
 collections:
-  - name: "post"
-    label: "Post"
-    folder: "content/posts" # The path to the folder where the documents are stored
+  - name: "news"
+    label: "News"
+    folder: "content/news" # The path to the folder where the documents are stored
     create: true # Allow users to create new documents in this collection
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Filename template, e.g., YYYY-MM-DD-title.md
     fields: # The fields for each document, usually in front matter
@@ -295,6 +295,26 @@ collections:
       - { label: "Description", name: "description", widget: "text" }
       - { label: "Contact Email", name: "contactEmail", widget: "string" }
       - { label: "Contact Phone", name: "contactPhone", widget: "string" }
+      - { label: "Featured Image", name: "featuredImage", widget: "image" }
+      - label: Featured Image Preview
+        name: featuredImagePreview
+        widget: image
+      - { label: "Hidden from Homepage", name: "hiddenFromHomepage", widget: "boolean" }
+      - { label: "Hidden from Search", name: "hiddenFromSearch", widget: "boolean" }
+  - name: "casts"
+    label: "Casts"
+    folder: "content/casts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Hosts", name: "hosts", widget: "list" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Language", name: "language", widget: "string" }
+      - { label: "Category", name: "category", widget: "select", options: ["Web Development", "System Programming", "Networking", "Cloud Services", "DevOps", "Container Orchestration", "Blockchain", "Database Systems", "Game Development", "Data Analysis", "Internet of Things (IoT)", "Command-Line Tools", "Security Tools", "Multimedia and Graphics", "Embedded Systems", "Other"] }
+      - { label: "Episode Count", name: "episodeCount", widget: "number" }
+      - { label: "Last Updated", name: "lastUpdated", widget: "datetime" }
+      - { label: "Link", name: "link", widget: "string" }
       - { label: "Featured Image", name: "featuredImage", widget: "image" }
       - label: Featured Image Preview
         name: featuredImagePreview

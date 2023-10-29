@@ -3,7 +3,7 @@ baseURL = "http://golang4u.com/"
 defaultContentLanguage = "en"
 # language code
 languageCode = "en"
-# title = "Golang 4 U"
+title = "Golang4U"
 
 # Change the default theme to be use #when building the site with Hugo
 theme = "DoIt"
@@ -12,7 +12,7 @@ theme = "DoIt"
   # DoIt theme version
   version = "0.4.0"
   # website title
-  title = "Golang 4 U"
+  title = "Golang4U"
   # site description
   description = "All-In-One Golang Tool Kit"
   # site keywords
@@ -23,7 +23,7 @@ theme = "DoIt"
   gitRepo = ""
   #  which hash function used for SRI, when empty, no SRI is used
   # ("sha256", "sha384", "sha512", "md5")
-  fingerprint = "sha512"
+  fingerprint = "sha384"
   #  date format
   dateFormat = "2006-01-02"
   # website images for Open Graph and Twitter Cards
@@ -93,13 +93,13 @@ theme = "DoIt"
       # URL of the LOGO
       logo = ""
       # title name
-      name = ""
+      name = "Golang 4 U"
       # you can add extra information before the name (HTML format is supported), such as icons
       pre = ""
       # you can add extra information after the name (HTML format is supported), such as icons
       post = ""
       #  whether to use typeit animation for title name
-      typeit = false
+      typeit = true
 
   # Footer config
   [params.footer]
@@ -116,7 +116,7 @@ theme = "DoIt"
     #  whether to show the author
     author = true
     # Site creation time
-    since = 2019
+    since = 2023
     # ICP info only in China (HTML format is supported)
     icp = ""
     # license info (HTML format is supported)
@@ -182,12 +182,12 @@ theme = "DoIt"
 
   # Social config about the author
   [params.social]
-    GitHub = "xxxx"
+    GitHub = ""
     Linkedin = ""
-    Twitter = "xxxx"
-    Instagram = "xxxx"
-    Facebook = "xxxx"
-    Telegram = "xxxx"
+    Twitter = ""
+    Instagram = ""
+    Facebook = ""
+    Telegram = ""
     Medium = ""
     Gitlab = ""
     Youtubelegacy = ""
@@ -251,7 +251,7 @@ theme = "DoIt"
     Linktree = ""
     QQ = ""
     QQGroup = ""
-    Email = "xxxx@xxxx.com"
+    Email = ""
     RSS = true # 
 
   #  Page config
@@ -630,7 +630,7 @@ theme = "DoIt"
     # located in "themes/DoIt/assets/data/cdn/" directory
     # you can store your own data files in the same path under your project:
     # "assets/data/cdn/"
-    data = ""
+    data = "/assets/data/cdn"
 
   #  Compatibility config
   [params.compatibility]
@@ -726,13 +726,13 @@ series = "series"
 
 [menu]
   [[menu.main]]
-    identifier = "posts"
+    identifier = "news"
     # you can add extra information before the name (HTML format is supported), such as icons
     pre = ""
     # you can add extra information after the name (HTML format is supported), such as icons
     post = ""
-    name = "Posts"
-    url = "/posts/"
+    name = "News"
+    url = "/news/"
     # title will be shown when you hover on this menu link
     title = ""
     weight = 1
@@ -745,10 +745,50 @@ series = "series"
     title = ""
     weight = 2
   [[menu.main]]
-    identifier = "categories"
+    identifier = "learn"
     pre = ""
     post = ""
-    name = "Categories"
-    url = "/categories/"
+    name = "Learning"
+    url = "/learn/"
     title = ""
     weight = 3
+  [[menu.main]]
+    identifier = "events"
+    pre = ""
+    post = ""
+    name = "Events"
+    url = "/events/"
+    title = ""
+    weight = 4
+  [[menu.main]]
+    identifier = "casts"
+    pre = ""
+    post = ""
+    name = "Casts"
+    url = "/casts/"
+    title = ""
+    weight = 5
+  [[menu.main]]
+    identifier = "jobs"
+    pre = ""
+    post = ""
+    name = "Jobs"
+    url = "/jobs/"
+    title = ""
+    weight = 6
+  [[menu.main]]
+    identifier = "marketplace"
+    pre = ""
+    post = ""
+    name = "Marketplace"
+    url = "/marketplace/"
+    title = ""
+    weight = 7
+  [[menu.main]]
+    identifier = "contactus"
+    pre = ""
+    post = ""
+    name = "Contact Us"
+    url = "/contactus/"
+    title = ""
+    weight = 8
