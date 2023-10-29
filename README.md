@@ -1,0 +1,1 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0f97fcd6-e273-4dd7-879a-da086e835831/deploy-status)](https://app.netlify.com/sites/lambent-daifuku-447b9c/deploys)

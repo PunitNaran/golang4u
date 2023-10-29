@@ -5,7 +5,7 @@ defaultContentLanguage = "en"
 languageCode = "en"
 title = "Golang 4 U"
 
-# Change the default theme to be use when building the site with Hugo
+# Change the default theme to be use #when building the site with Hugo
 theme = "DoIt"
 
 [params]
