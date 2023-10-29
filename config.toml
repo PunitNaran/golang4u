@@ -630,7 +630,7 @@ theme = "DoIt"
     # located in "themes/DoIt/assets/data/cdn/" directory
     # you can store your own data files in the same path under your project:
     # "assets/data/cdn/"
-    data = "/assets/data/cdn"
+    data = ""
 
   #  Compatibility config
   [params.compatibility]
