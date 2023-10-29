@@ -792,3 +792,11 @@ series = "series"
     url = "/contactus/"
     title = ""
     weight = 8
+  [[menu.main]]
+    identifier = "addPost"
+    pre = ""
+    post = ""
+    name = "Add a Post"
+    url = "/addPost/"
+    title = ""
+    weight = 9
