@@ -254,6 +254,9 @@ collections:
       - { label: "Website", name: "website", widget: "string" }
       - { label: "Registration Link", name: "registrationLink", widget: "string" }
       - { label: "Featured Image", name: "featuredImage", widget: "image" }
+      - label: Featured Image Preview
+        name: featuredImagePreview
+        widget: image
       - { label: "Hidden from Homepage", name: "hiddenFromHomepage", widget: "boolean" }
       - { label: "Hidden from Search", name: "hiddenFromSearch", widget: "boolean" }
   - name: "jobs"
@@ -273,6 +276,9 @@ collections:
       - { label: "Company Website", name: "companyWebsite", widget: "string" }
       - { label: "Application Link", name: "applicationLink", widget: "string" }
       - { label: "Featured Image", name: "featuredImage", widget: "image" }
+      - label: Featured Image Preview
+        name: featuredImagePreview
+        widget: image
       - { label: "Hidden from Homepage", name: "hiddenFromHomepage", widget: "boolean" }
       - { label: "Hidden from Search", name: "hiddenFromSearch", widget: "boolean" }
   - name: "marketplace"
@@ -290,5 +296,8 @@ collections:
       - { label: "Contact Email", name: "contactEmail", widget: "string" }
       - { label: "Contact Phone", name: "contactPhone", widget: "string" }
       - { label: "Featured Image", name: "featuredImage", widget: "image" }
+      - label: Featured Image Preview
+        name: featuredImagePreview
+        widget: image
       - { label: "Hidden from Homepage", name: "hiddenFromHomepage", widget: "boolean" }
       - { label: "Hidden from Search", name: "hiddenFromSearch", widget: "boolean" }
