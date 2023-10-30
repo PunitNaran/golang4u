@@ -355,7 +355,7 @@ draft: false
                 console.log(`${name}: ${value}`);
             }
             // Send a POST request to the server-side endpoint using the fetch API
-            fetch('/submit-form', {
+            fetch('http://localhost:8080/submit-form', {
                 method: 'POST',
                 body: filteredData
             })
@@ -372,5 +372,4 @@ draft: false
         }
     });
 </script>
-
 </body>
