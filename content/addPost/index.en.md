@@ -4,7 +4,7 @@ date: 2023-10-29
 draft: false
 ---
 <head>
-    <title>Content Submission Form</title>
+    <h2>Content Submission Form</h2>
     <style>
       body {
             margin: 0;
