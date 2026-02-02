@@ -1,0 +1,261 @@
+{{ define "content" }}
+<div class="auth-container">
+    <div class="glass-panel">
+        <h1 class="gradient-text">Join the Community</h1>
+        <p class="subtitle">Create an account to start sharing.</p>
+
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="avatar_name">Username (Avatar Name)</label>
+                <input type="text" id="avatar_name" name="avatar_name" required minlength="3" maxlength="24"
+                    placeholder="CodeMaster99">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="you@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required minlength="8" placeholder="••••••••">
+            </div>
+
+            <div class="form-group">
+                <label for="refered_avatar_code">Referral Code</label>
+                <input type="text" id="refered_avatar_code" name="refered_avatar_code" required
+                    placeholder="REF-XXXX-YYYY">
+                <small style="color: #94a3b8;">Required for registration.</small>
+            </div>
+
+            <!-- Hidden/Default fields -->
+            <input type="hidden" name="country" value="US"> <!-- Default/GeoIP later -->
+
+            <button type="submit" id="submit-btn" class="submit-btn">
+                <span class="btn-text">Sign Up</span>
+                <div class="loader" style="display:none;"></div>
+            </button>
+            <p id="form-message" class="message"></p>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="/login">Log in</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Reusing styles from login.html for consistency */
+    :root {
+        --primary-color: #6366f1;
+        --secondary-color: #a855f7;
+        --bg-color: #0f172a;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text-color: #f8fafc;
+        --input-bg: rgba(0, 0, 0, 0.2);
+    }
+
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 2rem;
+    }
+
+    .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 3rem;
+        width: 100%;
+        max-width: 500px;
+        /* Slightly wider */
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #94a3b8;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #e2e8f0;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 12px 16px;
+        background: var(--input-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: var(--text-color);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    input:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s, opacity 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #94a3b8;
+    }
+
+    .auth-footer a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .message {
+        text-align: center;
+        margin-top: 1rem;
+        font-weight: 600;
+    }
+
+    .success {
+        color: #4ade80;
+    }
+
+    .error {
+        color: #f87171;
+    }
+
+    .loader {
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 3px solid #fff;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+        margin-left: 10px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+    const API_URL = window.GO4U_API_URL;
+
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        const msg = document.getElementById('form-message');
+        const loader = btn.querySelector('.loader');
+
+        btn.disabled = true;
+        loader.style.display = 'block';
+        msg.innerText = '';
+        msg.className = 'message';
+
+        const formData = new FormData(e.target);
+        // Correctly handle JSON fields if backend expects specific structure
+        const data = {
+            "avatar_name": formData.get("avatar_name"),
+            "email": formData.get("email"),
+            "password": formData.get("password"),
+            "refered_avatar_code": formData.get("refered_avatar_code"),
+            "country": formData.get("country")
+        };
+
+
+        try {
+            const response = await fetch(`${API_URL}/new_user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    profile: {
+                        avatar_name: data.avatar_name,
+                        role: "user", // Default
+                        verification: {
+                            encrypted_email: await CryptoUtils.encrypt(data.email),
+                            encrypted_pass: await CryptoUtils.encrypt(data.password)
+                        }
+                    },
+                    refered_avatar_code: data.refered_avatar_code,
+                    country: data.country
+                })
+            });
+
+            if (response.ok) {
+                // Success - "User account pending"
+                msg.innerText = 'Account Created! Please check your email/console for the verification link.';
+                msg.classList.add('success');
+                e.target.reset();
+            } else {
+                const errText = await response.text();
+                let errMsg = errText;
+                try {
+                    errMsg = JSON.parse(errText).message || errText;
+                } catch (e) { }
+                throw new Error('Signup failed: ' + errMsg);
+            }
+        } catch (error) {
+            msg.innerText = error.message;
+            msg.classList.add('error');
+        } finally {
+            btn.disabled = false;
+            loader.style.display = 'none';
+        }
+    });
+</script>
+{{ end }}

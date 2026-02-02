@@ -1,0 +1,217 @@
+{{ define "content" }}
+<div class="dashboard-container">
+    <div class="glass-panel">
+        <h1 class="gradient-text">My Dashboard</h1>
+        <div id="profile-section">
+            <div class="loader"></div>
+            <p>Loading profile...</p>
+        </div>
+
+        <div id="actions-section" style="display:none;">
+            <div class="action-grid">
+                <a href="/addpost" class="action-card">
+                    <h3>📝 Create Post</h3>
+                    <p>Share your knowledge</p>
+                </a>
+                <a href="/admin" id="admin-link" class="action-card admin-card" style="display:none;">
+                    <h3>🛡️ Admin Panel</h3>
+                    <p>Manage users & referrals</p>
+                </a>
+            </div>
+
+            <button id="logout-btn" class="logout-btn">Log Out</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #6366f1;
+        --secondary-color: #a855f7;
+        --bg-color: #0f172a;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text-color: #f8fafc;
+        --input-bg: rgba(0, 0, 0, 0.2);
+    }
+
+    .dashboard-container {
+        padding: 2rem;
+        min-height: 80vh;
+    }
+
+    .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
+    }
+
+    .profile-info {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 1.5rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+    }
+
+    .profile-info h2 {
+        margin-top: 0;
+        color: #e2e8f0;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-left: 10px;
+        border: 1px solid currentColor;
+    }
+
+    .badge.admin {
+        color: #f472b6;
+        border-color: #f472b6;
+    }
+
+    .badge.editor {
+        color: #60a5fa;
+        border-color: #60a5fa;
+    }
+
+    .badge.user {
+        color: #4ade80;
+        border-color: #4ade80;
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .action-card {
+        background: var(--input-bg);
+        padding: 1.5rem;
+        border-radius: 16px;
+        text-decoration: none;
+        color: var(--text-color);
+        border: 1px solid var(--glass-border);
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .action-card:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+
+    .action-card h3 {
+        margin: 0 0 0.5rem 0;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .admin-card {
+        border-color: rgba(244, 114, 182, 0.3);
+    }
+
+    .logout-btn {
+        background: transparent;
+        border: 1px solid #f87171;
+        color: #f87171;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .logout-btn:hover {
+        background: rgba(248, 113, 113, 0.1);
+    }
+
+    .loader {
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 3px solid #fff;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+    const API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const profileSection = document.getElementById('profile-section');
+        const actionsSection = document.getElementById('actions-section');
+        const adminLink = document.getElementById('admin-link');
+
+        try {
+            const response = await fetch(`${API_URL}/profile`, {
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const user = await response.json();
+
+                profileSection.innerHTML = `
+                    <div class="profile-info">
+                        <h2>Hello, ${user.AvatarName} <span class="badge ${user.Role}">${user.Role}</span></h2>
+                        <p>User ID: <span style="font-family:monospace; color: #94a3b8;">${user.Uuid ? '***' : 'N/A'}</span></p>
+                    </div>
+                `;
+                actionsSection.style.display = 'block';
+
+                if (user.Role === 'admin') {
+                    adminLink.style.display = 'flex';
+                }
+            } else {
+                // Not logged in or error
+                window.location.href = '/login';
+            }
+        } catch (error) {
+            profileSection.innerHTML = `<p class="error">Failed to load profile. <a href="/login">Login</a></p>`;
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            try {
+                await fetch(`${API_URL}/logout`, { method: 'POST', credentials: 'include' });
+                window.location.href = '/login';
+            } catch (e) {
+                console.error('Logout failed', e);
+            }
+        });
+    });
+</script>
+{{ end }}

@@ -1,0 +1,223 @@
+/* Mocking Tailwind Utilities used in Playground & Add Post */
+.h-screen {
+    height: calc(100vh - 80px);
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.w-1\/2 {
+    width: 50%;
+}
+
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.bg-gray-100 {
+    background-color: #f3f4f6;
+}
+
+.bg-gray-200 {
+    background-color: #e5e7eb;
+}
+
+.border-b {
+    border-bottom-width: 1px;
+}
+
+.border-r {
+    border-right-width: 1px;
+}
+
+.border-gray-200 {
+    border-color: #e5e7eb;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.text-gray-700 {
+    color: #374151;
+}
+
+.text-xs {
+    font-size: 0.75rem;
+}
+
+.text-gray-500 {
+    color: #6b7280;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.bg-green-600 {
+    background-color: #059669;
+}
+
+.text-white {
+    color: white;
+}
+
+.rounded {
+    border-radius: 0.25rem;
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
+/* Dark Mode Overrides */
+[theme='dark'] .dark\:bg-gray-800,
+body[theme='dark'] .dark\:bg-gray-800 {
+    background-color: #1f2937;
+}
+
+[theme='dark'] .dark\:bg-gray-900,
+body[theme='dark'] .dark\:bg-gray-900 {
+    background-color: #111827;
+}
+
+[theme='dark'] .dark\:text-gray-200,
+body[theme='dark'] .dark\:text-gray-200 {
+    color: #e5e7eb;
+}
+
+[theme='dark'] .dark\:border-gray-700,
+body[theme='dark'] .dark\:border-gray-700 {
+    border-color: #374151;
+}
+
+[theme='dark'] .dark\:bg-black,
+body[theme='dark'] .dark\:bg-black {
+    background-color: #000000;
+}
+
+[theme='dark'] .dark\:text-gray-300,
+body[theme='dark'] .dark\:text-gray-300 {
+    color: #d1d5db;
+}
+
+/* Add Post Form Styles */
+.max-w-3xl {
+    max-width: 48rem;
+    margin: 0 auto;
+}
+
+.bg-white {
+    background-color: white;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.rounded-xl {
+    border-radius: 0.75rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.space-y-6>*+* {
+    margin-top: 1.5rem;
+}
+
+.block {
+    display: block;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-3xl {
+    font-size: 1.875rem;
+}
+
+/* Form Inputs */
+input[type="text"],
+input[type="file"],
+textarea {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    margin-top: 0.25rem;
+}
+
+[theme='dark'] input[type="text"],
+[theme='dark'] textarea,
+[theme='dark'] input[type="file"] {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: white;
+}
+
+button.active {
+    background-color: #6366f1;
+    color: white;
+}

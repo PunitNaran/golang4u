@@ -9,6 +9,10 @@ title = "Golang4U"
 theme = "DoIt"
 
 [params]
+  # API URL Configuration
+  # Production URL (default)
+  apiUrl = "https://golang4u.com"
+
   # DoIt theme version
   version = "0.4.0"
   # website title
@@ -669,12 +673,16 @@ theme = "DoIt"
     endLevel = 6
 
 # Author config
-[author]
+[params.author]
   name = "xxxx"
   email = ""
   link = ""
   avatar = ""
   gravatarEmail = ""
+
+[params.advanced]
+  customCSS = ["css/enhanced.css", "css/dashboard.css"]
+  customJS = ["js/dashboard.js", "js/auth.js", "js/playground.js", "js/add-post.js"]
 
 # Sitemap config
 [sitemap]
@@ -715,7 +723,7 @@ theme = "DoIt"
   page = ["HTML", "MarkDown"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
-  taxonomyTerm = ["HTML"]
+
 
 # Options for taxonomies
 [taxonomies]
@@ -793,10 +801,59 @@ series = "series"
     title = ""
     weight = 8
   [[menu.main]]
-    identifier = "addPost"
+    identifier = "playground"
+    pre = ""
+    post = ""
+    name = "Playground"
+    url = "/playground/"
+    title = ""
+    weight = 8
+  [[menu.main]]
+    identifier = "add-post"
     pre = ""
     post = ""
     name = "Add a Post"
-    url = "/addPost/"
+    url = "/add-post/"
     title = ""
     weight = 9
+  [[menu.main]]
+    identifier = "login"
+    pre = ""
+    post = ""
+    name = "Log In"
+    url = "/login/"
+    title = ""
+    weight = 10
+  [[menu.main]]
+    identifier = "signup"
+    pre = ""
+    post = ""
+    name = "Sign Up"
+    url = "/signup/"
+    title = ""
+    weight = 11
+  [[menu.main]]
+    identifier = "admin"
+    pre = ""
+    post = ""
+    name = "Admin"
+    url = "/admin/"
+    title = ""
+    weight = 12
+  [[menu.main]]
+    identifier = "dashboard"
+    pre = ""
+    post = ""
+    name = "Dashboard"
+    url = "/dashboard/"
+    title = ""
+    weight = 13
+  [[menu.main]]
+    identifier = "logout"
+    pre = ""
+    post = ""
+    name = "Log Out"
+    url = "javascript:void(0);"
+    title = ""
+    weight = 14
+

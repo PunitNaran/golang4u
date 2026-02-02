@@ -14,7 +14,7 @@ collections:
       - label: "Draft"
         name: "draft"
         widget: "boolean"
-        default: false
+        default: true
       - label: "Title"
         name: "title"
         widget: "string"
@@ -58,15 +58,16 @@ collections:
       - label: Last Modified
         name: lastmod
         widget: datetime
-      - label: Draft
-        name: draft
-        widget: boolean
+      - label: "Draft"
+        name: "draft"
+        widget: "boolean"
+        default: true
       - label: Authors
         name: authors
         widget: list
-      - label: Description
-        name: description
-        widget: text
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
       - label: License
         name: license
         widget: string
@@ -83,7 +84,7 @@ collections:
         name: series
         widget: list
       - label: Series Weight
-        name: series_weight
+        name: seriesWeight
         widget: number
       - label: Series Navigation
         name: seriesNavigation
@@ -209,47 +210,22 @@ collections:
           - label: Enable
             name: enable
             widget: boolean
-      - label: Sponsor
-        name: sponsor
-        widget: object
-        collapsed: true
-        fields:
-          - label: Enable
-            name: enable
-            widget: boolean
-      - label: Related Articles
-        name: related
-        widget: object
-        collapsed: true
-        fields:
-          - label: Enable
-            name: enable
-            widget: boolean
-          - label: Count
-            name: count
-            widget: number
-          - label: Related Articles
-            name: relatedArticles
-            widget: list
-            summary: title
-            fields:
-              - label: Title
-                name: title
-                widget: relation
-                collection: learn
-                searchFields:
-                  - title
-                valueField: title
   - name: "events"
     label: "Events"
     folder: "content/events"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
+      - label: "Draft"
+        name: "draft"
+        widget: "boolean"
+        default: true
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Date", name: "date", widget: "datetime" }
       - { label: "Location", name: "location", widget: "string" }
-      - { label: "Description", name: "description", widget: "text" }
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
       - { label: "Organizer", name: "organizer", widget: "string" }
       - { label: "Website", name: "website", widget: "string" }
       - { label: "Registration Link", name: "registrationLink", widget: "string" }
@@ -265,13 +241,19 @@ collections:
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
+      - label: "Draft"
+        name: "draft"
+        widget: "boolean"
+        default: true
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Type", name: "type", widget: "select", options: ["Full-time", "Part-time", "Contract", "One-time"] }
       - { label: "Compensation", name: "compensation", widget: "select", options: ["Unpaid/Volunteered", "Equity Only", "Salary", "Salary + Equity"] }
       - { label: "Salary Amount", name: "salaryAmount", widget: "number", required: false }
       - { label: "Salary Frequency", name: "salaryFrequency", widget: "select", options: ["Annual", "Monthly", "Daily", "Hourly"], required: false }
       - { label: "Location", name: "location", widget: "string" }
-      - { label: "Description", name: "description", widget: "text" }
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
       - { label: "Company", name: "company", widget: "string" }
       - { label: "Company Website", name: "companyWebsite", widget: "string" }
       - { label: "Application Link", name: "applicationLink", widget: "string" }
@@ -287,12 +269,18 @@ collections:
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
+      - label: "Draft"
+        name: "draft"
+        widget: "boolean"
+        default: true
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Category", name: "category", widget: "select", options: ["Software","Electronics", "Clothing", "Furniture", "Books", "Other"] }
       - { label: "Price", name: "price", widget: "number" }
       - { label: "Currency", name: "currency", widget: "string" }
       - { label: "Location", name: "location", widget: "string" }
-      - { label: "Description", name: "description", widget: "text" }
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
       - { label: "Contact Email", name: "contactEmail", widget: "string" }
       - { label: "Contact Phone", name: "contactPhone", widget: "string" }
       - { label: "Featured Image", name: "featuredImage", widget: "image" }
@@ -307,9 +295,15 @@ collections:
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
+      - label: "Draft"
+        name: "draft"
+        widget: "boolean"
+        default: true
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Hosts", name: "hosts", widget: "list" }
-      - { label: "Description", name: "description", widget: "text" }
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
       - { label: "Language", name: "language", widget: "string" }
       - { label: "Category", name: "category", widget: "select", options: ["Web Development", "System Programming", "Networking", "Cloud Services", "DevOps", "Container Orchestration", "Blockchain", "Database Systems", "Game Development", "Data Analysis", "Internet of Things (IoT)", "Command-Line Tools", "Security Tools", "Multimedia and Graphics", "Embedded Systems", "Other"] }
       - { label: "Episode Count", name: "episodeCount", widget: "number" }
