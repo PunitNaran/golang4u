@@ -1,4 +1,6 @@
-const API_BASE = 'http://localhost:8080';
+// Use dynamic API URL based on environment (set in baseof.html)
+// Falls back to localhost for development if not set
+const API_BASE = window.GO4U_API_URL || 'http://localhost:8080';
 
 const auth = {
     // --- STATE ---
