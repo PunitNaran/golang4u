@@ -40,6 +40,7 @@
 
         <div class="auth-footer">
             <p>Already have an account? <a href="/login">Log in</a></p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;"><a href="/activate">Activate Account</a></p>
         </div>
     </div>
 </div>
@@ -80,6 +81,7 @@
     .gradient-text {
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         -webkit-background-clip: text;
+        background-clip: text;
         -webkit-text-fill-color: transparent;
         font-size: 2.5rem;
         font-weight: 800;
@@ -238,9 +240,15 @@
 
             if (response.ok) {
                 // Success - "User account pending"
-                msg.innerText = 'Account Created! Please check your email/console for the verification link.';
+                msg.innerText = 'Account Created! Redirecting to verification...';
                 msg.classList.add('success');
                 e.target.reset();
+
+                // Redirect to activation page with username pre-filled
+                setTimeout(() => {
+                    const username = data.avatar_name || data['avatar_name'];
+                    window.location.href = `/activate?username=${encodeURIComponent(username)}`;
+                }, 1500);
             } else {
                 const errText = await response.text();
                 let errMsg = errText;

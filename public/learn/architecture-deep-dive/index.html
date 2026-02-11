@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noodp" />
+    <title>Building a Production-Grade Go Backend: The Golang4U Architecture Deep Dive - Golang4U</title><meta name="Description" content="A comprehensive, 20-minute read on the Clean Architecture of Golang4U. We cover the rationale behind Echo &amp; MongoDB, dependency injection, and the lifecycle of a request from ingress to database."><meta property="og:url" content="http://localhost:1313/learn/architecture-deep-dive/">
+  <meta property="og:site_name" content="Golang4U">
+  <meta property="og:title" content="Building a Production-Grade Go Backend: The Golang4U Architecture Deep Dive">
+  <meta property="og:description" content="A comprehensive, 20-minute read on the Clean Architecture of Golang4U. We cover the rationale behind Echo &amp; MongoDB, dependency injection, and the lifecycle of a request from ingress to database.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="learn">
+    <meta property="article:published_time" content="2026-02-10T10:00:00+08:00">
+    <meta property="article:modified_time" content="2026-02-10T10:00:00+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Architecture">
+    <meta property="article:tag" content="Echo">
+    <meta property="article:tag" content="MongoDB">
+    <meta property="article:tag" content="Backend">
+    <meta property="article:tag" content="Clean Architecture">
+    <meta property="og:image" content="http://localhost:1313/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/logo.png">
+  <meta name="twitter:title" content="Building a Production-Grade Go Backend: The Golang4U Architecture Deep Dive">
+  <meta name="twitter:description" content="A comprehensive, 20-minute read on the Clean Architecture of Golang4U. We cover the rationale behind Echo &amp; MongoDB, dependency injection, and the lifecycle of a request from ingress to database.">
+<meta name="application-name" content="Golang 4 U">
+<meta name="apple-mobile-web-app-title" content="Golang 4 U">
+
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/learn/architecture-deep-dive/" /><link rel="next" href="http://localhost:1313/learn/advanced-security/" />
+<link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript>
+<link rel="stylesheet" href="/css/enhanced.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Building a Production-Grade Go Backend: The Golang4U Architecture Deep Dive",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/learn\/architecture-deep-dive\/"
+        },"genre": "learn","keywords": "Go, Architecture, Echo, MongoDB, Backend, Clean Architecture, Design patterns","wordcount":  1510 ,
+        "url": "http:\/\/localhost:1313\/learn\/architecture-deep-dive\/","datePublished": "2026-02-10T10:00:00+08:00","dateModified": "2026-02-10T10:00:00+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Punit Naran"
+            },"description": "A comprehensive, 20-minute read on the Clean Architecture of Golang4U. We cover the rationale behind Echo \u0026 MongoDB, dependency injection, and the lifecycle of a request from ingress to database."
+    }
+    </script><script src="/lib/instantpage/instantpage.js" type="module" defer></script></head>
+
+<body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">
+        function setTheme(theme) { document.body.setAttribute('theme', theme); document.documentElement.style.setProperty('color-scheme', theme === 'light' ? 'light' : 'dark'); window.theme = theme; window.isDark = window.theme !== 'light' }
+        function saveTheme(theme) { window.localStorage && localStorage.setItem('theme', theme); }
+        function getMeta(metaName) { const metas = document.getElementsByTagName('meta'); for (let i = 0; i < metas.length; i++) if (metas[i].getAttribute('name') === metaName) return metas[i]; return ''; }
+        if (window.localStorage && localStorage.getItem('theme')) { let theme = localStorage.getItem('theme'); theme === 'light' || theme === 'dark' || theme === 'black' ? setTheme(theme) : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light')); } else { if ('auto' === 'light' || 'auto' === 'dark' || 'auto' === 'black') setTheme('auto'), saveTheme('auto'); else saveTheme('auto'), window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light'); }
+        let metaColors = { 'light': '#f8f8f8', 'dark': '#252627', 'black': '#000000' }
+        getMeta('theme-color').content = metaColors[document.body.getAttribute('theme')];
+        window.switchThemeEventSet = new Set()
+        window.GO4U_API_URL = "http://localhost:8080";
+    </script>
+    <div id="back-to-top"></div>
+    <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Golang4U"><span id="desktop-header-typeit" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item menu-item-news"
+                    href="/news/" > News </a><a class="menu-item menu-item-tags"
+                    href="/tags/" > Tags </a><a class="menu-item menu-item-learn"
+                    href="/learn/" > Learning </a><a class="menu-item menu-item-events"
+                    href="/events/" > Events </a><a class="menu-item menu-item-casts"
+                    href="/casts/" > Casts </a><a class="menu-item menu-item-jobs"
+                    href="/jobs/" > Jobs </a><a class="menu-item menu-item-marketplace"
+                    href="/marketplace/" > Marketplace </a><a class="menu-item menu-item-contactus"
+                    href="/contactus/" > Contact Us </a><a class="menu-item menu-item-playground"
+                    href="/playground/" > Playground </a><a class="menu-item menu-item-addpost"
+                    href="/addpost/" > Add a Post </a><a class="menu-item menu-item-login"
+                    href="/login/" > Log In </a><a class="menu-item menu-item-signup"
+                    href="/signup/" > Sign Up </a><a class="menu-item menu-item-admin"
+                    href="/admin/" > Admin </a><a class="menu-item menu-item-dashboard"
+                    href="/dashboard/" > Dashboard </a><a class="menu-item menu-item-logout"
+                    href="#ZgotmplZ" > Log Out </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                    <input type="text"
+                        placeholder="Search titles or contents..."
+                        id="search-input-desktop">
+                    <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop"
+                        title="Search">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop"
+                        title="Clear">
+                        <i class="fas fa-times-circle fa-fw"></i>
+                    </a>
+                    <span class="search-button search-loading" id="search-loading-desktop">
+                        <i class="fas fa-spinner fa-fw fa-spin"></i>
+                    </span>
+                </span><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Golang4U"><span id="mobile-header-typeit" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                <div class="search mobile" id="search-mobile">
+                    <input type="text"
+                        placeholder="Search titles or contents..."
+                        id="search-input-mobile">
+                    <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile"
+                        title="Search">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile"
+                        title="Clear">
+                        <i class="fas fa-times-circle fa-fw"></i>
+                    </a>
+                    <span class="search-button search-loading" id="search-loading-mobile">
+                        <i class="fas fa-spinner fa-fw fa-spin"></i>
+                    </span>
+                </div>
+                <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                    Cancel
+                </a>
+            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div><main class="main">
+            <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">Building a Production-Grade Go Backend: The Golang4U Architecture Deep Dive</h1><div class="content" id="content"><h1 id="introduction" class="headerLink">
+    <a href="#introduction" class="header-mark"></a>Introduction</h1><p>In the world of Go application development, &ldquo;structure&rdquo; is a topic of endless debate. Should you use a flat structure? Group by feature? Follow &ldquo;Standard Go Project Layout&rdquo;?</p>
+<p>With <strong>Golang4U</strong>, we aimed to build a system that is robust enough for enterprise use cases but simple enough to be maintained by a small team. We adopted a <strong>Service-Oriented</strong> layered architecture (often called Clean Architecture or Hexagonal Architecture lite) to ensure separation of concerns, testability, and scalability.</p>
+<p>In this deep dive, we will explore:</p>
+<ol>
+<li><strong>The Tech Stack Decisions</strong>: Why Echo? Why MongoDB?</li>
+<li><strong>The Project Structure</strong>: Mapping the <code>internal</code> folder.</li>
+<li><strong>Dependency Injection</strong>: How we wire it all together without global state.</li>
+<li><strong>Request Lifecycle</strong>: Tracing a request from the user&rsquo;s browser to the database and back.</li>
+</ol>
+<hr>
+<h1 id="1-the-tech-stack-decisions" class="headerLink">
+    <a href="#1-the-tech-stack-decisions" class="header-mark"></a>1. The Tech Stack decisions</h1><p>Every architectural choice comes with trade-offs. Here is why we chose our specific stack.</p>
+<h3 id="11-the-web-framework-echo-v4" class="headerLink">
+    <a href="#11-the-web-framework-echo-v4" class="header-mark"></a>1.1 The Web Framework: Echo (v4)</h3><p>Go&rsquo;s standard <code>net/http</code> library is powerful, but for a production REST API, you often find yourself rewriting the same boilerplate: routing with parameters, group middleware, data binding, and response formatting.</p>
+<p>We chose <strong><a href="https://echo.labstack.com/" target="_blank" rel="noopener noreferrer">Echo</a></strong> for three main reasons:</p>
+<ol>
+<li><strong>Performance</strong>: Echo&rsquo;s router is highly optimized, with zero dynamic memory allocation for route dispatching.</li>
+<li><strong>Middleware Ecosystem</strong>: It has a robust suite of built-in middleware (Recover, Logger, CORS, Secure) that are production-ready out of the box.</li>
+<li><strong>Context Interface</strong>: The <code>echo.Context</code> interface simplifies request handling significantly.</li>
+</ol>
+<p><strong>Code Example: The Power of Binding</strong></p>
+<p>In standard Go, parsing a JSON body involves creating a decoder and handling EOF errors manually. In Echo:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">LoginRequest</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Email</span>    <span class="kt">string</span> <span class="s">`json:&#34;email&#34; validate:&#34;required,email&#34;`</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Password</span> <span class="kt">string</span> <span class="s">`json:&#34;password&#34; validate:&#34;required&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">h</span> <span class="o">*</span><span class="nx">AuthHandler</span><span class="p">)</span> <span class="nf">Login</span><span class="p">(</span><span class="nx">c</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">req</span> <span class="nx">LoginRequest</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Bind() handles JSON, XML, Form data automatically based on Content-Type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nf">Bind</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">req</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusBadRequest</span><span class="p">,</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;error&#34;</span><span class="p">:</span> <span class="s">&#34;Invalid request format&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// ... validation and logic ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="12-the-database-mongodb" class="headerLink">
+    <a href="#12-the-database-mongodb" class="header-mark"></a>1.2 The Database: MongoDB</h3><p>We chose <strong>MongoDB</strong> (NoSQL) over a traditional relational database (PostgreSQL/MySQL) for specific reasons related to our domain:</p>
+<ul>
+<li><strong>Content Management</strong>: Blog posts, comments, and tags are inherently hierarchical and document-oriented. A post has embedded comments, arrays of tags, and dynamic metadata. Storing this in a single document avoids complex <code>JOIN</code> operations.</li>
+<li><strong>Schema Flexibility</strong>: As we iterate on User Profiles (adding social links, preferences, 2FA secrets), we can update the struct in Go without running heavy migration scripts on the database.</li>
+<li><strong>Read Performance</strong>: For a read-heavy application (viewing feeds), fetching a single document is generally faster than joining 4-5 tables.</li>
+</ul>
+<p><strong>Go Driver</strong>: We use the official <code>go.mongodb.org/mongo-driver/v2</code>.</p>
+<hr>
+<h1 id="2-the-project-structure" class="headerLink">
+    <a href="#2-the-project-structure" class="header-mark"></a>2. The Project Structure</h1><p>We follow the <strong>Standard Go Project Layout</strong>, designed to separate public API code from internal business logic. This isn&rsquo;t just arbitrary; it prevents &ldquo;import cycles&rdquo; and forces you to think about dependencies.</p>
+<h3 id="21-the-clean-architecture-map" class="headerLink">
+    <a href="#21-the-clean-architecture-map" class="header-mark"></a>2.1 The &ldquo;Clean Architecture&rdquo; Map</h3><pre class="mermaid">graph TD
+    subgraph "External World"
+        Client[User Browser/Mobile]
+        DB[(MongoDB)]
+    end
+
+    subgraph "Interface Layer (Transport)"
+        Handler[HTTP Handlers (Echo)]
+    end
+
+    subgraph "Core Business Logic"
+        Service[Service Layer]
+    end
+
+    subgraph "Data Access"
+        Repo[Repository Layer]
+    end
+
+    Client -->|HTTP Request| Handler
+    Handler -->|DTO| Service
+    Service -->|Domain Model| Repo
+    Repo -->|BSON| DB
+</pre><h3 id="22-the-directory-tree" class="headerLink">
+    <a href="#22-the-directory-tree" class="header-mark"></a>2.2 The Directory Tree</h3><pre class="mermaid">graph LR
+    Root[Project Root]
+    Root --> Cmd[cmd/]
+    Root --> Internal[internal/]
+    
+    Cmd --> Main[main.go (Wiring)]
+    
+    Internal --> Handler[handler/ (HTTP)]
+    Internal --> Service[service/ (Logic)]
+    Internal --> Repo[repository/ (DB)]
+    Internal --> Model[model/ (Structs)]
+    Internal --> Middleware[middleware/ (Security)]
+</pre><h3 id="23-cmdservermaingo-the-composition-root" class="headerLink">
+    <a href="#23-cmdservermaingo-the-composition-root" class="header-mark"></a>2.3 <code>cmd/server/main.go</code>: The Composition Root</h3><p>The <code>main</code> package is the <em>only</em> place where all layers meet. It performs <strong>Dependency Injection</strong>.</p>
+<ol>
+<li><strong>Config</strong>: Loads <code>config.toml</code>.</li>
+<li><strong>Infra</strong>: Connects to Mongo/Redis.</li>
+<li><strong>Wiring</strong>: Injects <code>Repo</code> into <code>Service</code>, and <code>Service</code> into <code>Handler</code>.</li>
+<li><strong>Run</strong>: Starts the HTTP listener.</li>
+</ol>
+<h3 id="24-internalmodel-the-shared-language" class="headerLink">
+    <a href="#24-internalmodel-the-shared-language" class="header-mark"></a>2.4 <code>internal/model</code>: The Shared Language</h3><p>This package contains <strong>Pure Data Structures</strong>. It has <em>zero</em> dependencies on other internal packages.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// internal/model/user.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ID</span>        <span class="kt">string</span>    <span class="s">`bson:&#34;_id,omitempty&#34; json:&#34;id&#34;`</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Email</span>     <span class="kt">string</span>    <span class="s">`bson:&#34;email&#34; json:&#34;email&#34;`</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Profile</span>   <span class="nx">Profile</span>   <span class="s">`bson:&#34;profile&#34; json:&#34;profile&#34;`</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Password is NOT in JSON for security
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">Password</span>  <span class="kt">string</span>    <span class="s">`bson:&#34;password&#34; json:&#34;-&#34;`</span> 
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="23-internalrepository-data-access-layer" class="headerLink">
+    <a href="#23-internalrepository-data-access-layer" class="header-mark"></a>2.3 <code>internal/repository</code> (Data Access Layer)</h3><p><strong>Responsibility</strong>: Talk to the database.
+This layer knows <em>how</em> to store things (BSON, SQL queries) but doesn&rsquo;t know <em>why</em>. It performs CRUD operations.</p>
+<p><strong>Idiom</strong>: We accept interfaces or specific structs and return domain models.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// internal/repository/user_repository.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">UserRepository</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">collection</span> <span class="o">*</span><span class="nx">mongo</span><span class="p">.</span><span class="nx">Collection</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewUserRepository</span><span class="p">(</span><span class="nx">db</span> <span class="o">*</span><span class="nx">mongo</span><span class="p">.</span><span class="nx">Database</span><span class="p">)</span> <span class="o">*</span><span class="nx">UserRepository</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">UserRepository</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">collection</span><span class="p">:</span> <span class="nx">db</span><span class="p">.</span><span class="nf">Collection</span><span class="p">(</span><span class="s">&#34;users&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">UserRepository</span><span class="p">)</span> <span class="nf">FindByEmail</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">email</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">model</span><span class="p">.</span><span class="nx">User</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">user</span> <span class="nx">model</span><span class="p">.</span><span class="nx">User</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Use a context with timeout for production safety
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">ctx</span><span class="p">,</span> <span class="nx">cancel</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithTimeout</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="mi">5</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">defer</span> <span class="nf">cancel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">err</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nf">FindOne</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span><span class="s">&#34;email&#34;</span><span class="p">:</span> <span class="nx">email</span><span class="p">}).</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">user</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">Is</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">mongo</span><span class="p">.</span><span class="nx">ErrNoDocuments</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">nil</span> <span class="c1">// Not found is not always an error
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">user</span><span class="p">,</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="24-internalservice-business-logic-layer" class="headerLink">
+    <a href="#24-internalservice-business-logic-layer" class="header-mark"></a>2.4 <code>internal/service</code> (Business Logic Layer)</h3><p><strong>Responsibility</strong>: The brain of the application.
+It validates business rules, combines data from multiple repositories, and handles external APIs (email, payment).</p>
+<p><strong>Example Rule</strong>: &ldquo;A user cannot register with an email that is already blocked.&rdquo;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// internal/service/auth_service.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">AuthService</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">userRepo</span>  <span class="o">*</span><span class="nx">repository</span><span class="p">.</span><span class="nx">UserRepository</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ipFilter</span>  <span class="o">*</span><span class="nx">ipfilter</span><span class="p">.</span><span class="nx">Service</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">AuthService</span><span class="p">)</span> <span class="nf">RegisterUser</span><span class="p">(</span><span class="nx">req</span> <span class="nx">model</span><span class="p">.</span><span class="nx">RegisterRequest</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 1. Check if email exists
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">existing</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">userRepo</span><span class="p">.</span><span class="nf">FindByEmail</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="nx">req</span><span class="p">.</span><span class="nx">Email</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">existing</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;email already taken&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 2. Hash Password (bcrypt/argon2)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">hashed</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">bcrypt</span><span class="p">.</span><span class="nf">GenerateFromPassword</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">Password</span><span class="p">),</span> <span class="mi">14</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 3. Create User Model
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">newUser</span> <span class="o">:=</span> <span class="nx">model</span><span class="p">.</span><span class="nx">User</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Email</span><span class="p">:</span>    <span class="nx">req</span><span class="p">.</span><span class="nx">Email</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Password</span><span class="p">:</span> <span class="nb">string</span><span class="p">(</span><span class="nx">hashed</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 4. Save
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nx">userRepo</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="o">&amp;</span><span class="nx">newUser</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="25-internalhandler-transport-layer" class="headerLink">
+    <a href="#25-internalhandler-transport-layer" class="header-mark"></a>2.5 <code>internal/handler</code> (Transport Layer)</h3><p><strong>Responsibility</strong>: Speak HTTP.
+It reads the <code>echo.Context</code>, parses requests, calls the Service, and formats the Response.</p>
+<p><strong>Crucial Rule</strong>: The handler should rarely have <code>if</code> statements related to business logic. It should just handle <em>input parsing</em> and <em>output formatting</em>.</p>
+<hr>
+<h1 id="3-dependency-injection-wiring" class="headerLink">
+    <a href="#3-dependency-injection-wiring" class="header-mark"></a>3. Dependency Injection (WIring)</h1><p>Go doesn&rsquo;t have a &ldquo;Magic Container&rdquo; like Spring Boot (Java) or NestJS, and that&rsquo;s a good thing. We favor <strong>Explicit Dependency Injection</strong>. We manually pass dependencies into constructors (<code>New...</code> functions).</p>
+<p>This happens in <code>main.go</code>. It makes the dependency graph obvious and makes testing easy (we can pass mocks implementation).</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Main wiring in main.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 1. Infrastructure
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">mongoClient</span> <span class="o">:=</span> <span class="nf">connectMongo</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">db</span> <span class="o">:=</span> <span class="nx">mongoClient</span><span class="p">.</span><span class="nf">Database</span><span class="p">(</span><span class="s">&#34;golang4u&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 2. Repositories
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">userRepo</span> <span class="o">:=</span> <span class="nx">repository</span><span class="p">.</span><span class="nf">NewUserRepository</span><span class="p">(</span><span class="nx">db</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">postRepo</span> <span class="o">:=</span> <span class="nx">repository</span><span class="p">.</span><span class="nf">NewPostRepository</span><span class="p">(</span><span class="nx">db</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 3. Services (injected with Repositories)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">authService</span> <span class="o">:=</span> <span class="nx">service</span><span class="p">.</span><span class="nf">NewAuthService</span><span class="p">(</span><span class="nx">userRepo</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">postService</span> <span class="o">:=</span> <span class="nx">service</span><span class="p">.</span><span class="nf">NewPostService</span><span class="p">(</span><span class="nx">postRepo</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 4. Handlers (injected with Services)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">authHandler</span> <span class="o">:=</span> <span class="nx">handler</span><span class="p">.</span><span class="nf">NewAuthHandler</span><span class="p">(</span><span class="nx">authService</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">postHandler</span> <span class="o">:=</span> <span class="nx">handler</span><span class="p">.</span><span class="nf">NewPostHandler</span><span class="p">(</span><span class="nx">postService</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 5. Routes
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">e</span> <span class="o">:=</span> <span class="nx">echo</span><span class="p">.</span><span class="nf">New</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">e</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/login&#34;</span><span class="p">,</span> <span class="nx">authHandler</span><span class="p">.</span><span class="nx">Login</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h1 id="4-request-lifecycle-a-step-by-step-flow" class="headerLink">
+    <a href="#4-request-lifecycle-a-step-by-step-flow" class="header-mark"></a>4. Request Lifecycle: A Step-by-Step Flow</h1><p>Let&rsquo;s visualize what happens when a user clicks &ldquo;Log In&rdquo;.</p>
+<pre class="mermaid">sequenceDiagram
+    participant Client
+    participant Middleware
+    participant Handler
+    participant Service
+    participant Repository
+    participant Database
+
+    Client->>Middleware: POST /login (JSON)
+    Middleware->>Middleware: Logger & Rate Limit check
+    Middleware->>Handler: Pass Request
+    
+    Handler->>Handler: Bind JSON to Struct
+    Handler->>Handler: Validate (Required fields)
+    Handler->>Service: Login(email, password)
+    
+    Service->>Repository: FindByEmail(email)
+    Repository->>Database: db.users.findOne({email: ...})
+    Database-->>Repository: User Document
+    Repository-->>Service: User Model
+    
+    Service->>Service: CompareHash(password, user.Hash)
+    Service-->>Handler: Return User/Error
+    
+    Handler->>Handler: Generate PASETO Token
+    Handler-->>Client: 200 OK {token: "..."}
+</pre><h3 id="detailed-breakdown" class="headerLink">
+    <a href="#detailed-breakdown" class="header-mark"></a>Detailed Breakdown</h3><ol>
+<li><strong>Ingress</strong>: The request hits the server.</li>
+<li><strong>Middleware Chain</strong>:
+<ul>
+<li><strong>Recovery</strong>: Ensures if the handlers panic, the server doesn&rsquo;t crash.</li>
+<li><strong>CORS</strong>: Checks if the request is coming from an allowed origin (<code>golang4u.com</code>).</li>
+<li><strong>IPFilter</strong>: Checks if the IP is in our Redis blocklist.</li>
+<li><strong>Logger</strong>: Logs <code>path=/login status=... latency=...</code> for observability.</li>
+</ul>
+</li>
+<li><strong>Handler</strong>: <code>func (h *AuthHandler) Login</code> is called. It parses the JSON body.</li>
+<li><strong>Service</strong>: <code>authService.Login</code> performs the password comparison. It avoids returning specific errors like &ldquo;User not found&rdquo; to prevent user enumeration attacks; instead, it returns &ldquo;Invalid Credentials&rdquo;.</li>
+<li><strong>Response</strong>: The handler wraps the result in a standard JSON envelope: <code>{&quot;data&quot;: ..., &quot;status&quot;: &quot;success&quot;}</code>.</li>
+</ol>
+<hr>
+<h1 id="5-advanced-topcs" class="headerLink">
+    <a href="#5-advanced-topcs" class="header-mark"></a>5. Advanced Topcs</h1><h3 id="51-context-usage" class="headerLink">
+    <a href="#51-context-usage" class="header-mark"></a>5.1 Context Usage</h3><p>In Go, <code>context.Context</code> is the lifeline of a request. It carries concepts of:</p>
+<ul>
+<li><strong>Deadlines</strong>: &ldquo;Stop this DB query if it takes &gt; 2 seconds&rdquo;.</li>
+<li><strong>Cancellation</strong>: &ldquo;The user closed the browser, stop processing&rdquo;.</li>
+</ul>
+<p>We pass <code>ctx</code> from Handler -&gt; Service -&gt; Repository. MongoDB respects this context.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Creating a child context with timeout
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">cancel</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithTimeout</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nf">Request</span><span class="p">().</span><span class="nf">Context</span><span class="p">(),</span> <span class="mi">2</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">defer</span> <span class="nf">cancel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">user</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">h</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nf">GetUser</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">id</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="52-error-handling-vs-logging" class="headerLink">
+    <a href="#52-error-handling-vs-logging" class="header-mark"></a>5.2 Error Handling vs Logging</h3><p>We don&rsquo;t log errors in the Repository. We return them.
+We don&rsquo;t log errors in the Service. We return them.
+<strong>We log errors in the Handler.</strong></p>
+<p>Why? If you log everywhere, your logs become spam. &ldquo;Failed to query DB&rdquo; would appear 3 times (Repo log, Service log, Handler log). By bubbling the error up, the Handler decides:</p>
+<ul>
+<li><strong>500 Internal Error</strong>: Log the full stack trace for devs. Return &ldquo;Something went wrong&rdquo; to user.</li>
+<li><strong>400 Bad Request</strong>: Don&rsquo;t log (user error). Return proper message to user.</li>
+</ul>
+<hr>
+<h1 id="conclusion" class="headerLink">
+    <a href="#conclusion" class="header-mark"></a>Conclusion</h1><p>The architectural choices in Golang4U provide a stable foundation. By strictly separating <strong>Transport (HTTP)</strong> from <strong>Logic</strong> from <strong>Storage</strong>, we create a codebase that is easy to navigate and safe to modify. Dependencies flow <em>inwards</em>, and data flows <em>downwards</em>.</p>
+<p>In the next post of this series, we will look at how we secure this architecture using <strong>Advanced Security Middleware</strong> like Custom IP Filtering and Token Buckets.</p>
+</div></div></div>
+        </main><footer class="footer">
+    <div class="footer-container"><div class="footer-line">
+            Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer"
+            title="Hugo 0.139.3">Hugo</a>&nbsp;|&nbsp;Theme - <a href="https://github.com/HEIGE-PCloud/DoIt" target="_blank"
+            rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a>
+        </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a
+                    href="/" target="_blank"
+                    rel="noopener noreferrer">Punit Naran</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-line"></div>
+        <div class="footer-line">
+        </div>
+    </div></footer></div>
+
+    <div id="fixed-buttons"><a href="#back-to-top" id="back-to-top-button" class="fixed-button" title="Back to Top">
+            <i class="fas fa-arrow-up fa-fw"></i>
+        </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            <i class="fas fa-comment fa-fw"></i>
+        </a>
+    </div><script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: (window.theme === 'dark' ? 'dark' : 'default') });
+</script><div id="cookieconsent-container"></div><div class="assets"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"desktop-header-typeit":"Golang 4 U","mobile-header-typeit":"Golang 4 U"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":30,"threshold":0.3,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/lib/cookieconsent/consent-banner.js" defer></script><script type="text/javascript" src="/js/safe-banner.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script><script src="/js/crypto_utils.min.631e00e36f334392a507c80c5304241ca2e41f7c1f889b3e31f08510ccb3dbdc.js" integrity="sha256-Yx4A428zQ5KlB8gMUwQkHKLkH3wfiJs&#43;MfCFEMyz29w="></script><script src="/js/auth.js"></script>
+</div></body>
+
+</html>

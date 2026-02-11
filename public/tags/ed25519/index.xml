@@ -1,0 +1,23 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Ed25519 - Tag - Golang4U</title>
+        <link>http://localhost:1313/tags/ed25519/</link>
+        <description>Ed25519 - Tag - Golang4U</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 14:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/tags/ed25519/" rel="self" type="application/rss+xml" /><item>
+    <title>The Evolution of Authentication: JWT, PASETO, and PASERK</title>
+    <link>http://localhost:1313/learn/modern-authentication/</link>
+    <pubDate>Tue, 10 Feb 2026 14:00:00 &#43;0800</pubDate><author>
+        <name>Punit Naran</name>
+    </author><guid>http://localhost:1313/learn/modern-authentication/</guid>
+    <description><![CDATA[<h1 id="introduction" class="headerLink">
+    <a href="#introduction" class="header-mark"></a>Introduction</h1><p>Authentication is the bedrock of modern application security. For years, developers have reached for <strong>JWT (JSON Web Tokens)</strong> as the default tool for stateless authentication.</p>
+<p>But standards evolve. Vulnerabilities are found. Better tools are built.</p>
+<p>In this deep dive, we will trace the evolution of token security:</p>
+<ol>
+<li><strong>Generation 1: JWT (RFC 7519)</strong> - The Standard with Footguns.</li>
+<li><strong>Generation 2: PASETO (Platform-Agnostic Security Tokens)</strong> - The Secure Replacement.</li>
+<li><strong>Generation 3: PASERK (Platform-Agnostic SERialized Keys)</strong> - The Key Management Layer.</li>
+</ol>
+<p>We will strictly analyze <em>why</em> Golang4U moved to PASETO and how it prepares us for a PASERK future.</p>]]></description>
+</item></channel>
+</rss>

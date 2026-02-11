@@ -24,7 +24,7 @@
 
 <meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/signup/" /><link rel="prev" href="http://localhost:1313/add-post/" /><link rel="next" href="http://localhost:1313/login/" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/signup/" /><link rel="prev" href="http://localhost:1313/playground/" /><link rel="next" href="http://localhost:1313/login/" />
 <link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript>
@@ -73,8 +73,8 @@
                     href="/jobs/" > Jobs </a><a class="menu-item menu-item-marketplace"
                     href="/marketplace/" > Marketplace </a><a class="menu-item menu-item-contactus"
                     href="/contactus/" > Contact Us </a><a class="menu-item menu-item-playground"
-                    href="/playground/" > Playground </a><a class="menu-item menu-item-add-post"
-                    href="/add-post/" > Add a Post </a><a class="menu-item menu-item-login"
+                    href="/playground/" > Playground </a><a class="menu-item menu-item-addpost"
+                    href="/addpost/" > Add a Post </a><a class="menu-item menu-item-login"
                     href="/login/" > Log In </a><a class="menu-item menu-item-signup active"
                     href="/signup/" > Sign Up </a><a class="menu-item menu-item-admin"
                     href="/admin/" > Admin </a><a class="menu-item menu-item-dashboard"
@@ -94,14 +94,8 @@
                     <span class="search-button search-loading" id="search-loading-desktop">
                         <i class="fas fa-spinner fa-fw fa-spin"></i>
                     </span>
-                </span><a href="javascript:void(0);" class="menu-item theme-select" title="">
+                </span><a href="javascript:void(0);" class="menu-item theme-switch" title="">
                     <i class="fas fa-adjust fa-fw"></i>
-                    <select class="color-theme-select" id="theme-select-desktop" title="">
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                        <option value="black">Black</option>
-                        <option value="auto">Auto</option>
-                    </select>
                 </a></div>
         </div>
     </div>
@@ -135,14 +129,8 @@
                 <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                     Cancel
                 </a>
-            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-add-post" href="/add-post/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-select" title="">
+            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
                 <i class="fas fa-adjust fa-fw"></i>
-                <select class="color-theme-select" id="theme-select-mobile" title="">
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                    <option value="black">Black</option>
-                    <option value="auto">Auto</option>
-                </select>
             </a></div>
     </div>
 </header>
@@ -194,6 +182,7 @@
 
         <div class="auth-footer">
             <p>Already have an account? <a href="/login">Log in</a></p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;"><a href="/activate">Activate Account</a></p>
         </div>
     </div>
 </div>
@@ -234,6 +223,7 @@
     .gradient-text {
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         -webkit-background-clip: text;
+        background-clip: text;
         -webkit-text-fill-color: transparent;
         font-size: 2.5rem;
         font-weight: 800;
@@ -392,9 +382,15 @@
 
             if (response.ok) {
                 
-                msg.innerText = 'Account Created! Please check your email/console for the verification link.';
+                msg.innerText = 'Account Created! Redirecting to verification...';
                 msg.classList.add('success');
                 e.target.reset();
+
+                
+                setTimeout(() => {
+                    const username = data.avatar_name || data['avatar_name'];
+                    window.location.href = `/activate?username=${encodeURIComponent(username)}`;
+                }, 1500);
             } else {
                 const errText = await response.text();
                 let errMsg = errText;
@@ -420,7 +416,7 @@
             rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a>
         </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a
                     href="/" target="_blank"
-                    rel="noopener noreferrer">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+                    rel="noopener noreferrer">Punit Naran</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         <div class="footer-line"></div>
         <div class="footer-line">
         </div>
@@ -432,7 +428,7 @@
             <i class="fas fa-comment fa-fw"></i>
         </a>
     </div><div id="cookieconsent-container"></div><div class="assets"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
-        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"desktop-header-typeit":"Golang 4 U","mobile-header-typeit":"Golang 4 U"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":30,"threshold":0.3,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/lib/cookieconsent/consent-banner.js" defer></script><script type="text/javascript" src="/js/safe-banner.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script><script src="/js/crypto_utils.min.js"></script><script src="/js/auth.js"></script>
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"desktop-header-typeit":"Golang 4 U","mobile-header-typeit":"Golang 4 U"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":30,"threshold":0.3,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/lib/cookieconsent/consent-banner.js" defer></script><script type="text/javascript" src="/js/safe-banner.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script><script src="/js/crypto_utils.min.631e00e36f334392a507c80c5304241ca2e41f7c1f889b3e31f08510ccb3dbdc.js" integrity="sha256-Yx4A428zQ5KlB8gMUwQkHKLkH3wfiJs&#43;MfCFEMyz29w="></script><script src="/js/auth.js"></script>
 </div></body>
 
 </html>

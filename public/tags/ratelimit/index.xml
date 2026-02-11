@@ -1,0 +1,41 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>RateLimit - Tag - Golang4U</title>
+        <link>http://localhost:1313/tags/ratelimit/</link>
+        <description>RateLimit - Tag - Golang4U</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 12:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/tags/ratelimit/" rel="self" type="application/rss+xml" /><item>
+    <title>Fortifying the Backend: Advanced IP Filtering, Rate Limiting, and Headers</title>
+    <link>http://localhost:1313/learn/advanced-security/</link>
+    <pubDate>Tue, 10 Feb 2026 12:00:00 &#43;0800</pubDate><author>
+        <name>Punit Naran</name>
+    </author><guid>http://localhost:1313/learn/advanced-security/</guid>
+    <description><![CDATA[<h1 id="introduction" class="headerLink">
+    <a href="#introduction" class="header-mark"></a>Introduction</h1><p>In the modern internet landscape, deploying a backend without protection is akin to leaving your front door wide open. Automated bots, script kiddies, and targeted attackers are constantly scanning for vulnerabilities.</p>
+<p>&ldquo;Working code&rdquo; is not enough. We need <strong>Secure Code</strong>.</p>
+<p>In this article, we will implement three layers of defense for our Go backend:</p>
+<ol>
+<li><strong>Network Layer Defense</strong>: Application-level IP Filtering.</li>
+<li><strong>Traffic Control</strong>: Granular Rate Limiting/Throttling.</li>
+<li><strong>Browser Defense</strong>: Secure HTTP Headers.</li>
+</ol>
+<h3 id="visualizing-defense-in-depth" class="headerLink">
+    <a href="#visualizing-defense-in-depth" class="header-mark"></a>Visualizing Defense in Depth</h3><pre class="mermaid">graph LR
+    Attacker[Attacker] -->|Request| FW[Firewall/WAF]
+    FW -->|Allowed| IP[1. IP Filter Middleware]
+    
+    IP -->|Blocked IP| 403[403 Forbidden]
+    IP -->|Allowed IP| Rate[2. Rate Limiter]
+    
+    Rate -->|Too Fast| 429[429 Too Many Requests]
+    Rate -->|OK| Auth[3. Auth Middleware]
+    
+    Auth -->|Invalid Token| 401[401 Unauthorized]
+    Auth -->|Valid User| Logic[Business Logic]
+    
+    Logic -->|Response| Headers[4. Secure Headers]
+    Headers -->|Safe HTML| Client[User Browser]
+</pre><hr>
+<h1 id="1-custom-ip-filtering-middleware" class="headerLink">
+    <a href="#1-custom-ip-filtering-middleware" class="header-mark"></a>1. Custom IP Filtering Middleware</h1><p>While firewalls (AWS WAF, Cloudflare) are your first line of defense, adding application-level filtering gives you granular control. You can dynamically block IPs based on application behavior (e.g., &ldquo;5 failed logins in 1 minute&rdquo;).</p>]]></description>
+</item></channel>
+</rss>

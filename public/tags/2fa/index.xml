@@ -1,0 +1,25 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>2FA - Tag - Golang4U</title>
+        <link>http://localhost:1313/tags/2fa/</link>
+        <description>2FA - Tag - Golang4U</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 18:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/tags/2fa/" rel="self" type="application/rss+xml" /><item>
+    <title>Double the Security: Implementing Two-Factor Authentication (TOTP)</title>
+    <link>http://localhost:1313/learn/implementing-2fa/</link>
+    <pubDate>Tue, 10 Feb 2026 18:00:00 &#43;0800</pubDate><author>
+        <name>Punit Naran</name>
+    </author><guid>http://localhost:1313/learn/implementing-2fa/</guid>
+    <description><![CDATA[<h1 id="introduction" class="headerLink">
+    <a href="#introduction" class="header-mark"></a>Introduction</h1><p>Passwords are distinctively terrible.</p>
+<ul>
+<li>Users reuse them.</li>
+<li>Users choose &ldquo;Password123&rdquo;.</li>
+<li>Users write them on sticky notes.</li>
+</ul>
+<p>Even with strong password policies, a database leak from <em>another</em> site can compromise your users. <strong>Two-Factor Authentication (2FA)</strong> mitigates this by requiring a second factor: something physically in the user&rsquo;s possession (their phone).</p>
+<p>In this guide, we implement standard <strong>TOTP (Time-based One-Time Password)</strong>, compatible with Google Authenticator, Authy, and Microsoft Authenticator.</p>
+<hr>
+<h1 id="1-understanding-totp-rfc-6238" class="headerLink">
+    <a href="#1-understanding-totp-rfc-6238" class="header-mark"></a>1. Understanding TOTP (RFC 6238)</h1><p>TOTP is built on top of <strong>HOTP (HMAC-based One-Time Password)</strong>.</p>]]></description>
+</item></channel>
+</rss>

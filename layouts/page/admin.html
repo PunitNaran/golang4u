@@ -34,6 +34,13 @@
 
         <a href="/dashboard" class="back-link">← Back to Dashboard</a>
     </div>
+
+    <div class="glass-panel" style="margin-top: 2rem;">
+        <h2 class="gradient-text" style="font-size: 2rem;">Moderation Queue</h2>
+        <div id="pending-posts-container">
+            <p style="text-align:center; color:#94a3b8;">Loading pending posts...</p>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -150,6 +157,73 @@
     .back-link:hover {
         color: #fff;
     }
+
+    /* Moderation Styles */
+    .post-card {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .post-info h3 {
+        margin: 0 0 0.5rem 0;
+        color: #fff;
+        font-size: 1.1rem;
+    }
+
+    .badge {
+        font-size: 0.8rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin-left: 8px;
+        text-transform: uppercase;
+    }
+
+    .author {
+        margin: 0;
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+
+    .mod-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-approve {
+        background: #22c55e;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .btn-approve:hover {
+        background: #16a34a;
+    }
+
+    .btn-reject {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .btn-reject:hover {
+        background: #dc2626;
+    }
 </style>
 
 <script>
@@ -222,5 +296,101 @@
 
     handleForm('generate-form', '/generate_referrals', 'gen-result', 'Codes Generated!');
     handleForm('enable-form', '/enable_code', 'enable-result', 'Code Enabled!');
+
+    // --- Moderation Logic ---
+    async function fetchPendingPosts() {
+        const container = document.getElementById('pending-posts-container');
+        try {
+            const res = await fetch(`${API_URL}/admin/posts/pending`, { credentials: 'include' });
+            if (!res.ok) throw new Error("Failed to load");
+            const posts = await res.json();
+
+            if (!posts || posts.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#94a3b8;">No pending posts.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            posts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'post-card';
+
+                // Post Info
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'post-info';
+
+                const h3 = document.createElement('h3');
+                h3.textContent = post.title + ' ';
+                const badge = document.createElement('span');
+                badge.className = 'badge';
+                badge.textContent = post.type;
+                h3.appendChild(badge);
+                infoDiv.appendChild(h3);
+
+                const pAuthor = document.createElement('p');
+                pAuthor.className = 'author';
+                pAuthor.textContent = `By ${post.author} • ${new Date(post.createdAt).toLocaleDateString()}`;
+                infoDiv.appendChild(pAuthor);
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'actions';
+                if (post.cover || post.featuredImage) {
+                    const a = document.createElement('a');
+                    a.href = post.cover || post.featuredImage;
+                    a.target = '_blank';
+                    a.className = 'preview-link';
+                    a.textContent = 'View Cover';
+                    actionsDiv.appendChild(a);
+                }
+                infoDiv.appendChild(actionsDiv);
+                card.appendChild(infoDiv);
+
+                // Buttons
+                const btnDiv = document.createElement('div');
+                btnDiv.className = 'mod-buttons';
+
+                const approveBtn = document.createElement('button');
+                approveBtn.className = 'btn-approve';
+                approveBtn.textContent = 'Approve';
+                approveBtn.onclick = () => window.updateStatus(post.id, 'approved');
+                btnDiv.appendChild(approveBtn);
+
+                const rejectBtn = document.createElement('button');
+                rejectBtn.className = 'btn-reject';
+                rejectBtn.textContent = 'Reject';
+                rejectBtn.onclick = () => window.updateStatus(post.id, 'rejected');
+                btnDiv.appendChild(rejectBtn);
+
+                card.appendChild(btnDiv);
+                container.appendChild(card);
+            });
+
+        } catch (e) {
+            container.innerHTML = '<p style="text-align:center; color:#f87171;">Error loading posts.</p>';
+        }
+    }
+
+    window.updateStatus = async function (id, status) {
+        if (!confirm(`Mark this post as ${status}?`)) return;
+        try {
+            const res = await fetch(`${API_URL}/admin/posts/status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ id, status })
+            });
+            if (res.ok) {
+                fetchPendingPosts(); // Refresh list
+            } else {
+                alert("Failed to update status");
+            }
+        } catch (e) {
+            alert("Error: " + e.message);
+        }
+    };
+
+    // Initial Load
+    fetchPendingPosts();
+
 </script>
 {{ end }}

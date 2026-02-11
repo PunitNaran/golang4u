@@ -30,6 +30,7 @@ const auth = {
             const response = await fetch(`${API_BASE}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ username, password })
             });
 
@@ -55,6 +56,7 @@ const auth = {
             const response = await fetch(`${API_BASE}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ username, password, pin })
             });
 
@@ -75,6 +77,7 @@ const auth = {
             const response = await fetch(`${API_BASE}/login/magic-link`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ email })
             });
 
@@ -94,6 +97,7 @@ const auth = {
             const response = await fetch(`${API_BASE}/new_user`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', // Ensure session created if auto-login
                 body: JSON.stringify(data)
             });
 
@@ -110,7 +114,7 @@ const auth = {
 
     async logout() {
         try {
-            await fetch(`${API_BASE}/logout`, { method: 'POST' });
+            await fetch(`${API_BASE}/logout`, { method: 'POST', credentials: 'include' });
         } catch (e) {
             console.error("Logout failed on server:", e);
         }
@@ -122,7 +126,8 @@ const auth = {
     async fetchProfile() {
         try {
             const response = await fetch(`${API_BASE}/profile/me`, {
-                method: 'GET'
+                method: 'GET',
+                credentials: 'include'
             });
 
             if (response.ok) {
@@ -143,6 +148,7 @@ const auth = {
             const response = await fetch(`${API_BASE}/profile/update`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ bio, status })
             });
 

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noodp" />
+    <title>Golang4U</title><meta name="Description" content="All-In-One Golang Tool Kit"><meta property="og:url" content="http://localhost:1313/settings/">
+  <meta property="og:site_name" content="Golang4U">
+  <meta property="og:title" content="Account Settings">
+  <meta property="og:description" content="All-In-One Golang Tool Kit">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2023-10-27T12:00:00+09:00">
+    <meta property="article:modified_time" content="2023-10-27T12:00:00+09:00">
+    <meta property="og:image" content="http://localhost:1313/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/logo.png">
+  <meta name="twitter:title" content="Account Settings">
+  <meta name="twitter:description" content="All-In-One Golang Tool Kit">
+<meta name="application-name" content="Golang 4 U">
+<meta name="apple-mobile-web-app-title" content="Golang 4 U">
+
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/settings/" /><link rel="prev" href="http://localhost:1313/activate/" /><link rel="next" href="http://localhost:1313/addpost/" />
+<link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript>
+<link rel="stylesheet" href="/css/enhanced.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Account Settings",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/settings\/"
+        },"genre": "page","wordcount":  0 ,
+        "url": "http:\/\/localhost:1313\/settings\/","datePublished": "2023-10-27T12:00:00+09:00","dateModified": "2023-10-27T12:00:00+09:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Author"
+            },"description": ""
+    }
+    </script><script src="/lib/instantpage/instantpage.js" type="module" defer></script></head>
+
+<body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">
+        function setTheme(theme) { document.body.setAttribute('theme', theme); document.documentElement.style.setProperty('color-scheme', theme === 'light' ? 'light' : 'dark'); window.theme = theme; window.isDark = window.theme !== 'light' }
+        function saveTheme(theme) { window.localStorage && localStorage.setItem('theme', theme); }
+        function getMeta(metaName) { const metas = document.getElementsByTagName('meta'); for (let i = 0; i < metas.length; i++) if (metas[i].getAttribute('name') === metaName) return metas[i]; return ''; }
+        if (window.localStorage && localStorage.getItem('theme')) { let theme = localStorage.getItem('theme'); theme === 'light' || theme === 'dark' || theme === 'black' ? setTheme(theme) : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light')); } else { if ('auto' === 'light' || 'auto' === 'dark' || 'auto' === 'black') setTheme('auto'), saveTheme('auto'); else saveTheme('auto'), window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light'); }
+        let metaColors = { 'light': '#f8f8f8', 'dark': '#252627', 'black': '#000000' }
+        getMeta('theme-color').content = metaColors[document.body.getAttribute('theme')];
+        window.switchThemeEventSet = new Set()
+        window.GO4U_API_URL = "http://localhost:8080";
+    </script>
+    <div id="back-to-top"></div>
+    <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Golang4U"><span id="desktop-header-typeit" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item menu-item-news"
+                    href="/news/" > News </a><a class="menu-item menu-item-tags"
+                    href="/tags/" > Tags </a><a class="menu-item menu-item-learn"
+                    href="/learn/" > Learning </a><a class="menu-item menu-item-events"
+                    href="/events/" > Events </a><a class="menu-item menu-item-casts"
+                    href="/casts/" > Casts </a><a class="menu-item menu-item-jobs"
+                    href="/jobs/" > Jobs </a><a class="menu-item menu-item-marketplace"
+                    href="/marketplace/" > Marketplace </a><a class="menu-item menu-item-contactus"
+                    href="/contactus/" > Contact Us </a><a class="menu-item menu-item-playground"
+                    href="/playground/" > Playground </a><a class="menu-item menu-item-addpost"
+                    href="/addpost/" > Add a Post </a><a class="menu-item menu-item-login"
+                    href="/login/" > Log In </a><a class="menu-item menu-item-signup"
+                    href="/signup/" > Sign Up </a><a class="menu-item menu-item-admin"
+                    href="/admin/" > Admin </a><a class="menu-item menu-item-dashboard"
+                    href="/dashboard/" > Dashboard </a><a class="menu-item menu-item-logout"
+                    href="#ZgotmplZ" > Log Out </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                    <input type="text"
+                        placeholder="Search titles or contents..."
+                        id="search-input-desktop">
+                    <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop"
+                        title="Search">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop"
+                        title="Clear">
+                        <i class="fas fa-times-circle fa-fw"></i>
+                    </a>
+                    <span class="search-button search-loading" id="search-loading-desktop">
+                        <i class="fas fa-spinner fa-fw fa-spin"></i>
+                    </span>
+                </span><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Golang4U"><span id="mobile-header-typeit" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                <div class="search mobile" id="search-mobile">
+                    <input type="text"
+                        placeholder="Search titles or contents..."
+                        id="search-input-mobile">
+                    <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile"
+                        title="Search">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile"
+                        title="Clear">
+                        <i class="fas fa-times-circle fa-fw"></i>
+                    </a>
+                    <span class="search-button search-loading" id="search-loading-mobile">
+                        <i class="fas fa-spinner fa-fw fa-spin"></i>
+                    </span>
+                </div>
+                <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                    Cancel
+                </a>
+            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div><main class="main">
+            <div class="container">
+<div class="dashboard-container">
+    <div class="glass-panel">
+        <div class="header-row">
+            <h1 class="gradient-text">Account Settings</h1>
+            <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+        </div>
+
+        
+        <div class="settings-section">
+            <h2>Profile Information</h2>
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" rows="3" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <input type="text" id="status" name="status" placeholder="Checking out Golang4u!">
+                </div>
+                <button type="submit" class="submit-btn">Save Changes</button>
+                <p id="profile-message" class="message"></p>
+            </form>
+        </div>
+
+        
+        <div class="settings-section">
+            <h2>Security</h2>
+
+            <div id="2fa-section">
+                <div class="2fa-status">
+                    <p>Current Status: <span id="2fa-badge" class="badge">Loading...</span></p>
+                </div>
+
+                
+                <div id="enable-2fa-container" style="display:none;">
+                    <p>Protect your account with Two-Factor Authentication.</p>
+                    <button id="enable-2fa-btn" class="action-btn">Enable 2FA</button>
+
+                    <div id="qr-setup-area" style="display:none; margin-top: 1rem;">
+                        <p>1. Scan this QR code with your authenticator app:</p>
+                        <img id="qr-image"
+                            style="border-radius: 12px; border: 4px solid white; display: block; margin: 10px auto;">
+
+                        <p>2. Enter the PIN to confirm:</p>
+                        <form id="verify-2fa-form">
+                            <input type="text" id="verify-pin" placeholder="123456" required>
+                            <button type="submit" class="submit-btn" style="margin-top: 10px;">Verify &
+                                Activate</button>
+                        </form>
+                    </div>
+                </div>
+
+                
+                <div id="disable-2fa-container" style="display:none;">
+                    <p>Two-Factor Authentication is currently active.</p>
+                    <button id="disable-2fa-btn" class="logout-btn">Disable 2FA</button>
+                </div>
+                <p id="security-message" class="message"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #6366f1;
+        --secondary-color: #a855f7;
+        --bg-color: #0f172a;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text-color: #f8fafc;
+        --input-bg: rgba(0, 0, 0, 0.2);
+    }
+
+    .dashboard-container {
+        padding: 2rem;
+        min-height: calc(100vh - 80px);
+        margin-top: 100px;
+        box-sizing: border-box;
+    }
+
+    .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .back-link {
+        color: #94a3b8;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .back-link:hover {
+        color: white;
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .settings-section {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 1.5rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+    }
+
+    .settings-section h2 {
+        margin-top: 0;
+        color: #e2e8f0;
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #e2e8f0;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 12px 16px;
+        background: var(--input-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: var(--text-color);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    input:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+
+    .submit-btn,
+    .action-btn {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .logout-btn {
+        background: transparent;
+        border: 1px solid #f87171;
+        color: #f87171;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .badge.on {
+        color: #4ade80;
+        border: 1px solid #4ade80;
+    }
+
+    .badge.off {
+        color: #94a3b8;
+        border: 1px solid #94a3b8;
+    }
+
+    .message {
+        margin-top: 1rem;
+        font-weight: 600;
+    }
+
+    .success {
+        color: #4ade80;
+    }
+
+    .error {
+        color: #f87171;
+    }
+</style>
+
+<script>
+    const API_URL = "http://localhost:8080";
+
+    async function loadSettings() {
+        try {
+            const response = await fetch(`${API_URL}/profile/me`, { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+
+                
+                document.getElementById('bio').value = data.bio || '';
+                document.getElementById('status').value = data.status || '';
+
+                
+                const badge = document.getElementById('2fa-badge');
+                if (data['2fa_enabled']) {
+                    badge.innerText = "ENABLED";
+                    badge.className = "badge on";
+                    document.getElementById('disable-2fa-container').style.display = 'block';
+                    document.getElementById('enable-2fa-container').style.display = 'none';
+                } else {
+                    badge.innerText = "DISABLED";
+                    badge.className = "badge off";
+                    document.getElementById('disable-2fa-container').style.display = 'none';
+                    document.getElementById('enable-2fa-container').style.display = 'block';
+                }
+            } else {
+                window.location.href = '/login';
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('profile-message');
+        msg.innerText = '';
+
+        try {
+            const response = await fetch(`${API_URL}/profile/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', 
+                body: JSON.stringify({
+                    bio: document.getElementById('bio').value,
+                    status: document.getElementById('status').value
+                })
+            });
+
+            if (response.ok) {
+                msg.innerText = 'Profile updated!';
+                msg.className = 'message success';
+            } else {
+                throw new Error('Failed to update');
+            }
+        } catch (err) {
+            msg.innerText = err.message;
+            msg.className = 'message error';
+        }
+    });
+
+    
+    document.getElementById('enable-2fa-btn').addEventListener('click', async () => {
+        const msg = document.getElementById('security-message');
+        msg.innerText = '';
+        try {
+            const response = await fetch(`${API_URL}/2fa/setup`, { credentials: 'include' });
+            if (response.ok) {
+                const blob = await response.blob();
+                const imgUrl = URL.createObjectURL(blob);
+                document.getElementById('qr-image').src = imgUrl;
+                document.getElementById('qr-setup-area').style.display = 'block';
+                document.getElementById('enable-2fa-btn').style.display = 'none';
+            } else {
+                msg.innerText = "Error generating QR code";
+                msg.className = 'message error';
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    });
+
+    
+    document.getElementById('verify-2fa-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('security-message');
+        const pin = document.getElementById('verify-pin').value;
+
+        try {
+            const response = await fetch(`${API_URL}/2fa/activate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ pin: pin })
+            });
+
+            if (response.ok) {
+                msg.innerText = '2FA Activated Successfully!';
+                msg.className = 'message success';
+                setTimeout(loadSettings, 1500); 
+            } else {
+                msg.innerText = 'Invalid PIN. Try again.';
+                msg.className = 'message error';
+            }
+        } catch (e) {
+            msg.innerText = 'Error activating.';
+            msg.className = 'message error';
+        }
+    });
+
+    
+    document.getElementById('disable-2fa-btn').addEventListener('click', async () => {
+        if (!confirm("Are you sure you want to disable 2FA? This makes your account less secure.")) return;
+
+        try {
+            const response = await fetch(`${API_URL}/2fa/disable`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                loadSettings(); 
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    });
+
+    loadSettings();
+</script>
+</div>
+        </main><footer class="footer">
+    <div class="footer-container"><div class="footer-line">
+            Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer"
+            title="Hugo 0.139.3">Hugo</a>&nbsp;|&nbsp;Theme - <a href="https://github.com/HEIGE-PCloud/DoIt" target="_blank"
+            rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a>
+        </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a
+                    href="/" target="_blank"
+                    rel="noopener noreferrer">Punit Naran</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-line"></div>
+        <div class="footer-line">
+        </div>
+    </div></footer></div>
+
+    <div id="fixed-buttons"><a href="#back-to-top" id="back-to-top-button" class="fixed-button" title="Back to Top">
+            <i class="fas fa-arrow-up fa-fw"></i>
+        </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            <i class="fas fa-comment fa-fw"></i>
+        </a>
+    </div><div id="cookieconsent-container"></div><div class="assets"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"desktop-header-typeit":"Golang 4 U","mobile-header-typeit":"Golang 4 U"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":30,"threshold":0.3,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/lib/cookieconsent/consent-banner.js" defer></script><script type="text/javascript" src="/js/safe-banner.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script><script src="/js/crypto_utils.min.631e00e36f334392a507c80c5304241ca2e41f7c1f889b3e31f08510ccb3dbdc.js" integrity="sha256-Yx4A428zQ5KlB8gMUwQkHKLkH3wfiJs&#43;MfCFEMyz29w="></script><script src="/js/auth.js"></script>
+</div></body>
+
+</html>

@@ -234,7 +234,12 @@
         if (isNew) grid.innerHTML = '';
 
         if ((!posts || posts.length === 0) && isNew) {
-            grid.innerHTML = `<div style="text-align:center; color:#94a3b8; grid-column:1/-1;">No posts found.</div>`;
+            const emptyDiv = document.createElement('div');
+            emptyDiv.style.textAlign = 'center';
+            emptyDiv.style.color = '#94a3b8';
+            emptyDiv.style.gridColumn = '1/-1';
+            emptyDiv.textContent = 'No posts found.';
+            grid.appendChild(emptyDiv);
             return;
         }
 
@@ -242,37 +247,54 @@
             const card = document.createElement('div');
             card.className = 'post-card';
 
-            // Handle image logic
-            let imgUrl = post.cover || post.featuredImage;
-            let imgStyle = '';
+            // 1. Image Div
+            const imgDiv = document.createElement('div');
+            imgDiv.className = 'post-image';
 
+            let imgUrl = post.cover || post.featuredImage;
             if (imgUrl) {
-                // Prepend backend URL if it's a relative path
                 if (imgUrl.startsWith('/')) {
                     imgUrl = 'http://localhost:8080' + imgUrl;
                 }
-                // Fix windows paths if any (replace backslashes)
                 imgUrl = imgUrl.replace(/\\/g, '/');
-
-                imgStyle = `background-image: url('${imgUrl}'); background-size: cover; background-position: center;`;
+                // Basic URL validation/sanitization could happen here
+                // For now, assigning to style.backgroundImage is relatively safe if we trust the backend to not serve malicious URLs
+                // But to be safer, we can check protocol
+                if (imgUrl.startsWith('http:') || imgUrl.startsWith('https:')) {
+                    imgDiv.style.backgroundImage = `url('${imgUrl}')`;
+                    imgDiv.style.backgroundSize = 'cover';
+                    imgDiv.style.backgroundPosition = 'center';
+                }
             } else {
-                imgStyle = `background: linear-gradient(45deg, #1e293b, #334155);`;
+                imgDiv.style.background = 'linear-gradient(45deg, #1e293b, #334155)';
             }
+            card.appendChild(imgDiv);
 
-            const imgBtn = `<div class="post-image" style="${imgStyle}"></div>`;
+            // 2. Content Container
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'post-content';
 
-            const date = new Date(post.createdAt).toLocaleDateString();
+            // 3. Tag
+            const tagSpan = document.createElement('span');
+            tagSpan.className = 'post-tag';
+            tagSpan.textContent = post.type || 'General';
+            contentDiv.appendChild(tagSpan);
 
-            card.innerHTML = `
-                ${imgBtn}
-                <div class="post-content">
-                    <span class="post-tag">${post.type}</span>
-                    <h3 class="post-title">${post.title}</h3>
-                    <div class="post-meta">
-                        <span>${date}</span>
-                    </div>
-                </div>
-            `;
+            // 4. Title
+            const titleH3 = document.createElement('h3');
+            titleH3.className = 'post-title';
+            titleH3.textContent = post.title || 'Untitled';
+            contentDiv.appendChild(titleH3);
+
+            // 5. Meta
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'post-meta';
+            const dateSpan = document.createElement('span');
+            dateSpan.textContent = new Date(post.createdAt).toLocaleDateString();
+            metaDiv.appendChild(dateSpan);
+            contentDiv.appendChild(metaDiv);
+
+            card.appendChild(contentDiv);
             grid.appendChild(card);
         });
     }

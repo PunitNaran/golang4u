@@ -91,7 +91,7 @@ theme = "DoIt"
     mobileMode = "auto"
     #  Theme change mode
     # theme change mode ("switch", "select")
-    themeChangeMode = "select"
+    themeChangeMode = "switch"
     #  Header title config
     [params.header.title]
       # URL of the LOGO
@@ -674,7 +674,7 @@ theme = "DoIt"
 
 # Author config
 [params.author]
-  name = "xxxx"
+  name = "Punit Naran"
   email = ""
   link = ""
   avatar = ""
@@ -682,7 +682,7 @@ theme = "DoIt"
 
 [params.advanced]
   customCSS = ["css/enhanced.css", "css/dashboard.css"]
-  customJS = ["js/dashboard.js", "js/auth.js", "js/playground.js", "js/add-post.js"]
+  customJS = ["js/dashboard.js", "js/auth.js", "js/playground.js"]
 
 # Sitemap config
 [sitemap]
@@ -809,11 +809,11 @@ series = "series"
     title = ""
     weight = 8
   [[menu.main]]
-    identifier = "add-post"
+    identifier = "addpost"
     pre = ""
     post = ""
     name = "Add a Post"
-    url = "/add-post/"
+    url = "/addpost/"
     title = ""
     weight = 9
   [[menu.main]]

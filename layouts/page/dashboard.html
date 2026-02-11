@@ -3,8 +3,14 @@
     <div class="glass-panel">
         <h1 class="gradient-text">My Dashboard</h1>
         <div id="profile-section">
-            <div class="loader"></div>
-            <p>Loading profile...</p>
+            <div id="profile-loading">
+                <div class="loader"></div>
+                <p>Loading profile...</p>
+            </div>
+            <div id="profile-content" class="profile-info" style="display: none;">
+                <h2>Hello, <span id="user-name"></span> <span id="user-role" class="badge"></span></h2>
+                <p>User ID: <span id="user-id" style="font-family:monospace; color: #94a3b8;"></span></p>
+            </div>
         </div>
 
         <div id="actions-section" style="display:none;">
@@ -12,6 +18,10 @@
                 <a href="/addpost" class="action-card">
                     <h3>📝 Create Post</h3>
                     <p>Share your knowledge</p>
+                </a>
+                <a href="/settings" class="action-card">
+                    <h3>⚙️ Settings</h3>
+                    <p>Profile & Security</p>
                 </a>
                 <a href="/admin" id="admin-link" class="action-card admin-card" style="display:none;">
                     <h3>🛡️ Admin Panel</h3>
@@ -37,7 +47,9 @@
 
     .dashboard-container {
         padding: 2rem;
-        min-height: 80vh;
+        min-height: calc(100vh - 80px);
+        margin-top: 100px;
+        box-sizing: border-box;
     }
 
     .glass-panel {
@@ -53,6 +65,8 @@
 
     .gradient-text {
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-size: 2.5rem;
@@ -126,6 +140,9 @@
     .action-card h3 {
         margin: 0 0 0.5rem 0;
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+
+
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -185,15 +202,21 @@
             if (response.ok) {
                 const user = await response.json();
 
-                profileSection.innerHTML = `
-                    <div class="profile-info">
-                        <h2>Hello, ${user.AvatarName} <span class="badge ${user.Role}">${user.Role}</span></h2>
-                        <p>User ID: <span style="font-family:monospace; color: #94a3b8;">${user.Uuid ? '***' : 'N/A'}</span></p>
-                    </div>
-                `;
+                // Securely update text content to prevent XSS
+                document.getElementById('profile-loading').style.display = 'none';
+                document.getElementById('profile-content').style.display = 'block';
+
+                document.getElementById('user-name').textContent = user.avatar_name;
+
+                const roleSpan = document.getElementById('user-role');
+                roleSpan.textContent = user.role;
+                roleSpan.className = `badge ${user.role}`; // className is relatively safe here as user.role is enum-like
+
+                document.getElementById('user-id').textContent = user.uuid ? '***' : 'N/A';
+
                 actionsSection.style.display = 'block';
 
-                if (user.Role === 'admin') {
+                if (user.role === 'admin') {
                     adminLink.style.display = 'flex';
                 }
             } else {
@@ -201,7 +224,15 @@
                 window.location.href = '/login';
             }
         } catch (error) {
-            profileSection.innerHTML = `<p class="error">Failed to load profile. <a href="/login">Login</a></p>`;
+            profileSection.textContent = '';
+            const p = document.createElement('p');
+            p.className = 'error';
+            p.textContent = 'Failed to load profile. ';
+            const a = document.createElement('a');
+            a.href = '/login';
+            a.textContent = 'Login';
+            p.appendChild(a);
+            profileSection.appendChild(p);
         }
 
         document.getElementById('logout-btn').addEventListener('click', async () => {

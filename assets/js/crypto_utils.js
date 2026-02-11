@@ -31,7 +31,13 @@ var CryptoUtils = (function () {
         try {
             // 1. Fetch Backend Public Key
             const API_URL = window.GO4U_API_URL;
-            const response = await fetch(`${API_URL}/public-key`);
+            // Add cache busting to ensure we always get the current server key
+            const response = await fetch(`${API_URL}/public-key?t=${new Date().getTime()}`, {
+                cache: 'no-store',
+                headers: {
+                    'Cache-Control': 'no-cache'
+                }
+            });
             if (!response.ok) throw new Error("Failed to fetch public key");
             const json = await response.json();
             const pem = json.public_key;
@@ -81,6 +87,8 @@ var CryptoUtils = (function () {
             // 7. Pack Payload: [EphemeralPubKey (65 bytes)] + [IV (12 bytes)] + [Ciphertext]
             const ephemeralPubRaw = await window.crypto.subtle.exportKey("raw", ephemeralKeyPair.publicKey);
 
+            console.log(`[CryptoDebug] Keysize: ${ephemeralPubRaw.byteLength}, IV: ${iv.byteLength}, Cipher: ${ciphertext.byteLength}`);
+
             // Backend expects: Base64(PubKey + IV + Ciphertext)
             const payloadLength = ephemeralPubRaw.byteLength + iv.byteLength + ciphertext.byteLength;
             const payload = new Uint8Array(payloadLength);
@@ -89,7 +97,9 @@ var CryptoUtils = (function () {
             payload.set(iv, ephemeralPubRaw.byteLength);
             payload.set(new Uint8Array(ciphertext), ephemeralPubRaw.byteLength + iv.byteLength);
 
-            return arrayBufferToBase64(payload.buffer);
+            const b64 = arrayBufferToBase64(payload.buffer);
+            console.log(`[CryptoDebug] Payload Base64 Length: ${b64.length}`);
+            return b64;
         } catch (e) {
             console.error("Encryption Failed:", e);
             throw e;

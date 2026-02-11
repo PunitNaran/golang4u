@@ -1,0 +1,18 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Architecture - Tag - Golang4U</title>
+        <link>http://localhost:1313/tags/architecture/</link>
+        <description>Architecture - Tag - Golang4U</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 11 Feb 2026 10:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/tags/architecture/" rel="self" type="application/rss+xml" /><item>
+    <title>Building a Production-Grade Go Backend: The Golang4U Architecture</title>
+    <link>http://localhost:1313/learn/architecture-deep-dive/</link>
+    <pubDate>Wed, 11 Feb 2026 10:00:00 &#43;0800</pubDate><author>
+        <name>Punit Naran</name>
+    </author><guid>http://localhost:1313/learn/architecture-deep-dive/</guid>
+    <description><![CDATA[<h2 id="introduction" class="headerLink">
+    <a href="#introduction" class="header-mark"></a>Introduction</h2><p>When building <strong>Golang4U</strong>, the goal was clear: create a robust, scalable, and secure backend that serves as a real-world example of professional Go development. In this post, I&rsquo;ll walk you through the architectural decisions, the tech stack, and how we structured our application to handle everything from authentication to content management.</p>
+<h2 id="the-tech-stack" class="headerLink">
+    <a href="#the-tech-stack" class="header-mark"></a>The Tech Stack</h2><h3 id="1-the-core-echo-framework" class="headerLink">
+    <a href="#1-the-core-echo-framework" class="header-mark"></a>1. The Core: Echo Framework</h3><p>We chose <a href="https://echo.labstack.com/" target="_blank" rel="noopener noreferrer">Echo</a> for its simplicity, performance, and robust middleware support. Unlike heavier frameworks, Echo stays out of your way while providing essential tools like:</p>]]></description>
+</item></channel>
+</rss>

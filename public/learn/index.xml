@@ -6,7 +6,14 @@
     <description>Recent content in Learning Resources on Golang4U</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate></lastBuildDate>
+    <lastBuildDate>Tue, 10 Feb 2026 10:00:00 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/learn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building a Production-Grade Go Backend: The Golang4U Architecture Deep Dive</title>
+      <link>http://localhost:1313/learn/architecture-deep-dive/</link>
+      <pubDate>Tue, 10 Feb 2026 10:00:00 +0800</pubDate>
+      <guid>http://localhost:1313/learn/architecture-deep-dive/</guid>
+      <description>&lt;h1 id=&#34;introduction&#34; class=&#34;headerLink&#34;&gt;&#xD;&#xA;    &lt;a href=&#34;#introduction&#34; class=&#34;header-mark&#34;&gt;&lt;/a&gt;Introduction&lt;/h1&gt;&lt;p&gt;In the world of Go application development, &amp;ldquo;structure&amp;rdquo; is a topic of endless debate. Should you use a flat structure? Group by feature? Follow &amp;ldquo;Standard Go Project Layout&amp;rdquo;?&lt;/p&gt;&#xA;&lt;p&gt;With &lt;strong&gt;Golang4U&lt;/strong&gt;, we aimed to build a system that is robust enough for enterprise use cases but simple enough to be maintained by a small team. We adopted a &lt;strong&gt;Service-Oriented&lt;/strong&gt; layered architecture (often called Clean Architecture or Hexagonal Architecture lite) to ensure separation of concerns, testability, and scalability.&lt;/p&gt;</description>
+    </item>
   </channel>
 </rss>

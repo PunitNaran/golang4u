@@ -26,20 +26,33 @@ if (editorContainer) {
             req.config({ paths: { 'vs': vsPath } });
 
             req(['vs/editor/editor.main'], function () {
-                // Dark Mode detection
-                const isDark = document.documentElement.classList.contains('dark') ||
-                    (localStorage.getItem('theme') === 'dark');
+                // Dark Mode detection (Enhanced for body attribute)
+                const getTheme = () => {
+                    const t = document.body.getAttribute('theme');
+                    return (t === 'dark' || t === 'black') ? 'vs-dark' : 'vs';
+                };
 
                 try {
                     window.editor = monaco.editor.create(editorContainer, {
                         value: `package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello, Golang4u!")\n}\n`,
                         language: 'go',
-                        theme: isDark ? 'vs-dark' : 'vs',
+                        theme: getTheme(),
                         automaticLayout: true,
                         minimap: { enabled: false },
                         fontSize: 14,
                         scrollBeyondLastLine: false,
                     });
+
+                    // Listen for theme attribute changes on body
+                    const observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === "attributes" && mutation.attributeName === "theme") {
+                                monaco.editor.setTheme(getTheme());
+                            }
+                        });
+                    });
+                    observer.observe(document.body, { attributes: true });
+
                 } catch (createErr) {
                     logToUI(`Failed to create editor: ${createErr.message}`, true);
                 }

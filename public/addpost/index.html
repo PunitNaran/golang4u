@@ -24,7 +24,7 @@
 
 <meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/addpost/" /><link rel="prev" href="http://localhost:1313/admin/" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/addpost/" /><link rel="prev" href="http://localhost:1313/settings/" />
 <link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
         <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
         <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript>
@@ -73,8 +73,8 @@
                     href="/jobs/" > Jobs </a><a class="menu-item menu-item-marketplace"
                     href="/marketplace/" > Marketplace </a><a class="menu-item menu-item-contactus"
                     href="/contactus/" > Contact Us </a><a class="menu-item menu-item-playground"
-                    href="/playground/" > Playground </a><a class="menu-item menu-item-add-post"
-                    href="/add-post/" > Add a Post </a><a class="menu-item menu-item-login"
+                    href="/playground/" > Playground </a><a class="menu-item menu-item-addpost active"
+                    href="/addpost/" > Add a Post </a><a class="menu-item menu-item-login"
                     href="/login/" > Log In </a><a class="menu-item menu-item-signup"
                     href="/signup/" > Sign Up </a><a class="menu-item menu-item-admin"
                     href="/admin/" > Admin </a><a class="menu-item menu-item-dashboard"
@@ -94,14 +94,8 @@
                     <span class="search-button search-loading" id="search-loading-desktop">
                         <i class="fas fa-spinner fa-fw fa-spin"></i>
                     </span>
-                </span><a href="javascript:void(0);" class="menu-item theme-select" title="">
+                </span><a href="javascript:void(0);" class="menu-item theme-switch" title="">
                     <i class="fas fa-adjust fa-fw"></i>
-                    <select class="color-theme-select" id="theme-select-desktop" title="">
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                        <option value="black">Black</option>
-                        <option value="auto">Auto</option>
-                    </select>
                 </a></div>
         </div>
     </div>
@@ -135,14 +129,8 @@
                 <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                     Cancel
                 </a>
-            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-add-post" href="/add-post/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-select" title="">
+            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
                 <i class="fas fa-adjust fa-fw"></i>
-                <select class="color-theme-select" id="theme-select-mobile" title="">
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                    <option value="black">Black</option>
-                    <option value="auto">Auto</option>
-                </select>
             </a></div>
     </div>
 </header>
@@ -153,6 +141,7 @@
     <div id="search-dropdown-mobile"></div>
 </div><main class="main">
             <div class="container">
+<script src="https://unpkg.com/stackedit-js@1.0.7/docs/lib/stackedit.min.js"></script>
 <div class="post-creator-container">
     <div class="glass-panel">
         <h1 class="gradient-text">Create Something Amazing</h1>
@@ -178,7 +167,7 @@
             </div>
 
             <button type="submit" id="submit-btn" class="submit-btn">
-                <span class="btn-text">Publish Post</span>
+                <span class="btn-text">Submit Post</span>
                 <div class="loader" style="display:none;"></div>
             </button>
             <p id="form-message" class="message"></p>
@@ -384,20 +373,130 @@
         background: rgba(255, 255, 255, 0.4);
     }
 
-    .tag-input {
-        background: transparent;
+
+     
+    .file-drop-zone {
+        border: 2px dashed var(--glass-border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        position: relative;
+    }
+
+    .file-drop-zone:hover,
+    .file-drop-zone.dragover {
+        border-color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.1);
+    }
+
+    .file-drop-zone input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-drop-zone .icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .file-preview {
+        margin-top: 1rem;
+        max-height: 200px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: none;
+    }
+
+    .file-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+     
+    .editor-wrapper {
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        background: var(--input-bg);
+        overflow: hidden;
+    }
+
+    .editor-toolbar {
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid var(--glass-border);
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .editor-btn {
+        background: var(--primary-color);
+        color: white;
         border: none;
-        outline: none;
-        color: var(--text-color);
-        flex-grow: 1;
-        min-width: 100px;
-        padding: 4px;
-        font-size: 1rem;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .editor-btn:hover {
+        opacity: 0.9;
+    }
+
+    .editor-preview {
+        padding: 1rem;
+        min-height: 150px;
+        max-height: 400px;
+        overflow-y: auto;
+        color: #d1d5db;
+        font-family: inherit;
+        white-space: pre-wrap;
+         
+        border-top: 1px solid var(--glass-border);
+    }
+
+    .editor-preview:empty::before {
+        content: "Click 'Open Editor' to start writing...";
+        color: #64748b;
+        font-style: italic;
+    }
+
+     
+    [theme="dark"] iframe[src*="stackedit"],
+    [theme="black"] iframe[src*="stackedit"] {
+        filter: invert(1) hue-rotate(180deg);
     }
 </style>
 
 <script>
     const API_URL = "http://localhost:8080";
+
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        
+        
+        
+        
+        fetch(`${API_URL}/profile/me`, { credentials: 'include' })
+            .then(res => {
+                if (!res.ok) window.location.href = '/login?redirect=/addpost';
+            })
+            .catch(() => window.location.href = '/login?redirect=/addpost');
+    });
 
     const typeConfigs = {
         news: [
@@ -450,11 +549,120 @@
             const label = document.createElement('label');
             label.htmlFor = field.id;
             label.innerText = field.label;
+            group.appendChild(label);
 
             let input;
+
             if (field.type === 'textarea') {
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'editor-wrapper';
+
+                const toolbar = document.createElement('div');
+                toolbar.className = 'editor-toolbar';
+
+                const openBtn = document.createElement('button');
+                openBtn.type = 'button';
+                openBtn.className = 'editor-btn';
+                openBtn.innerHTML = '✏️ Open Full Editor';
+                toolbar.appendChild(openBtn);
+
+                const preview = document.createElement('div');
+                preview.className = 'editor-preview';
+                preview.id = field.id + '-preview';
+
+                
                 input = document.createElement('textarea');
-                input.rows = 6;
+                input.id = field.id;
+                input.name = field.id;
+                input.style.display = 'none';
+
+                wrapper.appendChild(toolbar);
+                wrapper.appendChild(preview);
+                wrapper.appendChild(input);
+                group.appendChild(wrapper);
+
+                
+                const stackedit = new Stackedit();
+
+                openBtn.addEventListener('click', () => {
+                    stackedit.openFile({
+                        name: 'Post Content',
+                        content: {
+                            text: input.value || ''
+                        }
+                    });
+                });
+
+                stackedit.on('fileChange', (file) => {
+                    input.value = file.content.text;
+                    preview.innerText = file.content.text;
+                    saveDraft(type, field.id, input.value);
+                });
+
+                
+                const draft = getDraft(type, field.id);
+                if (draft) {
+                    input.value = draft;
+                    preview.innerText = draft;
+                }
+
+            } else if (field.type === 'file') {
+                
+                const dropZone = document.createElement('div');
+                dropZone.className = 'file-drop-zone';
+
+                const icon = document.createElement('div');
+                icon.className = 'icon';
+                icon.innerHTML = '📁';
+
+                const text = document.createElement('p');
+                text.innerText = 'Drag & Drop or Click to Upload';
+
+                input = document.createElement('input');
+                input.type = 'file';
+                input.accept = field.accept;
+                input.id = field.id;
+                input.name = field.id;
+
+                const filePreview = document.createElement('div');
+                filePreview.className = 'file-preview';
+
+                dropZone.appendChild(input);
+                dropZone.appendChild(icon);
+                dropZone.appendChild(text);
+                dropZone.appendChild(filePreview);
+                group.appendChild(dropZone);
+
+                
+                input.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        text.innerText = e.target.files[0].name;
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            filePreview.style.display = 'block';
+                            filePreview.innerHTML = `<img src="${e.target.result}" />`;
+                        }
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+
+                
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+
+                function highlight(e) {
+                    dropZone.classList.add('dragover');
+                }
+                function unhighlight(e) {
+                    dropZone.classList.remove('dragover');
+                }
+
+
             } else if (field.type === 'select') {
                 input = document.createElement('select');
                 field.options.forEach(opt => {
@@ -463,18 +671,27 @@
                     option.innerText = opt;
                     input.appendChild(option);
                 });
+                
+                const draft = getDraft(type, field.id);
+                if (draft) input.value = draft;
+                input.addEventListener('change', (e) => saveDraft(type, field.id, e.target.value));
+
+                input.id = field.id;
+                input.name = field.id;
+                group.appendChild(input);
+
             } else if (field.type === 'tags') {
                 
-                input = document.createElement('div');
-                input.className = 'tag-container';
-                input.id = field.id + '-container';
+                const container = document.createElement('div');
+                container.className = 'tag-container';
+                container.id = field.id + '-container';
 
                 
-                const hiddenParams = document.createElement('input');
-                hiddenParams.type = 'hidden';
-                hiddenParams.id = field.id;
-                hiddenParams.name = field.id;
-                group.appendChild(hiddenParams);
+                input = document.createElement('input');
+                input.type = 'hidden';
+                input.id = field.id;
+                input.name = field.id;
+                group.appendChild(input);
 
                 
                 const tagInput = document.createElement('input');
@@ -482,13 +699,23 @@
                 tagInput.className = 'tag-input';
                 tagInput.placeholder = 'Type and press Enter...';
 
-                input.appendChild(tagInput);
+                container.appendChild(tagInput);
+                group.appendChild(container); 
 
                 
-                const tags = [];
+                let tags = [];
+                
+                const draft = getDraft(type, field.id);
+                if (draft) {
+                    tags = draft.split(',').filter(t => t);
+                    input.value = draft;
+                    renderTags();
+                }
 
                 function updateHidden() {
-                    hiddenParams.value = tags.join(',');
+                    const val = tags.join(',');
+                    input.value = val;
+                    saveDraft(type, field.id, val);
                 }
 
                 function addTag(text) {
@@ -509,26 +736,27 @@
 
                 function renderTags() {
                     
-                    const chips = input.querySelectorAll('.tag-chip');
+                    const chips = container.querySelectorAll('.tag-chip');
                     chips.forEach(c => c.remove());
 
                     
                     tags.forEach((tag, idx) => {
                         const chip = document.createElement('div');
                         chip.className = 'tag-chip';
-                        chip.innerHTML = `${tag} <span onclick="this.parentElement.remove();">×</span>`; 
 
-                        
                         const closeBtn = document.createElement('span');
                         closeBtn.innerHTML = '×';
                         closeBtn.onclick = () => removeTag(idx);
 
-                        chip.innerHTML = tag;
+                        chip.innerText = tag + " ";
                         chip.appendChild(closeBtn);
 
-                        input.insertBefore(chip, tagInput);
+                        container.insertBefore(chip, tagInput);
                     });
                 }
+
+                
+                if (tags.length > 0) renderTags();
 
                 tagInput.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
@@ -543,19 +771,40 @@
                 input = document.createElement('input');
                 input.type = field.type;
                 if (field.accept) input.accept = field.accept;
-            }
 
-            if (field.type !== 'tags') {
                 input.id = field.id;
                 input.name = field.id;
+
+                
+                const draft = getDraft(type, field.id);
+                if (draft) input.value = draft;
+
+                input.addEventListener('input', (e) => saveDraft(type, field.id, e.target.value));
+
+                group.appendChild(input);
             }
 
-            if (field.required && field.type !== 'tags') input.required = true;
 
-            group.appendChild(label);
-            group.appendChild(input);
+            if (field.required && field.type !== 'tags' && field.type !== 'file') {
+                if (input) input.required = true;
+            }
+
             dynamicContainer.appendChild(group);
         });
+    }
+
+    
+    function saveDraft(type, fieldId, value) {
+        localStorage.setItem(`draft_${type}_${fieldId}`, value);
+    }
+
+    function getDraft(type, fieldId) {
+        return localStorage.getItem(`draft_${type}_${fieldId}`);
+    }
+
+    function clearDrafts(type) {
+        const fields = typeConfigs[type] || [];
+        fields.forEach(f => localStorage.removeItem(`draft_${type}_${f.id}`));
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -591,6 +840,7 @@
                     msg.innerText = 'Success! Post created.';
                     msg.classList.add('success');
                     e.target.reset();
+                    clearDrafts(type);
                     renderFields(type);
                 } else {
                     const errText = await response.text();
@@ -614,7 +864,7 @@
             rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a>
         </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a
                     href="/" target="_blank"
-                    rel="noopener noreferrer">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+                    rel="noopener noreferrer">Punit Naran</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         <div class="footer-line"></div>
         <div class="footer-line">
         </div>
@@ -626,7 +876,7 @@
             <i class="fas fa-comment fa-fw"></i>
         </a>
     </div><div id="cookieconsent-container"></div><div class="assets"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
-        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"desktop-header-typeit":"Golang 4 U","mobile-header-typeit":"Golang 4 U"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":30,"threshold":0.3,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/lib/cookieconsent/consent-banner.js" defer></script><script type="text/javascript" src="/js/safe-banner.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script><script src="/js/crypto_utils.min.js"></script><script src="/js/auth.js"></script>
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"desktop-header-typeit":"Golang 4 U","mobile-header-typeit":"Golang 4 U"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":30,"threshold":0.3,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/lib/cookieconsent/consent-banner.js" defer></script><script type="text/javascript" src="/js/safe-banner.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script><script src="/js/crypto_utils.min.631e00e36f334392a507c80c5304241ca2e41f7c1f889b3e31f08510ccb3dbdc.js" integrity="sha256-Yx4A428zQ5KlB8gMUwQkHKLkH3wfiJs&#43;MfCFEMyz29w="></script><script src="/js/auth.js"></script>
 </div></body>
 
 </html>

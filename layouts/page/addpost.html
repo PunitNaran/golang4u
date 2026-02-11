@@ -1,4 +1,5 @@
 {{ define "content" }}
+<script src="https://unpkg.com/stackedit-js@1.0.7/docs/lib/stackedit.min.js"></script>
 <div class="post-creator-container">
     <div class="glass-panel">
         <h1 class="gradient-text">Create Something Amazing</h1>
@@ -24,7 +25,7 @@
             </div>
 
             <button type="submit" id="submit-btn" class="submit-btn">
-                <span class="btn-text">Publish Post</span>
+                <span class="btn-text">Submit Post</span>
                 <div class="loader" style="display:none;"></div>
             </button>
             <p id="form-message" class="message"></p>
@@ -230,20 +231,130 @@
         background: rgba(255, 255, 255, 0.4);
     }
 
-    .tag-input {
-        background: transparent;
+
+    /* File Upload - Drag & Drop */
+    .file-drop-zone {
+        border: 2px dashed var(--glass-border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        position: relative;
+    }
+
+    .file-drop-zone:hover,
+    .file-drop-zone.dragover {
+        border-color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.1);
+    }
+
+    .file-drop-zone input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-drop-zone .icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .file-preview {
+        margin-top: 1rem;
+        max-height: 200px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: none;
+    }
+
+    .file-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* StackEdit Editor Area */
+    .editor-wrapper {
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        background: var(--input-bg);
+        overflow: hidden;
+    }
+
+    .editor-toolbar {
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid var(--glass-border);
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .editor-btn {
+        background: var(--primary-color);
+        color: white;
         border: none;
-        outline: none;
-        color: var(--text-color);
-        flex-grow: 1;
-        min-width: 100px;
-        padding: 4px;
-        font-size: 1rem;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .editor-btn:hover {
+        opacity: 0.9;
+    }
+
+    .editor-preview {
+        padding: 1rem;
+        min-height: 150px;
+        max-height: 400px;
+        overflow-y: auto;
+        color: #d1d5db;
+        font-family: inherit;
+        white-space: pre-wrap;
+        /* Preserve formatting */
+        border-top: 1px solid var(--glass-border);
+    }
+
+    .editor-preview:empty::before {
+        content: "Click 'Open Editor' to start writing...";
+        color: #64748b;
+        font-style: italic;
+    }
+
+    /* StackEdit Dark Mode Hack */
+    [theme="dark"] iframe[src*="stackedit"],
+    [theme="black"] iframe[src*="stackedit"] {
+        filter: invert(1) hue-rotate(180deg);
     }
 </style>
 
 <script>
     const API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
+
+    // Auth Check
+    document.addEventListener('DOMContentLoaded', () => {
+        // Simple check: if we can't get profile, kick 'em out.
+        // Or check for cookie existence if possible (client-side HttpOnly check is hard).
+        // Better: Make a lightweight call or rely on global auth state if available.
+        // For now, let's assume if they don't have the global 'user' object or similar?
+        // Actually, let's just do a quick fetch to /profile/me. If 401, bye.
+        fetch(`${API_URL}/profile/me`, { credentials: 'include' })
+            .then(res => {
+                if (!res.ok) window.location.href = '/login?redirect=/addpost';
+            })
+            .catch(() => window.location.href = '/login?redirect=/addpost');
+    });
 
     const typeConfigs = {
         news: [
@@ -296,11 +407,120 @@
             const label = document.createElement('label');
             label.htmlFor = field.id;
             label.innerText = field.label;
+            group.appendChild(label);
 
             let input;
+
             if (field.type === 'textarea') {
+                // StackEdit Integration
+                const wrapper = document.createElement('div');
+                wrapper.className = 'editor-wrapper';
+
+                const toolbar = document.createElement('div');
+                toolbar.className = 'editor-toolbar';
+
+                const openBtn = document.createElement('button');
+                openBtn.type = 'button';
+                openBtn.className = 'editor-btn';
+                openBtn.innerHTML = '✏️ Open Full Editor';
+                toolbar.appendChild(openBtn);
+
+                const preview = document.createElement('div');
+                preview.className = 'editor-preview';
+                preview.id = field.id + '-preview';
+
+                // Hidden textarea for form submission
                 input = document.createElement('textarea');
-                input.rows = 6;
+                input.id = field.id;
+                input.name = field.id;
+                input.style.display = 'none';
+
+                wrapper.appendChild(toolbar);
+                wrapper.appendChild(preview);
+                wrapper.appendChild(input);
+                group.appendChild(wrapper);
+
+                // StackEdit Logic
+                const stackedit = new Stackedit();
+
+                openBtn.addEventListener('click', () => {
+                    stackedit.openFile({
+                        name: 'Post Content',
+                        content: {
+                            text: input.value || ''
+                        }
+                    });
+                });
+
+                stackedit.on('fileChange', (file) => {
+                    input.value = file.content.text;
+                    preview.innerText = file.content.text;
+                    saveDraft(type, field.id, input.value);
+                });
+
+                // Restore Draft
+                const draft = getDraft(type, field.id);
+                if (draft) {
+                    input.value = draft;
+                    preview.innerText = draft;
+                }
+
+            } else if (field.type === 'file') {
+                // Custom Drag & Drop Zone
+                const dropZone = document.createElement('div');
+                dropZone.className = 'file-drop-zone';
+
+                const icon = document.createElement('div');
+                icon.className = 'icon';
+                icon.innerHTML = '📁';
+
+                const text = document.createElement('p');
+                text.innerText = 'Drag & Drop or Click to Upload';
+
+                input = document.createElement('input');
+                input.type = 'file';
+                input.accept = field.accept;
+                input.id = field.id;
+                input.name = field.id;
+
+                const filePreview = document.createElement('div');
+                filePreview.className = 'file-preview';
+
+                dropZone.appendChild(input);
+                dropZone.appendChild(icon);
+                dropZone.appendChild(text);
+                dropZone.appendChild(filePreview);
+                group.appendChild(dropZone);
+
+                // Events
+                input.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        text.innerText = e.target.files[0].name;
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            filePreview.style.display = 'block';
+                            filePreview.innerHTML = `<img src="${e.target.result}" />`;
+                        }
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+
+                // Drag effects
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+
+                function highlight(e) {
+                    dropZone.classList.add('dragover');
+                }
+                function unhighlight(e) {
+                    dropZone.classList.remove('dragover');
+                }
+
+
             } else if (field.type === 'select') {
                 input = document.createElement('select');
                 field.options.forEach(opt => {
@@ -309,18 +529,27 @@
                     option.innerText = opt;
                     input.appendChild(option);
                 });
+                // Restore Draft
+                const draft = getDraft(type, field.id);
+                if (draft) input.value = draft;
+                input.addEventListener('change', (e) => saveDraft(type, field.id, e.target.value));
+
+                input.id = field.id;
+                input.name = field.id;
+                group.appendChild(input);
+
             } else if (field.type === 'tags') {
                 // Create custom tag input structure
-                input = document.createElement('div');
-                input.className = 'tag-container';
-                input.id = field.id + '-container';
+                const container = document.createElement('div');
+                container.className = 'tag-container';
+                container.id = field.id + '-container';
 
                 // Hidden input to store value
-                const hiddenParams = document.createElement('input');
-                hiddenParams.type = 'hidden';
-                hiddenParams.id = field.id;
-                hiddenParams.name = field.id;
-                group.appendChild(hiddenParams);
+                input = document.createElement('input');
+                input.type = 'hidden';
+                input.id = field.id;
+                input.name = field.id;
+                group.appendChild(input);
 
                 // Visible text input
                 const tagInput = document.createElement('input');
@@ -328,13 +557,23 @@
                 tagInput.className = 'tag-input';
                 tagInput.placeholder = 'Type and press Enter...';
 
-                input.appendChild(tagInput);
+                container.appendChild(tagInput);
+                group.appendChild(container); // Append container to group
 
                 // Tag Logic
-                const tags = [];
+                let tags = [];
+                // Restore Draft
+                const draft = getDraft(type, field.id);
+                if (draft) {
+                    tags = draft.split(',').filter(t => t);
+                    input.value = draft;
+                    renderTags();
+                }
 
                 function updateHidden() {
-                    hiddenParams.value = tags.join(',');
+                    const val = tags.join(',');
+                    input.value = val;
+                    saveDraft(type, field.id, val);
                 }
 
                 function addTag(text) {
@@ -355,26 +594,27 @@
 
                 function renderTags() {
                     // Remove existing chips (keep input)
-                    const chips = input.querySelectorAll('.tag-chip');
+                    const chips = container.querySelectorAll('.tag-chip');
                     chips.forEach(c => c.remove());
 
                     // Add chips before input
                     tags.forEach((tag, idx) => {
                         const chip = document.createElement('div');
                         chip.className = 'tag-chip';
-                        chip.innerHTML = `${tag} <span onclick="this.parentElement.remove();">×</span>`; // Simple remove handler won't work due to scope, need custom
 
-                        // Better remove handler
                         const closeBtn = document.createElement('span');
                         closeBtn.innerHTML = '×';
                         closeBtn.onclick = () => removeTag(idx);
 
-                        chip.innerHTML = tag;
+                        chip.innerText = tag + " ";
                         chip.appendChild(closeBtn);
 
-                        input.insertBefore(chip, tagInput);
+                        container.insertBefore(chip, tagInput);
                     });
                 }
+
+                // Initial render if draft loaded
+                if (tags.length > 0) renderTags();
 
                 tagInput.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
@@ -389,19 +629,40 @@
                 input = document.createElement('input');
                 input.type = field.type;
                 if (field.accept) input.accept = field.accept;
-            }
 
-            if (field.type !== 'tags') {
                 input.id = field.id;
                 input.name = field.id;
+
+                // Restore Draft
+                const draft = getDraft(type, field.id);
+                if (draft) input.value = draft;
+
+                input.addEventListener('input', (e) => saveDraft(type, field.id, e.target.value));
+
+                group.appendChild(input);
             }
 
-            if (field.required && field.type !== 'tags') input.required = true;
 
-            group.appendChild(label);
-            group.appendChild(input);
+            if (field.required && field.type !== 'tags' && field.type !== 'file') {
+                if (input) input.required = true;
+            }
+
             dynamicContainer.appendChild(group);
         });
+    }
+
+    // Autosave Helpers
+    function saveDraft(type, fieldId, value) {
+        localStorage.setItem(`draft_${type}_${fieldId}`, value);
+    }
+
+    function getDraft(type, fieldId) {
+        return localStorage.getItem(`draft_${type}_${fieldId}`);
+    }
+
+    function clearDrafts(type) {
+        const fields = typeConfigs[type] || [];
+        fields.forEach(f => localStorage.removeItem(`draft_${type}_${f.id}`));
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -437,6 +698,7 @@
                     msg.innerText = 'Success! Post created.';
                     msg.classList.add('success');
                     e.target.reset();
+                    clearDrafts(type);
                     renderFields(type);
                 } else {
                     const errText = await response.text();

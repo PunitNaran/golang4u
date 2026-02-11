@@ -221,3 +221,28 @@ button.active {
     background-color: #6366f1;
     color: white;
 }
+
+/* Fix Theme Toggle Visibility & Alignment */
+.menu-item.theme-switch {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem !important;
+    opacity: 1 !important;
+    color: inherit;
+    width: 2rem; 
+    height: 2rem;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.menu-item.theme-switch i {
+    font-size: 1.25rem;
+    pointer-events: none; /* Let click pass to parent a tag */
+    transform: rotate(0deg) !important; /* Reset rotation if it was weird */
+}
+
+/* Ensure Search bar doesn't overlap */
+.menu-item.search {
+    margin-left: 0.5rem !important;
+}

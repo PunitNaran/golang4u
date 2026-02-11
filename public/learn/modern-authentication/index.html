@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noodp" />
+    <title>The Evolution of Authentication: JWT, PASETO, and PASERK - Golang4U</title><meta name="Description" content="A comprehensive masterclass on the history and future of token-based authentication. We analyze the cryptographic failures of JWT, the security-by-design of PASETO, and the emerging standard for key management: PASERK."><meta property="og:url" content="http://localhost:1313/learn/modern-authentication/">
+  <meta property="og:site_name" content="Golang4U">
+  <meta property="og:title" content="The Evolution of Authentication: JWT, PASETO, and PASERK">
+  <meta property="og:description" content="A comprehensive masterclass on the history and future of token-based authentication. We analyze the cryptographic failures of JWT, the security-by-design of PASETO, and the emerging standard for key management: PASERK.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="learn">
+    <meta property="article:published_time" content="2026-02-10T14:00:00+08:00">
+    <meta property="article:modified_time" content="2026-02-10T14:00:00+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Authentication">
+    <meta property="article:tag" content="PASETO">
+    <meta property="article:tag" content="PASERK">
+    <meta property="article:tag" content="Security">
+    <meta property="article:tag" content="Cryptography">
+    <meta property="og:image" content="http://localhost:1313/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/logo.png">
+  <meta name="twitter:title" content="The Evolution of Authentication: JWT, PASETO, and PASERK">
+  <meta name="twitter:description" content="A comprehensive masterclass on the history and future of token-based authentication. We analyze the cryptographic failures of JWT, the security-by-design of PASETO, and the emerging standard for key management: PASERK.">
+<meta name="application-name" content="Golang 4 U">
+<meta name="apple-mobile-web-app-title" content="Golang 4 U">
+
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/learn/modern-authentication/" /><link rel="prev" href="http://localhost:1313/learn/advanced-security/" /><link rel="next" href="http://localhost:1313/learn/cryptography-in-depth/" />
+<link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript>
+<link rel="stylesheet" href="/css/enhanced.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "The Evolution of Authentication: JWT, PASETO, and PASERK",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/learn\/modern-authentication\/"
+        },"genre": "learn","keywords": "Go, Authentication, PASETO, PASERK, Security, Cryptography, JWT, Ed25519","wordcount":  921 ,
+        "url": "http:\/\/localhost:1313\/learn\/modern-authentication\/","datePublished": "2026-02-10T14:00:00+08:00","dateModified": "2026-02-10T14:00:00+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Punit Naran"
+            },"description": "A comprehensive masterclass on the history and future of token-based authentication. We analyze the cryptographic failures of JWT, the security-by-design of PASETO, and the emerging standard for key management: PASERK."
+    }
+    </script><script src="/lib/instantpage/instantpage.js" type="module" defer></script></head>
+
+<body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">
+        function setTheme(theme) { document.body.setAttribute('theme', theme); document.documentElement.style.setProperty('color-scheme', theme === 'light' ? 'light' : 'dark'); window.theme = theme; window.isDark = window.theme !== 'light' }
+        function saveTheme(theme) { window.localStorage && localStorage.setItem('theme', theme); }
+        function getMeta(metaName) { const metas = document.getElementsByTagName('meta'); for (let i = 0; i < metas.length; i++) if (metas[i].getAttribute('name') === metaName) return metas[i]; return ''; }
+        if (window.localStorage && localStorage.getItem('theme')) { let theme = localStorage.getItem('theme'); theme === 'light' || theme === 'dark' || theme === 'black' ? setTheme(theme) : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light')); } else { if ('auto' === 'light' || 'auto' === 'dark' || 'auto' === 'black') setTheme('auto'), saveTheme('auto'); else saveTheme('auto'), window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light'); }
+        let metaColors = { 'light': '#f8f8f8', 'dark': '#252627', 'black': '#000000' }
+        getMeta('theme-color').content = metaColors[document.body.getAttribute('theme')];
+        window.switchThemeEventSet = new Set()
+        window.GO4U_API_URL = "http://localhost:8080";
+    </script>
+    <div id="back-to-top"></div>
+    <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Golang4U"><span id="desktop-header-typeit" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item menu-item-news"
+                    href="/news/" > News </a><a class="menu-item menu-item-tags"
+                    href="/tags/" > Tags </a><a class="menu-item menu-item-learn"
+                    href="/learn/" > Learning </a><a class="menu-item menu-item-events"
+                    href="/events/" > Events </a><a class="menu-item menu-item-casts"
+                    href="/casts/" > Casts </a><a class="menu-item menu-item-jobs"
+                    href="/jobs/" > Jobs </a><a class="menu-item menu-item-marketplace"
+                    href="/marketplace/" > Marketplace </a><a class="menu-item menu-item-contactus"
+                    href="/contactus/" > Contact Us </a><a class="menu-item menu-item-playground"
+                    href="/playground/" > Playground </a><a class="menu-item menu-item-addpost"
+                    href="/addpost/" > Add a Post </a><a class="menu-item menu-item-login"
+                    href="/login/" > Log In </a><a class="menu-item menu-item-signup"
+                    href="/signup/" > Sign Up </a><a class="menu-item menu-item-admin"
+                    href="/admin/" > Admin </a><a class="menu-item menu-item-dashboard"
+                    href="/dashboard/" > Dashboard </a><a class="menu-item menu-item-logout"
+                    href="#ZgotmplZ" > Log Out </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                    <input type="text"
+                        placeholder="Search titles or contents..."
+                        id="search-input-desktop">
+                    <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop"
+                        title="Search">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop"
+                        title="Clear">
+                        <i class="fas fa-times-circle fa-fw"></i>
+                    </a>
+                    <span class="search-button search-loading" id="search-loading-desktop">
+                        <i class="fas fa-spinner fa-fw fa-spin"></i>
+                    </span>
+                </span><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Golang4U"><span id="mobile-header-typeit" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                <div class="search mobile" id="search-mobile">
+                    <input type="text"
+                        placeholder="Search titles or contents..."
+                        id="search-input-mobile">
+                    <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile"
+                        title="Search">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile"
+                        title="Clear">
+                        <i class="fas fa-times-circle fa-fw"></i>
+                    </a>
+                    <span class="search-button search-loading" id="search-loading-mobile">
+                        <i class="fas fa-spinner fa-fw fa-spin"></i>
+                    </span>
+                </div>
+                <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                    Cancel
+                </a>
+            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div><main class="main">
+            <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">The Evolution of Authentication: JWT, PASETO, and PASERK</h1><div class="content" id="content"><h1 id="introduction" class="headerLink">
+    <a href="#introduction" class="header-mark"></a>Introduction</h1><p>Authentication is the bedrock of modern application security. For years, developers have reached for <strong>JWT (JSON Web Tokens)</strong> as the default tool for stateless authentication.</p>
+<p>But standards evolve. Vulnerabilities are found. Better tools are built.</p>
+<p>In this deep dive, we will trace the evolution of token security:</p>
+<ol>
+<li><strong>Generation 1: JWT (RFC 7519)</strong> - The Standard with Footguns.</li>
+<li><strong>Generation 2: PASETO (Platform-Agnostic Security Tokens)</strong> - The Secure Replacement.</li>
+<li><strong>Generation 3: PASERK (Platform-Agnostic SERialized Keys)</strong> - The Key Management Layer.</li>
+</ol>
+<p>We will strictly analyze <em>why</em> Golang4U moved to PASETO and how it prepares us for a PASERK future.</p>
+<hr>
+<h1 id="part-1-the-jwt-era-and-its-cracks" class="headerLink">
+    <a href="#part-1-the-jwt-era-and-its-cracks" class="header-mark"></a>Part 1: The JWT Era (and its Cracks)</h1><p>JWTs are flexible. Too flexible. A JWT header looks like this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;alg&#34;</span><span class="p">:</span> <span class="s2">&#34;HS256&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;typ&#34;</span><span class="p">:</span> <span class="s2">&#34;JWT&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The <code>alg</code> field tells the server <em>how</em> to verify the token. This design choice—letting the client specify the crypto—led to catastrophic vulnerabilities.</p>
+<h3 id="11-the-none-algorithm" class="headerLink">
+    <a href="#11-the-none-algorithm" class="header-mark"></a>1.1 The &ldquo;None&rdquo; Algorithm</h3><p>The spec defined <code>alg: none</code> for debugging.</p>
+<ul>
+<li><strong>Attack</strong>: An attacker sends a token with <code>{&quot;alg&quot;: &quot;none&quot;}</code> and removes the signature.</li>
+<li><strong>Result</strong>: Naive libraries see &ldquo;none&rdquo;, skip verification, and accept the token as valid.</li>
+</ul>
+<h3 id="12-algorithm-confusion-the-rsa---hmac-attack" class="headerLink">
+    <a href="#12-algorithm-confusion-the-rsa---hmac-attack" class="header-mark"></a>1.2 Algorithm Confusion (The RSA -&gt; HMAC Attack)</h3><p>This is a classic cryptographic downgrade attack.</p>
+<ul>
+<li><strong>Scenario</strong>: Server supports <code>RS256</code> (Public/Private key) but also <code>HS256</code> (Shared secret).</li>
+<li><strong>Attack</strong>:
+<ol>
+<li>Attacker gets the Server&rsquo;s <strong>Public Key</strong> (it&rsquo;s public!).</li>
+<li>Attacker creates a malicious token.</li>
+<li>Attacker sets header to <code>{&quot;alg&quot;: &quot;HS256&quot;}</code>.</li>
+<li>Attacker signs the token using the <strong>Public Key</strong> as the HMAC secret.</li>
+</ol>
+</li>
+<li><strong>Result</strong>: The server sees <code>HS256</code>, looks up its verification key (which it thinks is the Public Key), treats it as an HMAC secret, hashes the token, and&hellip; <strong>IT MATCHES</strong>. The attacker has forged a valid token using only public data.</li>
+</ul>
+<hr>
+<h1 id="part-2-paseto-the-fix" class="headerLink">
+    <a href="#part-2-paseto-the-fix" class="header-mark"></a>Part 2: PASETO (The Fix)</h1><p><strong>PASETO</strong> (Platform-Agnostic Security Tokens) was designed by security experts to eliminate these choices. It is <strong>versioned</strong>, not negotiated.</p>
+<h3 id="21-the-format" class="headerLink">
+    <a href="#21-the-format" class="header-mark"></a>2.1 The Format</h3><p><code>v4.public.payload.footer</code></p>
+<ul>
+<li><strong>v4</strong>: Defines the <em>exact</em> cipher suite. No choices. No implementation errors.</li>
+<li><strong>public</strong>: Defines the purpose (Public Key Signatures).</li>
+</ul>
+<h3 id="22-why-v4" class="headerLink">
+    <a href="#22-why-v4" class="header-mark"></a>2.2 Why v4?</h3><p>Golang4U uses <strong>PASETO v4</strong> because it uses state-of-the-art cryptography:</p>
+<ul>
+<li><strong>Signatures</strong>: <strong>Ed25519</strong>. Fast, constant-time, and resistant to side-channel attacks.</li>
+<li><strong>Encryption</strong>: <strong>XChaCha20-Poly1305</strong>. A stream cipher that is faster than AES on mobile devices and doesn&rsquo;t require hardware acceleration to be secure.</li>
+</ul>
+<h3 id="23-implementation-in-go" class="headerLink">
+    <a href="#23-implementation-in-go" class="header-mark"></a>2.3 Implementation in Go</h3><p>In <code>Golang4U</code>, we use <code>aidantwoods/go-paseto</code>. Here is how we enforce strict security rules.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// internal/token/paseto_maker.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">maker</span> <span class="o">*</span><span class="nx">PasetoMaker</span><span class="p">)</span> <span class="nf">VerifyToken</span><span class="p">(</span><span class="nx">token</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">PasetoPayload</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">parser</span> <span class="o">:=</span> <span class="nx">paseto</span><span class="p">.</span><span class="nf">NewParser</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// Rule 1: Must not be expired
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">parser</span><span class="p">.</span><span class="nf">AddRule</span><span class="p">(</span><span class="nx">paseto</span><span class="p">.</span><span class="nf">NotExpired</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// Rule 2: Must be issued by US
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">parser</span><span class="p">.</span><span class="nf">AddRule</span><span class="p">(</span><span class="nx">paseto</span><span class="p">.</span><span class="nf">IssuedBy</span><span class="p">(</span><span class="s">&#34;Golang4U&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// Rule 3: Must be intended for &#39;access&#39; (not refresh)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">parser</span><span class="p">.</span><span class="nf">AddRule</span><span class="p">(</span><span class="nx">paseto</span><span class="p">.</span><span class="nf">Subject</span><span class="p">(</span><span class="s">&#34;access_token&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="nx">parsedToken</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">parser</span><span class="p">.</span><span class="nf">ParseV4Public</span><span class="p">(</span><span class="nx">maker</span><span class="p">.</span><span class="nx">publicKey</span><span class="p">,</span> <span class="nx">token</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">ErrInvalidToken</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nf">payloadFromToken</span><span class="p">(</span><span class="nx">parsedToken</span><span class="p">),</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h1 id="part-3-paserk-the-future-of-keys" class="headerLink">
+    <a href="#part-3-paserk-the-future-of-keys" class="header-mark"></a>Part 3: PASERK (The Future of Keys)</h1><p>So we have secure tokens. But how do we manage the <strong>Keys</strong>?
+If I send you a string <code>d8291...</code>, is it a Public Key? A Private Key? An AES key? Algorithm specific?</p>
+<p>This is where <strong>PASERK (Platform-Agnostic SERialized Keys)</strong> comes in. It is to Keys what PASETO is to Tokens.</p>
+<h3 id="31-the-problem-paserk-solves" class="headerLink">
+    <a href="#31-the-problem-paserk-solves" class="header-mark"></a>3.1 The Problem PASERK Solves</h3><p>&ldquo;Key Confusion&rdquo; is as dangerous as Token Algorithm confusion. If you accidentally paste a Private Key into a Public Key configuration field, you might expose your secrets.</p>
+<h3 id="32-the-format" class="headerLink">
+    <a href="#32-the-format" class="header-mark"></a>3.2 The Format</h3><p>PASERK wraps keys in a type-safe, versioned string format.</p>
+<ul>
+<li><code>k4.public.d82...</code> -&gt; This is clearly a v4 Public Key.</li>
+<li><code>k4.secret.a19...</code> -&gt; This is clearly a v4 Secret Key.</li>
+<li><code>k4.lid...</code> -&gt; Local Key ID.</li>
+</ul>
+<h3 id="33-wrapping-keys-key-wrapping" class="headerLink">
+    <a href="#33-wrapping-keys-key-wrapping" class="header-mark"></a>3.3 Wrapping Keys (Key Wrapping)</h3><p>PASERK also defines standard ways to <strong>encrypt keys</strong> for transport.
+Example: <code>k4.seal...</code>
+This allows us to store our Ed25519 private keys in the database, <em>encrypted by a Master Key</em>, in a standard format that any PASERK-aware library can decrypt.</p>
+<p><strong>Theoretical Implementation:</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Future-proofing Golang4U with PASERK
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">RotateKeys</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Generate new Keypair
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">secretKey</span> <span class="o">:=</span> <span class="nx">paseto</span><span class="p">.</span><span class="nf">NewV4AsymmetricSecretKey</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// Serialize to PASERK for safe storage
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">paserkString</span> <span class="o">:=</span> <span class="nx">secretKey</span><span class="p">.</span><span class="nf">ExportPaserk</span><span class="p">()</span> <span class="c1">// &#34;k4.secret.....&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    
+</span></span><span class="line"><span class="cl">    <span class="c1">// In the future, we might wrap this with a master key
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// wrapped := paserk.Wrap(masterKey, secretKey)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">paserkString</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h1 id="part-4-beyond-the-token-mtls--hitless-tls" class="headerLink">
+    <a href="#part-4-beyond-the-token-mtls--hitless-tls" class="header-mark"></a>Part 4: Beyond the Token (mTLS &amp; Hitless TLS)</h1><p>Secure authentication is only one layer correctly. As we scale Golang4U, we look at the transport layer itself.</p>
+<h3 id="41-mtls-mutual-tls" class="headerLink">
+    <a href="#41-mtls-mutual-tls" class="header-mark"></a>4.1 mTLS (Mutual TLS)</h3><p>Standard TLS proves the <strong>Server&rsquo;s</strong> identity to the Client (&ldquo;You are really google.com&rdquo;).
+<strong>mTLS</strong> proves the <strong>Client&rsquo;s</strong> identity to the Server (&ldquo;You are really valid-service-A&rdquo;).</p>
+<p>In a microservices architecture (e.g., if we split <code>Golang4U</code> into <code>AuthService</code> and <code>PostService</code>), we would use mTLS.</p>
+<ol>
+<li><strong>PostService</strong> presents a Client Certificate signed by our internal CA.</li>
+<li><strong>AuthService</strong> verifies the certificate.</li>
+<li>If valid, the connection is allowed.
+This happens <em>before</em> any PASETO token is even sent. It is &ldquo;Zero Trust&rdquo; networking.</li>
+</ol>
+<h3 id="42-hitless-tls-session-resumption" class="headerLink">
+    <a href="#42-hitless-tls-session-resumption" class="header-mark"></a>4.2 Hitless TLS (Session Resumption)</h3><p>Establishing a TLS handshake is expensive (multiple round-trips).
+<strong>Hitless TLS</strong> (or Session Resumption) allows a client to reconnect quickly without a full handshake, using a <strong>Session Ticket</strong>.</p>
+<ul>
+<li><strong>Danger</strong>: If the &ldquo;Ticket Key&rdquo; on the server is compromised, <em>all</em> previous sessions can be decrypted (Forward Secrecy violation).</li>
+<li><strong>Golang4U Key Rotation</strong>: We configure our <code>tls.Config</code> to rotate Session Ticket Keys hourly, preserving Forward Secrecy while maintaining performance.</li>
+</ul>
+<hr>
+<h1 id="conclusion" class="headerLink">
+    <a href="#conclusion" class="header-mark"></a>Conclusion</h1><p>Security is a moving target.</p>
+<ol>
+<li><strong>JWT</strong> served us well but showed its age with cryptographic footguns.</li>
+<li><strong>PASETO</strong> fixes the protocol level, giving us versioned, secure-by-default tokens.</li>
+<li><strong>PASERK</strong> simplifies the management of the keys themselves.</li>
+</ol>
+<p>By choosing PASETO v4 (<code>Ed25519</code>) today, Golang4U is well-positioned to adopt PASERK and mTLS strategies as we scale from a monolith to a distributed system.</p>
+</div></div></div>
+        </main><footer class="footer">
+    <div class="footer-container"><div class="footer-line">
+            Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer"
+            title="Hugo 0.139.3">Hugo</a>&nbsp;|&nbsp;Theme - <a href="https://github.com/HEIGE-PCloud/DoIt" target="_blank"
+            rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a>
+        </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a
+                    href="/" target="_blank"
+                    rel="noopener noreferrer">Punit Naran</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-line"></div>
+        <div class="footer-line">
+        </div>
+    </div></footer></div>
+
+    <div id="fixed-buttons"><a href="#back-to-top" id="back-to-top-button" class="fixed-button" title="Back to Top">
+            <i class="fas fa-arrow-up fa-fw"></i>
+        </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            <i class="fas fa-comment fa-fw"></i>
+        </a>
+    </div><div id="cookieconsent-container"></div><div class="assets"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"desktop-header-typeit":"Golang 4 U","mobile-header-typeit":"Golang 4 U"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":30,"threshold":0.3,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/lib/cookieconsent/consent-banner.js" defer></script><script type="text/javascript" src="/js/safe-banner.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script><script src="/js/crypto_utils.min.631e00e36f334392a507c80c5304241ca2e41f7c1f889b3e31f08510ccb3dbdc.js" integrity="sha256-Yx4A428zQ5KlB8gMUwQkHKLkH3wfiJs&#43;MfCFEMyz29w="></script><script src="/js/auth.js"></script>
+</div></body>
+
+</html>

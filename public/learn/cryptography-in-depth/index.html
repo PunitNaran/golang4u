@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noodp" />
+    <title>Encryption Everywhere: End-to-End Security with ECIES and AES-GCM - Golang4U</title><meta name="Description" content="A masterclass in application-layer cryptography. Learn how Golang4U implements ECIES to encrypt data in the browser and AES-GCM to secure data at rest."><meta property="og:url" content="http://localhost:1313/learn/cryptography-in-depth/">
+  <meta property="og:site_name" content="Golang4U">
+  <meta property="og:title" content="Encryption Everywhere: End-to-End Security with ECIES and AES-GCM">
+  <meta property="og:description" content="A masterclass in application-layer cryptography. Learn how Golang4U implements ECIES to encrypt data in the browser and AES-GCM to secure data at rest.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="learn">
+    <meta property="article:published_time" content="2026-02-10T16:00:00+08:00">
+    <meta property="article:modified_time" content="2026-02-10T16:00:00+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Cryptography">
+    <meta property="article:tag" content="ECIES">
+    <meta property="article:tag" content="AES">
+    <meta property="article:tag" content="Security">
+    <meta property="article:tag" content="ECDH">
+    <meta property="og:image" content="http://localhost:1313/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/logo.png">
+  <meta name="twitter:title" content="Encryption Everywhere: End-to-End Security with ECIES and AES-GCM">
+  <meta name="twitter:description" content="A masterclass in application-layer cryptography. Learn how Golang4U implements ECIES to encrypt data in the browser and AES-GCM to secure data at rest.">
+<meta name="application-name" content="Golang 4 U">
+<meta name="apple-mobile-web-app-title" content="Golang 4 U">
+
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/learn/cryptography-in-depth/" /><link rel="prev" href="http://localhost:1313/learn/modern-authentication/" /><link rel="next" href="http://localhost:1313/learn/implementing-2fa/" />
+<link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript>
+<link rel="stylesheet" href="/css/enhanced.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Encryption Everywhere: End-to-End Security with ECIES and AES-GCM",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/learn\/cryptography-in-depth\/"
+        },"genre": "learn","keywords": "Go, Cryptography, ECIES, AES, Security, ECDH, Encryption","wordcount":  959 ,
+        "url": "http:\/\/localhost:1313\/learn\/cryptography-in-depth\/","datePublished": "2026-02-10T16:00:00+08:00","dateModified": "2026-02-10T16:00:00+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Punit Naran"
+            },"description": "A masterclass in application-layer cryptography. Learn how Golang4U implements ECIES to encrypt data in the browser and AES-GCM to secure data at rest."
+    }
+    </script><script src="/lib/instantpage/instantpage.js" type="module" defer></script></head>
+
+<body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">
+        function setTheme(theme) { document.body.setAttribute('theme', theme); document.documentElement.style.setProperty('color-scheme', theme === 'light' ? 'light' : 'dark'); window.theme = theme; window.isDark = window.theme !== 'light' }
+        function saveTheme(theme) { window.localStorage && localStorage.setItem('theme', theme); }
+        function getMeta(metaName) { const metas = document.getElementsByTagName('meta'); for (let i = 0; i < metas.length; i++) if (metas[i].getAttribute('name') === metaName) return metas[i]; return ''; }
+        if (window.localStorage && localStorage.getItem('theme')) { let theme = localStorage.getItem('theme'); theme === 'light' || theme === 'dark' || theme === 'black' ? setTheme(theme) : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light')); } else { if ('auto' === 'light' || 'auto' === 'dark' || 'auto' === 'black') setTheme('auto'), saveTheme('auto'); else saveTheme('auto'), window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light'); }
+        let metaColors = { 'light': '#f8f8f8', 'dark': '#252627', 'black': '#000000' }
+        getMeta('theme-color').content = metaColors[document.body.getAttribute('theme')];
+        window.switchThemeEventSet = new Set()
+        window.GO4U_API_URL = "http://localhost:8080";
+    </script>
+    <div id="back-to-top"></div>
+    <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Golang4U"><span id="desktop-header-typeit" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item menu-item-news"
+                    href="/news/" > News </a><a class="menu-item menu-item-tags"
+                    href="/tags/" > Tags </a><a class="menu-item menu-item-learn"
+                    href="/learn/" > Learning </a><a class="menu-item menu-item-events"
+                    href="/events/" > Events </a><a class="menu-item menu-item-casts"
+                    href="/casts/" > Casts </a><a class="menu-item menu-item-jobs"
+                    href="/jobs/" > Jobs </a><a class="menu-item menu-item-marketplace"
+                    href="/marketplace/" > Marketplace </a><a class="menu-item menu-item-contactus"
+                    href="/contactus/" > Contact Us </a><a class="menu-item menu-item-playground"
+                    href="/playground/" > Playground </a><a class="menu-item menu-item-addpost"
+                    href="/addpost/" > Add a Post </a><a class="menu-item menu-item-login"
+                    href="/login/" > Log In </a><a class="menu-item menu-item-signup"
+                    href="/signup/" > Sign Up </a><a class="menu-item menu-item-admin"
+                    href="/admin/" > Admin </a><a class="menu-item menu-item-dashboard"
+                    href="/dashboard/" > Dashboard </a><a class="menu-item menu-item-logout"
+                    href="#ZgotmplZ" > Log Out </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                    <input type="text"
+                        placeholder="Search titles or contents..."
+                        id="search-input-desktop">
+                    <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop"
+                        title="Search">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop"
+                        title="Clear">
+                        <i class="fas fa-times-circle fa-fw"></i>
+                    </a>
+                    <span class="search-button search-loading" id="search-loading-desktop">
+                        <i class="fas fa-spinner fa-fw fa-spin"></i>
+                    </span>
+                </span><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Golang4U"><span id="mobile-header-typeit" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                <div class="search mobile" id="search-mobile">
+                    <input type="text"
+                        placeholder="Search titles or contents..."
+                        id="search-input-mobile">
+                    <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile"
+                        title="Search">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile"
+                        title="Clear">
+                        <i class="fas fa-times-circle fa-fw"></i>
+                    </a>
+                    <span class="search-button search-loading" id="search-loading-mobile">
+                        <i class="fas fa-spinner fa-fw fa-spin"></i>
+                    </span>
+                </div>
+                <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                    Cancel
+                </a>
+            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div><main class="main">
+            <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">Encryption Everywhere: End-to-End Security with ECIES and AES-GCM</h1><div class="content" id="content"><h1 id="introduction" class="headerLink">
+    <a href="#introduction" class="header-mark"></a>Introduction</h1><p>HTTPS (TLS) is fantastic. It encrypts the pipe between the user and your server. But what happens if:</p>
+<ol>
+<li>You have a load balancer or CDN that terminates TLS before the request reaches your app?</li>
+<li>You have a compromised middleware logging requests?</li>
+<li>You want to ensure <strong>nobody</strong>, not even your infrastructure provider, can read a user&rsquo;s password in transit?</li>
+</ol>
+<p>This is where <strong>Application-Layer Encryption</strong> comes in.</p>
+<p>In Golang4U, we use <strong>ECIES (Elliptic Curve Integrated Encryption Scheme)</strong> for data in transit (Frontend -&gt; Backend) and <strong>AES-GCM</strong> for data at rest.</p>
+<hr>
+<h1 id="1-understanding-ecies-conceptual" class="headerLink">
+    <a href="#1-understanding-ecies-conceptual" class="header-mark"></a>1. Understanding ECIES (Conceptual)</h1><p>ECIES is a hybrid encryption scheme. It combines the best of Asymmetric (Public Key) and Symmetric (Shared Key) cryptography.</p>
+<p><strong>The Actors:</strong></p>
+<ul>
+<li><strong>Alice (Browser)</strong>: Wants to send a secret message.</li>
+<li><strong>Bob (Server)</strong>: Has a static Public Key ($Pub_B$).</li>
+</ul>
+<p><strong>The Workflow:</strong></p>
+<ol>
+<li><strong>Key Generation</strong>: Alice generates a temporary (ephemeral) key pair ($Priv_A, Pub_A$).</li>
+<li><strong>Key Agreement (ECDH)</strong>: Alice uses her $Priv_A$ and Bob&rsquo;s $Pub_B$ to mathematically derive a <strong>Shared Secret</strong> ($S$).</li>
+<li><strong>Encryption</strong>: Alice encrypts the message with AES using $K_{enc}$ derived from $S$.</li>
+<li><strong>Transmission</strong>: Alice sends her Public Key ($Pub_A$) along with the ciphertext.</li>
+</ol>
+<pre class="mermaid">sequenceDiagram
+    participant Browser (Alice)
+    participant Hacker (Eve)
+    participant Server (Bob)
+
+    Note over Server (Bob): Has Static Keypair (PrivB, PubB)
+    Browser (Alice)->>Server (Bob): GET /public-key
+    Server (Bob)-->>Browser (Alice): Sends PubB
+    
+    Note over Browser (Alice): 1. Generates Ephemeral (PrivA, PubA)
+    Note over Browser (Alice): 2. Computes S = ECDH(PrivA, PubB)
+    Note over Browser (Alice): 3. Encrypts Msg with AES(S)
+    
+    Browser (Alice)->>Server (Bob): POST [PubA] + [Ciphertext]
+    
+    Note right of Hacker (Eve): Sees PubA and Ciphertext.
+    Note right of Hacker (Eve): Cannot compute S without PrivA or PrivB!
+    
+    Note over Server (Bob): 1. Receives PubA
+    Note over Server (Bob): 2. Computes S = ECDH(PrivB, PubA)
+    Note over Server (Bob): 3. Decrypts Msg with AES(S)
+</pre><p>Bob receives it, does the math in reverse, regenerates $K_{enc}$, and decrypts the message.</p>
+<hr>
+<h1 id="2-frontend-implementation-web-crypto-api" class="headerLink">
+    <a href="#2-frontend-implementation-web-crypto-api" class="header-mark"></a>2. Frontend Implementation (Web Crypto API)</h1><p>We don&rsquo;t need heavy JS libraries. Modern browsers support <code>SubtleCrypto</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="c1">// assets/js/crypto_utils.js (Simplified)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kr">async</span> <span class="kd">function</span> <span class="nx">encryptData</span><span class="p">(</span><span class="nx">plaintext</span><span class="p">,</span> <span class="nx">serverPublicKeyHex</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 1. Import Server&#39;s Public Key
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">const</span> <span class="nx">serverKey</span> <span class="o">=</span> <span class="kr">await</span> <span class="nb">window</span><span class="p">.</span><span class="nx">crypto</span><span class="p">.</span><span class="nx">subtle</span><span class="p">.</span><span class="nx">importKey</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;spki&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">hexToArrayBuffer</span><span class="p">(</span><span class="nx">serverPublicKeyHex</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s2">&#34;ECDH&#34;</span><span class="p">,</span> <span class="nx">namedCurve</span><span class="o">:</span> <span class="s2">&#34;P-256&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="kc">false</span><span class="p">,</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 2. Generate Ephemeral Key Pair for this encryption
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">const</span> <span class="nx">ephemeralKeyPair</span> <span class="o">=</span> <span class="kr">await</span> <span class="nb">window</span><span class="p">.</span><span class="nx">crypto</span><span class="p">.</span><span class="nx">subtle</span><span class="p">.</span><span class="nx">generateKey</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s2">&#34;ECDH&#34;</span><span class="p">,</span> <span class="nx">namedCurve</span><span class="o">:</span> <span class="s2">&#34;P-256&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="kc">true</span><span class="p">,</span> <span class="p">[</span><span class="s2">&#34;deriveKey&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 3. Derive Shared Secret (AES-GCM key)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">const</span> <span class="nx">sharedKey</span> <span class="o">=</span> <span class="kr">await</span> <span class="nb">window</span><span class="p">.</span><span class="nx">crypto</span><span class="p">.</span><span class="nx">subtle</span><span class="p">.</span><span class="nx">deriveKey</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s2">&#34;ECDH&#34;</span><span class="p">,</span> <span class="kr">public</span><span class="o">:</span> <span class="nx">serverKey</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">ephemeralKeyPair</span><span class="p">.</span><span class="nx">privateKey</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s2">&#34;AES-GCM&#34;</span><span class="p">,</span> <span class="nx">length</span><span class="o">:</span> <span class="mi">256</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="s2">&#34;encrypt&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 4. Encrypt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">const</span> <span class="nx">iv</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">crypto</span><span class="p">.</span><span class="nx">getRandomValues</span><span class="p">(</span><span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="mi">12</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">encrypted</span> <span class="o">=</span> <span class="kr">await</span> <span class="nb">window</span><span class="p">.</span><span class="nx">crypto</span><span class="p">.</span><span class="nx">subtle</span><span class="p">.</span><span class="nx">encrypt</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s2">&#34;AES-GCM&#34;</span><span class="p">,</span> <span class="nx">iv</span><span class="o">:</span> <span class="nx">iv</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">sharedKey</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="k">new</span> <span class="nx">TextEncoder</span><span class="p">().</span><span class="nx">encode</span><span class="p">(</span><span class="nx">plaintext</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 5. Pack: EphemeralPublicKey + IV + Ciphertext
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nx">pack</span><span class="p">(</span><span class="nx">ephemeralKeyPair</span><span class="p">.</span><span class="nx">publicKey</span><span class="p">,</span> <span class="nx">iv</span><span class="p">,</span> <span class="nx">encrypted</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This effectively creates a secure tunnel <em>inside</em> the HTTPS tunnel.</p>
+<hr>
+<h1 id="3-backend-implementation-go-cryptoecdh" class="headerLink">
+    <a href="#3-backend-implementation-go-cryptoecdh" class="header-mark"></a>3. Backend Implementation (Go <code>crypto/ecdh</code>)</h1><p>On the Go side, we parse this package.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// internal/crypto/ecies.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Decrypt</span><span class="p">(</span><span class="nx">payload</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">serverPrivKey</span> <span class="o">*</span><span class="nx">ecdh</span><span class="p">.</span><span class="nx">PrivateKey</span><span class="p">)</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 1. Unpack payload
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// [Pub Key (65 bytes)] [IV (12 bytes)] [Ciphertext (rest)]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">clientPubKeyBytes</span> <span class="o">:=</span> <span class="nx">payload</span><span class="p">[:</span><span class="mi">65</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">iv</span> <span class="o">:=</span> <span class="nx">payload</span><span class="p">[</span><span class="mi">65</span><span class="p">:</span><span class="mi">77</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ciphertext</span> <span class="o">:=</span> <span class="nx">payload</span><span class="p">[</span><span class="mi">77</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// 2. Parse Client&#39;s Ephemeral Public Key
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">clientPubKey</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ecdh</span><span class="p">.</span><span class="nf">P256</span><span class="p">().</span><span class="nf">NewPublicKey</span><span class="p">(</span><span class="nx">clientPubKeyBytes</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// 3. ECDH: Derive Shared Secret
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">sharedSecret</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">serverPrivKey</span><span class="p">.</span><span class="nf">ECDH</span><span class="p">(</span><span class="nx">clientPubKey</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// 4. Derive AES Key (using HKDF or similar standard, usually just the secret directly if simple)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// In strict ECIES, we use KDF. For simple P-256+AES-GCM, we might just use the secret if 32 bytes 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// or run it through SHA-256.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">block</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">aes</span><span class="p">.</span><span class="nf">NewCipher</span><span class="p">(</span><span class="nx">sharedSecret</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">gcm</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">cipher</span><span class="p">.</span><span class="nf">NewGCM</span><span class="p">(</span><span class="nx">block</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// 5. Decrypt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nx">gcm</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="nx">iv</span><span class="p">,</span> <span class="nx">ciphertext</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="why-p-256" class="headerLink">
+    <a href="#why-p-256" class="header-mark"></a>Why P-256?</h3><p>We chose the <strong>NIST P-256</strong> curve because:</p>
+<ol>
+<li><strong>Hardware Support</strong>: It has hardware acceleration on most CPUs (AES-NI).</li>
+<li><strong>Browser Standard</strong>: It is universally supported by the Web Crypto API.</li>
+</ol>
+<hr>
+<h1 id="4-securing-data-at-rest-aes-gcm" class="headerLink">
+    <a href="#4-securing-data-at-rest-aes-gcm" class="header-mark"></a>4. Securing Data at Rest: AES-GCM</h1><p>Once we decrypt the data, we might need to store it.</p>
+<ul>
+<li><strong>Passwords</strong>: NEVER encrypt passwords. Always <strong>Hash</strong> them (Argon2 / bcrypt).</li>
+<li><strong>PII (Emails, Phones)</strong>: Encrypt.</li>
+<li><strong>Tokens (OAuth, 2FA)</strong>: Encrypt.</li>
+</ul>
+<p>We use <strong>AES-GCM (Galois/Counter Mode)</strong>.</p>
+<h3 id="authenticated-encryption" class="headerLink">
+    <a href="#authenticated-encryption" class="header-mark"></a>Authenticated Encryption</h3><p>AES in CBC (Cipher Block Chaining) mode is malleable. If an attacker flips a bit in the ciphertext, it decrypts to garbage—or worse, specific garbage.
+<strong>GCM</strong> solves this by adding an &ldquo;Authentication Tag&rdquo;. If the ciphertext is tampered with (even 1 bit), the decryption function returns an error <code>authentication failed</code> rather than corrupt data.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">EncryptStorage</span><span class="p">(</span><span class="nx">plaintext</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Master Key loaded from secure env
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">block</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">aes</span><span class="p">.</span><span class="nf">NewCipher</span><span class="p">(</span><span class="nx">masterKey</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">gcm</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">cipher</span><span class="p">.</span><span class="nf">NewGCM</span><span class="p">(</span><span class="nx">block</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// ALWAYS use a random Nonce
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">nonce</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">gcm</span><span class="p">.</span><span class="nf">NonceSize</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">io</span><span class="p">.</span><span class="nf">ReadFull</span><span class="p">(</span><span class="nx">rand</span><span class="p">.</span><span class="nx">Reader</span><span class="p">,</span> <span class="nx">nonce</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// Seal = Encrypt + Append Auth Tag
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nx">gcm</span><span class="p">.</span><span class="nf">Seal</span><span class="p">(</span><span class="nx">nonce</span><span class="p">,</span> <span class="nx">nonce</span><span class="p">,</span> <span class="nx">plaintext</span><span class="p">,</span> <span class="kc">nil</span><span class="p">),</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="the-nonce-dangers" class="headerLink">
+    <a href="#the-nonce-dangers" class="header-mark"></a>The Nonce Dangers</h3><p>The <strong>Nonce</strong> (Number used ONCE) is critical. If you reuse a nonce with the same key, an attacker can XOR the ciphertexts to recover the plaintext.</p>
+<ul>
+<li><strong>Fix</strong>: We randomly generate a 12-byte nonce for <em>every</em> encryption operation and store it alongside the ciphertext.</li>
+</ul>
+<hr>
+<h1 id="conclusion" class="headerLink">
+    <a href="#conclusion" class="header-mark"></a>Conclusion</h1><p>Cryptography is a double-edged sword. Implemented correctly, it provides mathematical certainty of privacy. Implemented poorly (reused nonces, weak curves), it provides a false sense of security.</p>
+<p>Golang4U adheres to strict standards: <strong>ECDH P-256</strong> for key exchange, <strong>AES-256-GCM</strong> for encryption, and standard <strong>Web Crypto</strong> APIs. This ensures our user&rsquo;s data remains theirs, regardless of who is listening on the wire.</p>
+<p>In the final post of our series, we tackle the implementation of <strong>Two-Factor Authentication (TOTP)</strong> to secure user accounts.</p>
+</div></div></div>
+        </main><footer class="footer">
+    <div class="footer-container"><div class="footer-line">
+            Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer"
+            title="Hugo 0.139.3">Hugo</a>&nbsp;|&nbsp;Theme - <a href="https://github.com/HEIGE-PCloud/DoIt" target="_blank"
+            rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a>
+        </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a
+                    href="/" target="_blank"
+                    rel="noopener noreferrer">Punit Naran</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-line"></div>
+        <div class="footer-line">
+        </div>
+    </div></footer></div>
+
+    <div id="fixed-buttons"><a href="#back-to-top" id="back-to-top-button" class="fixed-button" title="Back to Top">
+            <i class="fas fa-arrow-up fa-fw"></i>
+        </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            <i class="fas fa-comment fa-fw"></i>
+        </a>
+    </div><div id="cookieconsent-container"></div><div class="assets"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"desktop-header-typeit":"Golang 4 U","mobile-header-typeit":"Golang 4 U"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":30,"threshold":0.3,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/lib/cookieconsent/consent-banner.js" defer></script><script type="text/javascript" src="/js/safe-banner.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script><script src="/js/crypto_utils.min.631e00e36f334392a507c80c5304241ca2e41f7c1f889b3e31f08510ccb3dbdc.js" integrity="sha256-Yx4A428zQ5KlB8gMUwQkHKLkH3wfiJs&#43;MfCFEMyz29w="></script><script src="/js/auth.js"></script>
+</div></body>
+
+</html>

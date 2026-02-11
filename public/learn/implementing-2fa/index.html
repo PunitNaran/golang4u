@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noodp" />
+    <title>Double the Security: Implementing Two-Factor Authentication (TOTP) - Golang4U</title><meta name="Description" content="Protecting accounts with Time-Based One-Time Passwords (TOTP). A visual and technical guide to implementing 2FA, generating QR codes, and handling recovery flows in Go."><meta property="og:url" content="http://localhost:1313/learn/implementing-2fa/">
+  <meta property="og:site_name" content="Golang4U">
+  <meta property="og:title" content="Double the Security: Implementing Two-Factor Authentication (TOTP)">
+  <meta property="og:description" content="Protecting accounts with Time-Based One-Time Passwords (TOTP). A visual and technical guide to implementing 2FA, generating QR codes, and handling recovery flows in Go.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="learn">
+    <meta property="article:published_time" content="2026-02-10T18:00:00+08:00">
+    <meta property="article:modified_time" content="2026-02-10T18:00:00+08:00">
+    <meta property="article:tag" content="Go">
+    <meta property="article:tag" content="Authentication">
+    <meta property="article:tag" content="2FA">
+    <meta property="article:tag" content="TOTP">
+    <meta property="article:tag" content="Security">
+    <meta property="article:tag" content="QR">
+    <meta property="og:image" content="http://localhost:1313/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/logo.png">
+  <meta name="twitter:title" content="Double the Security: Implementing Two-Factor Authentication (TOTP)">
+  <meta name="twitter:description" content="Protecting accounts with Time-Based One-Time Passwords (TOTP). A visual and technical guide to implementing 2FA, generating QR codes, and handling recovery flows in Go.">
+<meta name="application-name" content="Golang 4 U">
+<meta name="apple-mobile-web-app-title" content="Golang 4 U">
+
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/learn/implementing-2fa/" /><link rel="prev" href="http://localhost:1313/learn/cryptography-in-depth/" />
+<link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/animate/animate.min.css">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript>
+<link rel="stylesheet" href="/css/enhanced.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Double the Security: Implementing Two-Factor Authentication (TOTP)",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/learn\/implementing-2fa\/"
+        },"genre": "learn","keywords": "Go, Authentication, 2FA, TOTP, Security, QR, MFA","wordcount":  700 ,
+        "url": "http:\/\/localhost:1313\/learn\/implementing-2fa\/","datePublished": "2026-02-10T18:00:00+08:00","dateModified": "2026-02-10T18:00:00+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Punit Naran"
+            },"description": "Protecting accounts with Time-Based One-Time Passwords (TOTP). A visual and technical guide to implementing 2FA, generating QR codes, and handling recovery flows in Go."
+    }
+    </script><script src="/lib/instantpage/instantpage.js" type="module" defer></script></head>
+
+<body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">
+        function setTheme(theme) { document.body.setAttribute('theme', theme); document.documentElement.style.setProperty('color-scheme', theme === 'light' ? 'light' : 'dark'); window.theme = theme; window.isDark = window.theme !== 'light' }
+        function saveTheme(theme) { window.localStorage && localStorage.setItem('theme', theme); }
+        function getMeta(metaName) { const metas = document.getElementsByTagName('meta'); for (let i = 0; i < metas.length; i++) if (metas[i].getAttribute('name') === metaName) return metas[i]; return ''; }
+        if (window.localStorage && localStorage.getItem('theme')) { let theme = localStorage.getItem('theme'); theme === 'light' || theme === 'dark' || theme === 'black' ? setTheme(theme) : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light')); } else { if ('auto' === 'light' || 'auto' === 'dark' || 'auto' === 'black') setTheme('auto'), saveTheme('auto'); else saveTheme('auto'), window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? setTheme('dark') : setTheme('light'); }
+        let metaColors = { 'light': '#f8f8f8', 'dark': '#252627', 'black': '#000000' }
+        getMeta('theme-color').content = metaColors[document.body.getAttribute('theme')];
+        window.switchThemeEventSet = new Set()
+        window.GO4U_API_URL = "http://localhost:8080";
+    </script>
+    <div id="back-to-top"></div>
+    <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Golang4U"><span id="desktop-header-typeit" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item menu-item-news"
+                    href="/news/" > News </a><a class="menu-item menu-item-tags"
+                    href="/tags/" > Tags </a><a class="menu-item menu-item-learn"
+                    href="/learn/" > Learning </a><a class="menu-item menu-item-events"
+                    href="/events/" > Events </a><a class="menu-item menu-item-casts"
+                    href="/casts/" > Casts </a><a class="menu-item menu-item-jobs"
+                    href="/jobs/" > Jobs </a><a class="menu-item menu-item-marketplace"
+                    href="/marketplace/" > Marketplace </a><a class="menu-item menu-item-contactus"
+                    href="/contactus/" > Contact Us </a><a class="menu-item menu-item-playground"
+                    href="/playground/" > Playground </a><a class="menu-item menu-item-addpost"
+                    href="/addpost/" > Add a Post </a><a class="menu-item menu-item-login"
+                    href="/login/" > Log In </a><a class="menu-item menu-item-signup"
+                    href="/signup/" > Sign Up </a><a class="menu-item menu-item-admin"
+                    href="/admin/" > Admin </a><a class="menu-item menu-item-dashboard"
+                    href="/dashboard/" > Dashboard </a><a class="menu-item menu-item-logout"
+                    href="#ZgotmplZ" > Log Out </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                    <input type="text"
+                        placeholder="Search titles or contents..."
+                        id="search-input-desktop">
+                    <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop"
+                        title="Search">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop"
+                        title="Clear">
+                        <i class="fas fa-times-circle fa-fw"></i>
+                    </a>
+                    <span class="search-button search-loading" id="search-loading-desktop">
+                        <i class="fas fa-spinner fa-fw fa-spin"></i>
+                    </span>
+                </span><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Golang4U"><span id="mobile-header-typeit" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                <div class="search mobile" id="search-mobile">
+                    <input type="text"
+                        placeholder="Search titles or contents..."
+                        id="search-input-mobile">
+                    <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile"
+                        title="Search">
+                        <i class="fas fa-search fa-fw"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile"
+                        title="Clear">
+                        <i class="fas fa-times-circle fa-fw"></i>
+                    </a>
+                    <span class="search-button search-loading" id="search-loading-mobile">
+                        <i class="fas fa-spinner fa-fw fa-spin"></i>
+                    </span>
+                </div>
+                <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                    Cancel
+                </a>
+            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div><main class="main">
+            <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">Double the Security: Implementing Two-Factor Authentication (TOTP)</h1><div class="content" id="content"><h1 id="introduction" class="headerLink">
+    <a href="#introduction" class="header-mark"></a>Introduction</h1><p>Passwords are distinctively terrible.</p>
+<ul>
+<li>Users reuse them.</li>
+<li>Users choose &ldquo;Password123&rdquo;.</li>
+<li>Users write them on sticky notes.</li>
+</ul>
+<p>Even with strong password policies, a database leak from <em>another</em> site can compromise your users. <strong>Two-Factor Authentication (2FA)</strong> mitigates this by requiring a second factor: something physically in the user&rsquo;s possession (their phone).</p>
+<p>In this guide, we implement standard <strong>TOTP (Time-based One-Time Password)</strong>, compatible with Google Authenticator, Authy, and Microsoft Authenticator.</p>
+<hr>
+<h1 id="1-understanding-totp-rfc-6238" class="headerLink">
+    <a href="#1-understanding-totp-rfc-6238" class="header-mark"></a>1. Understanding TOTP (RFC 6238)</h1><p>TOTP is built on top of <strong>HOTP (HMAC-based One-Time Password)</strong>.</p>
+<h3 id="the-algorithm" class="headerLink">
+    <a href="#the-algorithm" class="header-mark"></a>The Algorithm</h3><p>$$TOTP(K, T) = Truncate(HMAC-SHA-1(K, T))$$</p>
+<p>Where:</p>
+<ul>
+<li>$K$ is the <strong>Shared Secret</strong> (a random string of bytes known only to Server and User).</li>
+<li>$T$ is the <strong>Time Counter</strong>, calculated as $\lfloor \frac{CurrentUnixTime}{30} \rfloor$.</li>
+<li><strong>30</strong> is the standard step size (seconds).</li>
+</ul>
+<p>Every 30 seconds, the value $T$ increments by 1. The algorithms on the phone and server independently run the HMAC hash and produce the same 6-digit code.</p>
+<hr>
+<h1 id="2-implementation-lifecycle" class="headerLink">
+    <a href="#2-implementation-lifecycle" class="header-mark"></a>2. Implementation Lifecycle</h1><h3 id="21-setup-enable-2fa" class="headerLink">
+    <a href="#21-setup-enable-2fa" class="header-mark"></a>2.1 Setup (Enable 2FA)</h3><p>When a user wants to enable 2FA:</p>
+<ol>
+<li><strong>Generate Secret</strong>: We generate a cryptographically secure random key (20 bytes).</li>
+<li><strong>Generate URI</strong>: We format this into a standard URL scheme:
+<code>otpauth://totp/Golang4U:user@email.com?secret=JBSWY3DPEHPK3PXP&amp;issuer=Golang4U</code></li>
+<li><strong>Generate QR Code</strong>: We render this URL as a QR code image (PNG) so the user can scan it.</li>
+</ol>
+<p><strong>Go Code (using <code>pquerna/otp</code>)</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;github.com/pquerna/otp/totp&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;bytes&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;image/png&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Generate2FASetup</span><span class="p">(</span><span class="nx">email</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">totp</span><span class="p">.</span><span class="nx">Key</span><span class="p">,</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Generate Key
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">key</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">totp</span><span class="p">.</span><span class="nf">Generate</span><span class="p">(</span><span class="nx">totp</span><span class="p">.</span><span class="nx">GenerateOpts</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Issuer</span><span class="p">:</span>      <span class="s">&#34;Golang4U&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">AccountName</span><span class="p">:</span> <span class="nx">email</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// Generate QR Code Image
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">var</span> <span class="nx">buf</span> <span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">img</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">key</span><span class="p">.</span><span class="nf">Image</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">png</span><span class="p">.</span><span class="nf">Encode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">buf</span><span class="p">,</span> <span class="nx">img</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">buf</span><span class="p">.</span><span class="nf">Bytes</span><span class="p">(),</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="22-verification-the-handshake" class="headerLink">
+    <a href="#22-verification-the-handshake" class="header-mark"></a>2.2 Verification (The Handshake)</h3><p>We <strong>cannot</strong> enable 2FA just because we generated a key. The user <em>must</em> prove they scanned it successfully.</p>
+<ol>
+<li>Frontend displays QR Code.</li>
+<li>User scans it and enters the 6-digit code (<code>123456</code>) shown on their screen.</li>
+<li>Server validates <code>123456</code> against the generated secret.</li>
+<li><strong>Only if valid</strong>, we save the Secret to the User&rsquo;s DB profile (Encrypted!) and set <code>two_factor_enabled = true</code>.</li>
+</ol>
+<h3 id="23-login-flow-with-2fa" class="headerLink">
+    <a href="#23-login-flow-with-2fa" class="header-mark"></a>2.3 Login Flow with 2FA</h3><p>Once enabled, the login flow changes:</p>
+<pre class="mermaid">sequenceDiagram
+    participant User
+    participant Server
+
+    User->>Server: POST /login (email, password)
+    Server->>Server: Verify Password
+    alt 2FA Enabled
+        Server-->>User: 200 OK { status: "2fa_required", temp_token: "..." }
+        User->>Server: POST /verify-2fa (code: "123456", temp_token)
+        Server->>Server: totp.Validate(code, userSecret)
+        Server-->>User: 200 OK { token: "PASETO..." }
+    else No 2FA
+        Server-->>User: 200 OK { token: "PASETO..." }
+    end
+</pre><p><strong>The &ldquo;Temp Token&rdquo;</strong>: This is a critical security detail. The initial response <em>must not</em> be a valid session token. It should be a restricted token that <em>only</em> allows access to the <code>/verify-2fa</code> endpoint. In Golang4U, we use a PASETO with a special <code>scope: &quot;pre-auth&quot;</code>.</p>
+<hr>
+<h1 id="3-recovery-the-bus-factor" class="headerLink">
+    <a href="#3-recovery-the-bus-factor" class="header-mark"></a>3. Recovery: The &ldquo;Bus Factor&rdquo;</h1><p>What if the user drops their phone in a lake? They are locked out forever.
+This is why <strong>Recovery Codes</strong> are mandatory.</p>
+<p>When 2FA is enabled, we generate 5-10 random strings (e.g., <code>a1b2-c3d4</code>).</p>
+<ul>
+<li><strong>User Side</strong>: &ldquo;Save these codes in a safe place.&rdquo;</li>
+<li><strong>Server Side</strong>: We Hash them (bcrypt) and store them in a <code>recovery_codes</code> collection.</li>
+</ul>
+<p>If the user cannot generate a TOTP, they can use a Recovery Code.</p>
+<ul>
+<li>Server verifies Code against Hash.</li>
+<li><strong>Important</strong>: The used code is immediately <strong>deleted</strong> from the DB. Use only once.</li>
+</ul>
+<hr>
+<h1 id="4-security-considerations" class="headerLink">
+    <a href="#4-security-considerations" class="header-mark"></a>4. Security Considerations</h1><ol>
+<li><strong>Time Drift</strong>: Clocks aren&rsquo;t perfect. We allow a verification window of <code>1</code> step (current time +/- 30 seconds) to account for slight network or device delays.</li>
+<li><strong>Rate Limiting</strong>: The <code>/verify-2fa</code> endpoint MUST be strictly rate-limited (e.g., 3 attempts per minute). 6 digits is only 1 million combinations; a brute force attack is trivial without rate limiting.</li>
+<li><strong>Encrypted Secrets</strong>: The TOTP secret in the database allows anyone with read access to clone the user&rsquo;s 2FA device. This field MUST be encrypted with AES-GCM (as discussed in the Cryptography article).</li>
+</ol>
+<hr>
+<h1 id="conclusion" class="headerLink">
+    <a href="#conclusion" class="header-mark"></a>Conclusion</h1><p>By implementing TOTP, Golang4U aligns with industry best practices for account security. It adds a trivial amount of friction for a massive gain in trust. Combined with our ECIES encryption and PASETO tokens, our authentication system is defense-in-depth incarnate.</p>
+<p>This concludes our deep dive series into the Golang4U architecture. We hope these articles have provided you with a clear roadmap for building your own secure, scalable Go applications.</p>
+</div></div></div>
+        </main><footer class="footer">
+    <div class="footer-container"><div class="footer-line">
+            Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer"
+            title="Hugo 0.139.3">Hugo</a>&nbsp;|&nbsp;Theme - <a href="https://github.com/HEIGE-PCloud/DoIt" target="_blank"
+            rel="noopener noreferrer" title="DoIt 0.4.0"><i class="far fa-edit fa-fw"></i> DoIt</a>
+        </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2023 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a
+                    href="/" target="_blank"
+                    rel="noopener noreferrer">Punit Naran</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-line"></div>
+        <div class="footer-line">
+        </div>
+    </div></footer></div>
+
+    <div id="fixed-buttons"><a href="#back-to-top" id="back-to-top-button" class="fixed-button" title="Back to Top">
+            <i class="fas fa-arrow-up fa-fw"></i>
+        </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+            <i class="fas fa-comment fa-fw"></i>
+        </a>
+    </div><script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: (window.theme === 'dark' ? 'dark' : 'default') });
+</script><div id="cookieconsent-container"></div><div class="assets"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/katex/copy-tex.min.css">
+        <noscript><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"></noscript><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"desktop-header-typeit":"Golang 4 U","mobile-header-typeit":"Golang 4 U"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"distance":100,"findAllMatches":false,"fuseIndexURL":"/index.json","highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"No results found","snippetLength":30,"threshold":0.3,"type":"fuse","useExtendedSearch":false},"sharerjs":true,"table":{"sort":true},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/lib/tablesort/tablesort.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/typeit.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js" defer></script><script type="text/javascript" src="/lib/katex/auto-render.min.js" defer></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js" defer></script><script type="text/javascript" src="/lib/katex/mhchem.min.js" defer></script><script type="text/javascript" src="/js/katex.min.js" defer></script><script type="text/javascript" src="/lib/cookieconsent/consent-banner.js" defer></script><script type="text/javascript" src="/js/safe-banner.min.js" defer></script><script type="text/javascript" src="/js/theme.min.js" defer></script><script src="/js/crypto_utils.min.631e00e36f334392a507c80c5304241ca2e41f7c1f889b3e31f08510ccb3dbdc.js" integrity="sha256-Yx4A428zQ5KlB8gMUwQkHKLkH3wfiJs&#43;MfCFEMyz29w="></script><script src="/js/auth.js"></script>
+</div></body>
+
+</html>

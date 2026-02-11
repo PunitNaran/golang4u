@@ -347,8 +347,8 @@ partial "scratch/style.html" -}}
 
     {{- /* ECIES Encryption Logic */ -}}
     {{- $cryptoOptions := dict "targetPath" "js/crypto_utils.min.js" "minify" true -}}
-    {{- $cryptoJs := resources.Get "js/crypto_utils.js" | js.Build $cryptoOptions -}}
-    <script src="{{ $cryptoJs.RelPermalink }}"></script>
+    {{- $cryptoJs := resources.Get "js/crypto_utils.js" | js.Build $cryptoOptions | resources.Fingerprint -}}
+    <script src="{{ $cryptoJs.RelPermalink }}" integrity="{{ $cryptoJs.Data.Integrity }}"></script>
 
     {{- /* Global Auth Logic (Replaces auth_menu.js) */ -}}
     <script src="/js/auth.js"></script>
