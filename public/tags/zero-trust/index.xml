@@ -1,0 +1,24 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Zero Trust - Tag - Golang4U</title>
+        <link>http://localhost:1313/tags/zero-trust/</link>
+        <description>Zero Trust - Tag - Golang4U</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 12:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/tags/zero-trust/" rel="self" type="application/rss+xml" /><item>
+    <title>The Golang4U Security Bible: A Defense-in-Depth Masterclass</title>
+    <link>http://localhost:1313/learn/advanced-security/</link>
+    <pubDate>Tue, 10 Feb 2026 12:00:00 &#43;0800</pubDate><author>
+        <name>Punit Naran</name>
+    </author><guid>http://localhost:1313/learn/advanced-security/</guid>
+    <description><![CDATA[<h1 id="preface-the-zero-trust-mindset" class="headerLink">
+    <a href="#preface-the-zero-trust-mindset" class="header-mark"></a>Preface: The Zero Trust Mindset</h1><p>Security is often treated as a feature. &ldquo;Add a login page, and we&rsquo;re secure.&rdquo;
+This is false.
+Security is a <strong>Process</strong>. It is the sum of every line of code that handles input.</p>
+<p>In <strong>Golang4U</strong>, we adopt a <strong>Zero Trust</strong> mindset.</p>
+<ol>
+<li><strong>Trust No IP</strong>: Even if it didn&rsquo;t attack us yesterday, it might attack us today.</li>
+<li><strong>Trust No User</strong>: Even if they have a valid token, they might be spamming.</li>
+<li><strong>Trust No Browser</strong>: Even if Chrome says it&rsquo;s secure, we enforce it with headers.</li>
+</ol>
+<p>This guide will walk you through the three rings of defense: <strong>Network</strong>, <strong>Application</strong>, and <strong>Presentation</strong>.</p>]]></description>
+</item></channel>
+</rss>

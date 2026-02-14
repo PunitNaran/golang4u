@@ -3,5 +3,33 @@
         <title>Categories - Category - Golang4U</title>
         <link>http://localhost:1313/categories/</link>
         <description>Categories - Category - Golang4U</description>
-        <generator>Hugo -- gohugo.io</generator><language>en</language><atom:link href="http://localhost:1313/categories/" rel="self" type="application/rss+xml" /></channel>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 14 Feb 2026 09:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/categories/" rel="self" type="application/rss+xml" /><item>
+    <title>Engineering Handbook</title>
+    <link>http://localhost:1313/categories/engineering-handbook/</link>
+    <pubDate>Sat, 14 Feb 2026 09:00:00 &#43;0800</pubDate><author>
+        <name>Author</name>
+    </author><guid>http://localhost:1313/categories/engineering-handbook/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>Security</title>
+    <link>http://localhost:1313/categories/security/</link>
+    <pubDate>Sat, 14 Feb 2026 09:00:00 &#43;0800</pubDate><author>
+        <name>Author</name>
+    </author><guid>http://localhost:1313/categories/security/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>Authentication</title>
+    <link>http://localhost:1313/categories/authentication/</link>
+    <pubDate>Tue, 10 Feb 2026 18:00:00 &#43;0800</pubDate><author>
+        <name>Author</name>
+    </author><guid>http://localhost:1313/categories/authentication/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>Architecture</title>
+    <link>http://localhost:1313/categories/architecture/</link>
+    <pubDate>Tue, 10 Feb 2026 10:00:00 &#43;0800</pubDate><author>
+        <name>Author</name>
+    </author><guid>http://localhost:1313/categories/architecture/</guid>
+    <description><![CDATA[]]></description>
+</item></channel>
 </rss>

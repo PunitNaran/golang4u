@@ -41,6 +41,7 @@
 
     {{- /* Posts */ -}}
     {{- if ne $posts.enable false | and .Site.RegularPages -}}
+
     {{- /* Paginate */ -}}
     {{- $pages := where .Site.RegularPages "Type" "in" site.Params.mainSections -}}
     {{- if .Site.Params.page.hiddenFromHomePage -}}
@@ -48,15 +49,39 @@
     {{- else -}}
     {{- $pages = where $pages "Params.hiddenfromhomepage" "!=" true -}}
     {{- end -}}
+
     {{- with $posts.paginate | default .Site.Params.paginate -}}
     {{- $pages = $.Paginate $pages . -}}
     {{- else -}}
     {{- $pages = .Paginate $pages -}}
     {{- end -}}
-    {{- range $pages.Pages -}}
-    {{- .Render "summary" -}}
-    {{- end -}}
-    {{- partial "paginator.html" . -}}
+
+    {{- /* Layout Logic */ -}}
+    <div class="container mx-auto px-4 pb-16">
+        {{- $paginator := .Paginator -}}
+        {{- $isFirstPage := eq $paginator.PageNumber 1 -}}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {{- range $index, $page := $paginator.Pages -}}
+            {{- if and $isFirstPage (eq $index 0) -}}
+            {{- /* Featured Post (Full Width) */ -}}
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 mb-8">
+                {{- partial "featured-post.html" . -}}
+            </div>
+            {{- else -}}
+            {{- /* Standard Post Card */ -}}
+            <div class="h-full">
+                {{- partial "post-card.html" . -}}
+            </div>
+            {{- end -}}
+            {{- end -}}
+        </div>
+
+        {{- /* Paginator */ -}}
+        <div class="mt-12">
+            {{- partial "paginator.html" . -}}
+        </div>
+    </div>
     {{- end -}}
 </div>
 {{- end -}}

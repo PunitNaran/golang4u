@@ -837,7 +837,7 @@ series = "series"
     pre = ""
     post = ""
     name = "Admin"
-    url = "/admin/"
+    url = "/admin-panel/"
     title = ""
     weight = 12
   [[menu.main]]

@@ -1,326 +1,333 @@
-# Building a Production-Grade Go Backend: The Golang4U Architecture Deep Dive
+# The Golang4U Architecture: A Service-Oriented Masterclass
 
 
-# Introduction
+# Preface: Why Read This?
 
-In the world of Go application development, "structure" is a topic of endless debate. Should you use a flat structure? Group by feature? Follow "Standard Go Project Layout"?
+If you are just starting with Go, you might write everything in `main.go`. It works for a "Hello World," but it fails for a production system.
+If you are an expert, you might argue about "Clean Architecture" vs "Hexagonal" vs "Onion."
 
-With **Golang4U**, we aimed to build a system that is robust enough for enterprise use cases but simple enough to be maintained by a small team. We adopted a **Service-Oriented** layered architecture (often called Clean Architecture or Hexagonal Architecture lite) to ensure separation of concerns, testability, and scalability.
+**Golang4U** adopts a pragmatic, production-ready **Service-Oriented Architecture (SOA)** structure. It is designed to be:
+1.  **Testable**: Every layer can be mocked.
+2.  **Scalable**: New features (like a "Video" post type) don't break old ones.
+3.  **Readable**: A new developer knows exactly where to put code.
 
-In this deep dive, we will explore:
-1.  **The Tech Stack Decisions**: Why Echo? Why MongoDB?
-2.  **The Project Structure**: Mapping the `internal` folder.
-3.  **Dependency Injection**: How we wire it all together without global state.
-4.  **Request Lifecycle**: Tracing a request from the user's browser to the database and back.
-
----
-
-# 1. The Tech Stack decisions
-
-Every architectural choice comes with trade-offs. Here is why we chose our specific stack.
-
-### 1.1 The Web Framework: Echo (v4)
-
-Go's standard `net/http` library is powerful, but for a production REST API, you often find yourself rewriting the same boilerplate: routing with parameters, group middleware, data binding, and response formatting.
-
-We chose **[Echo](https://echo.labstack.com/)** for three main reasons:
-
-1.  **Performance**: Echo's router is highly optimized, with zero dynamic memory allocation for route dispatching.
-2.  **Middleware Ecosystem**: It has a robust suite of built-in middleware (Recover, Logger, CORS, Secure) that are production-ready out of the box.
-3.  **Context Interface**: The `echo.Context` interface simplifies request handling significantly.
-
-**Code Example: The Power of Binding**
-
-In standard Go, parsing a JSON body involves creating a decoder and handling EOF errors manually. In Echo:
-
-```go
-type LoginRequest struct {
-    Email    string `json:"email" validate:"required,email"`
-    Password string `json:"password" validate:"required"`
-}
-
-func (h *AuthHandler) Login(c echo.Context) error {
-    var req LoginRequest
-    // Bind() handles JSON, XML, Form data automatically based on Content-Type
-    if err := c.Bind(&req); err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request format"})
-    }
-    
-    // ... validation and logic ...
-}
-```
-
-### 1.2 The Database: MongoDB
-
-We chose **MongoDB** (NoSQL) over a traditional relational database (PostgreSQL/MySQL) for specific reasons related to our domain:
-
-*   **Content Management**: Blog posts, comments, and tags are inherently hierarchical and document-oriented. A post has embedded comments, arrays of tags, and dynamic metadata. Storing this in a single document avoids complex `JOIN` operations.
-*   **Schema Flexibility**: As we iterate on User Profiles (adding social links, preferences, 2FA secrets), we can update the struct in Go without running heavy migration scripts on the database.
-*   **Read Performance**: For a read-heavy application (viewing feeds), fetching a single document is generally faster than joining 4-5 tables.
-
-**Go Driver**: We use the official `go.mongodb.org/mongo-driver/v2`.
+This guide is not a summary. It is a **Masterclass**. We will read the code together, line by line, layer by layer. By the end, you will understand not just *how* it works, but *why* it was built this way.
 
 ---
 
-# 2. The Project Structure
+# Chapter 1: The Blueprint (Folder Structure)
 
-We follow the **Standard Go Project Layout**, designed to separate public API code from internal business logic. This isn't just arbitrary; it prevents "import cycles" and forces you to think about dependencies.
+Go is infamous for not having a standard structure. However, the community has coalesced around the **Standard Go Project Layout**.
+We define our project by **What it is**, not **What it does**.
 
-### 2.1 The "Clean Architecture" Map
+### 1.1 The High-Level Map
 
 ```mermaid
 graph TD
-    subgraph "External World"
-        Client[User Browser/Mobile]
-        DB[(MongoDB)]
-    end
-
-    subgraph "Interface Layer (Transport)"
-        Handler[HTTP Handlers (Echo)]
-    end
-
-    subgraph "Core Business Logic"
-        Service[Service Layer]
-    end
-
-    subgraph "Data Access"
-        Repo[Repository Layer]
-    end
-
-    Client -->|HTTP Request| Handler
-    Handler -->|DTO| Service
-    Service -->|Domain Model| Repo
-    Repo -->|BSON| DB
-```
-
-### 2.2 The Directory Tree
-
-```mermaid
-graph LR
-    Root[Project Root]
+    Root[golang4u_server]
     Root --> Cmd[cmd/]
     Root --> Internal[internal/]
+    Root --> Pkg[pkg/]
     
-    Cmd --> Main[main.go (Wiring)]
+    Cmd --> ServerMain[server/main.go]
     
-    Internal --> Handler[handler/ (HTTP)]
-    Internal --> Service[service/ (Logic)]
-    Internal --> Repo[repository/ (DB)]
-    Internal --> Model[model/ (Structs)]
-    Internal --> Middleware[middleware/ (Security)]
+    Internal --> Handler[handler/]
+    Internal --> Service[service/]
+    Internal --> Repository[repository/]
+    Internal --> Model[model/]
+    Internal --> Config[config/]
+    Internal --> Security[security/]
 ```
 
-### 2.3 `cmd/server/main.go`: The Composition Root
-The `main` package is the *only* place where all layers meet. It performs **Dependency Injection**.
-1.  **Config**: Loads `config.toml`.
-2.  **Infra**: Connects to Mongo/Redis.
-3.  **Wiring**: Injects `Repo` into `Service`, and `Service` into `Handler`.
-4.  **Run**: Starts the HTTP listener.
+### 1.2 `cmd/`: The Entry Point
+This folder is the "Main Entrance." It contains the `main` package.
+*   **Rule**: Minimal logic. This file should just parse flags, read config, and call `server.Run()`.
+*   **Why?**: By keeping `main` small, we allow others to import our application code (in `internal`) without running the server.
 
-### 2.4 `internal/model`: The Shared Language
-This package contains **Pure Data Structures**. It has *zero* dependencies on other internal packages.
-```go
-// internal/model/user.go
-type User struct {
-    ID        string    `bson:"_id,omitempty" json:"id"`
-    Email     string    `bson:"email" json:"email"`
-    Profile   Profile   `bson:"profile" json:"profile"`
-    // Password is NOT in JSON for security
-    Password  string    `bson:"password" json:"-"` 
-}
-```
+### 1.3 `internal/`: The Private Core
+In Go 1.4+, directories named `internal` are special. The Go compiler **forbids** external projects from importing packages inside `internal`.
+*   **Why?**: This enforces API boundaries. We are free to break things inside `internal` without worrying about breaking 3rd-party users of our library.
+*   **The Layers**:
+    *   **Handler**: Speaking HTTP (Parsing JSON, Status Codes).
+    *   **Service**: Business Logic (Validation, Encryption, Emailing).
+    *   **Repository**: Data Access (SQL, Mongo, Redis).
 
-### 2.3 `internal/repository` (Data Access Layer)
-**Responsibility**: Talk to the database.
-This layer knows *how* to store things (BSON, SQL queries) but doesn't know *why*. It performs CRUD operations.
-
-**Idiom**: We accept interfaces or specific structs and return domain models.
-
-```go
-// internal/repository/user_repository.go
-
-type UserRepository struct {
-    collection *mongo.Collection
-}
-
-func NewUserRepository(db *mongo.Database) *UserRepository {
-    return &UserRepository{
-        collection: db.Collection("users"),
-    }
-}
-
-func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {
-    var user model.User
-    // Use a context with timeout for production safety
-    ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-    defer cancel()
-
-    err := r.collection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
-    if err != nil {
-        if errors.Is(err, mongo.ErrNoDocuments) {
-            return nil, nil // Not found is not always an error
-        }
-        return nil, err
-    }
-    return &user, nil
-}
-```
-
-### 2.4 `internal/service` (Business Logic Layer)
-**Responsibility**: The brain of the application.
-It validates business rules, combines data from multiple repositories, and handles external APIs (email, payment).
-
-**Example Rule**: "A user cannot register with an email that is already blocked."
-
-```go
-// internal/service/auth_service.go
-
-type AuthService struct {
-    userRepo  *repository.UserRepository
-    ipFilter  *ipfilter.Service
-}
-
-func (s *AuthService) RegisterUser(req model.RegisterRequest) error {
-    // 1. Check if email exists
-    existing, _ := s.userRepo.FindByEmail(context.Background(), req.Email)
-    if existing != nil {
-        return errors.New("email already taken")
-    }
-
-    // 2. Hash Password (bcrypt/argon2)
-    hashed, _ := bcrypt.GenerateFromPassword([]byte(req.Password), 14)
-
-    // 3. Create User Model
-    newUser := model.User{
-        Email:    req.Email,
-        Password: string(hashed),
-    }
-
-    // 4. Save
-    return s.userRepo.Create(context.Background(), &newUser)
-}
-```
-
-### 2.5 `internal/handler` (Transport Layer)
-**Responsibility**: Speak HTTP.
-It reads the `echo.Context`, parses requests, calls the Service, and formats the Response.
-
-**Crucial Rule**: The handler should rarely have `if` statements related to business logic. It should just handle *input parsing* and *output formatting*.
+### 1.4 `pkg/`: The Public Library
+Code here is safe for anyone to use.
+*   **Example**: `pkg/utils` might contain a helper to format dates.
+*   **Rule**: No business logic here. Just generic tools.
 
 ---
 
-# 3. Dependency Injection (WIring)
+# Chapter 2: Dependency Injection (The Wiring)
 
-Go doesn't have a "Magic Container" like Spring Boot (Java) or NestJS, and that's a good thing. We favor **Explicit Dependency Injection**. We manually pass dependencies into constructors (`New...` functions).
+The most critical pattern in Golang4U is **Dependency Injection (DI)**.
+Many beginners use Global Variables for database connections (`var DB *sql.DB`).
+**This is the root of all evil.**
+*   It makes parallel testing impossible (tests overwrite each other's DB).
+*   It hides dependencies (you don't know function X uses the DB).
 
-This happens in `main.go`. It makes the dependency graph obvious and makes testing easy (we can pass mocks implementation).
+### 2.1 The Constructor Pattern
+
+We use "Constructor Functions" (factories) to create our structs.
+
+In `internal/handler/handler.go`:
 
 ```go
-// Main wiring in main.go
+type Handler struct {
+    DB          database.DBStore           // Interface!
+    data        *ttlcache.Cache[string, any]
+    PostService *service.PostService
+    UserService *service.UserService
+}
 
-func main() {
-    // 1. Infrastructure
-    mongoClient := connectMongo()
-    db := mongoClient.Database("golang4u")
+// The "Constructor"
+func NewHandler(db database.DBStore, ps *service.PostService, ...) *Handler {
+    return &Handler{
+        DB:          db,
+        PostService: ps,
+        // ...
+    }
+}
+```
 
-    // 2. Repositories
-    userRepo := repository.NewUserRepository(db)
-    postRepo := repository.NewPostRepository(db)
+**Key Takeaway**: The `Handler` *asks* for what it needs. It doesn't build it.
 
-    // 3. Services (injected with Repositories)
-    authService := service.NewAuthService(userRepo)
-    postService := service.NewPostService(postRepo)
+### 2.2 The Composition Root (`server.go`)
 
-    // 4. Handlers (injected with Services)
-    authHandler := handler.NewAuthHandler(authService)
-    postHandler := handler.NewPostHandler(postService)
+If everyone asks for dependencies, who *creates* them?
+The **Composition Root**. In our case, `SetupServer` in `internal/server/server.go`.
 
-    // 5. Routes
+```go
+func SetupServer(db database.DBStore, config *config.Config) *Server {
+    // 1. Create Services (injecting DB)
+    userService := service.NewUserService(db, ...)
+    postService := service.NewPostService(db, ...)
+
+    // 2. Create Handlers (injecting Services)
+    h := handler.NewHandler(config, db, userSvc, postSvc, ...)
+
+    // 3. Create Router (injecting Handlers)
     e := echo.New()
-    e.POST("/login", authHandler.Login)
+    // ... wiring routes ...
+    
+    return &Server{e: e, h: h}
 }
 ```
 
----
-
-# 4. Request Lifecycle: A Step-by-Step Flow
-
-Let's visualize what happens when a user clicks "Log In".
-
-```mermaid
-sequenceDiagram
-    participant Client
-    participant Middleware
-    participant Handler
-    participant Service
-    participant Repository
-    participant Database
-
-    Client->>Middleware: POST /login (JSON)
-    Middleware->>Middleware: Logger & Rate Limit check
-    Middleware->>Handler: Pass Request
-    
-    Handler->>Handler: Bind JSON to Struct
-    Handler->>Handler: Validate (Required fields)
-    Handler->>Service: Login(email, password)
-    
-    Service->>Repository: FindByEmail(email)
-    Repository->>Database: db.users.findOne({email: ...})
-    Database-->>Repository: User Document
-    Repository-->>Service: User Model
-    
-    Service->>Service: CompareHash(password, user.Hash)
-    Service-->>Handler: Return User/Error
-    
-    Handler->>Handler: Generate PASETO Token
-    Handler-->>Client: 200 OK {token: "..."}
-```
-
-### Detailed Breakdown
-
-1.  **Ingress**: The request hits the server.
-2.  **Middleware Chain**:
-    *   **Recovery**: Ensures if the handlers panic, the server doesn't crash.
-    *   **CORS**: Checks if the request is coming from an allowed origin (`golang4u.com`).
-    *   **IPFilter**: Checks if the IP is in our Redis blocklist.
-    *   **Logger**: Logs `path=/login status=... latency=...` for observability.
-3.  **Handler**: `func (h *AuthHandler) Login` is called. It parses the JSON body.
-4.  **Service**: `authService.Login` performs the password comparison. It avoids returning specific errors like "User not found" to prevent user enumeration attacks; instead, it returns "Invalid Credentials".
-5.  **Response**: The handler wraps the result in a standard JSON envelope: `{"data": ..., "status": "success"}`.
+This creates a clear dependency graph:
+`Router` -> `Handler` -> `Service` -> `Repo` -> `DB`.
+It is an **Acyclic Graph**. (No circles).
 
 ---
 
-# 5. Advanced Topcs
+# Chapter 3: The Presentation Layer (`Handler`)
 
-### 5.1 Context Usage
-In Go, `context.Context` is the lifeline of a request. It carries concepts of:
-*   **Deadlines**: "Stop this DB query if it takes > 2 seconds".
-*   **Cancellation**: "The user closed the browser, stop processing".
+The **Handler** layer is the Diplomat. It speaks the language of the Web (HTTP).
+Its job is to translate JSON into Go Structs, call the Service, and translate results back to JSON.
+**It must NEVER contain business logic.**
 
-We pass `ctx` from Handler -> Service -> Repository. MongoDB respects this context.
+### Detailed Walkthrough: `HandleFormSubmission`
+
+Let's look at a complex handler in `internal/handler/handler.go`.
 
 ```go
-// Creating a child context with timeout
-ctx, cancel := context.WithTimeout(c.Request().Context(), 2*time.Second)
-defer cancel()
+func (h *Handler) HandleFormSubmission(c echo.Context) error {
+    // 1. Protocol Decoding
+    formType := c.Param("formType") // "news", "jobs", etc.
+    
+    // 2. Security Check (Virus Scan)
+    // The handler knows about 'filescan', but not 'how' to scan.
+    if err := h.fs.ScanData(c, nil); err != nil {
+        return err // 403 Forbidden or 500 Internal Error
+    }
 
-user, err := h.service.GetUser(ctx, id)
+    // 3. User Context (Authentication)
+    // We retrieve the authenticated user from the request context/token.
+    userStore, err := GetAvatar(c, h.TTLDB, h.DB)
+    if err != nil { return err }
+
+    // 4. State Validation (Handler Logic)
+    // "Is the user banned? Is the user verified?"
+    // This is borderline business logic, but it's acceptable here 
+    // as it gates access to the service call.
+    if userStore.Disable {
+        return c.JSON(http.StatusForbidden, "Disabled")
+    }
+
+    // 5. Routing Logic
+    switch formType {
+    case "news":
+        return h.handleNews(c, ctx)
+    case "learn":
+        return h.handleLearn(c, ctx)
+    // ...
+    }
+}
 ```
 
-### 5.2 Error Handling vs Logging
-We don't log errors in the Repository. We return them.
-We don't log errors in the Service. We return them.
-**We log errors in the Handler.**
+### The Sub-Handlers pattern
+Notice `handleNews`. The main handler is getting too big, so we split it.
 
-Why? If you log everywhere, your logs become spam. "Failed to query DB" would appear 3 times (Repo log, Service log, Handler log). By bubbling the error up, the Handler decides:
-*   **500 Internal Error**: Log the full stack trace for devs. Return "Something went wrong" to user.
-*   **400 Bad Request**: Don't log (user error). Return proper message to user.
+```go
+func (h *Handler) handleNews(c echo.Context, ctx context.Context) error {
+    // A. Bind (JSON -> Struct)
+    data := new(formdata.NewsFormData)
+    if err := c.Bind(data); err != nil { return err }
+    
+    // B. Validate (Struct Tags)
+    if err := c.Validate(data); err != nil { return err }
+    
+    // C. File Handling
+    // The handler knows about Multipart Forms. The Service does not.
+    // So the handler extracts the []byte here.
+    data.NewsCover, _ = readFile(c, "news-cover")
+
+    // D. Call Service
+    return h.PostService.CreateNews(ctx, data)
+}
+```
+
+**Why extract the file bytes here?**
+If we passed `c *echo.Context` to the Service, the Service would depend on `echo` (HTTP). That violates our layering. By extracting `[]byte`, the Service receives pure data. It can be tested without a web server.
+
+---
+
+# Chapter 4: The Business Layer (`Service`)
+
+The **Service** layer is the Brain. It contains the rules of the application.
+"Users must be 18+." "Passwords must be encrypted." "Emails must be unique."
+
+### Case Study: `UserService.CreateUser`
+
+In `internal/service/user_service.go`:
+
+```go
+func (s *UserService) CreateUser(newUser *user.User) error {
+    // Logic 1: Decryption (Privacy)
+    // The raw request has encrypted fields. We unlock them here.
+    plainEmail, _ := security.DecryptECIES(s.privKey, newUser.EncrypedEmail)
+
+    // Logic 2: Blind Indexing (Uniqueness)
+    // Check if email exists without storing plain email.
+    hash := sha256.Sum256(plainEmail)
+    if s.repo.Exists(hash) {
+        return Error("Already Registered")
+    }
+
+    // Logic 3: Roles
+    if s.repo.Count() == 0 {
+         newUser.Role = "admin" // First user is King
+    }
+
+    // Logic 4: Persistence
+    return s.repo.Save(newUser)
+}
+```
+
+**Notice what is missing**:
+*   No `c.JSON`. The service returns `error` or `struct`. It doesn't know about JSON.
+*   No `http.StatusForbidden`. It returns domain errors (`ErrDuplicateUser`).
+
+---
+
+# Chapter 5: The Data Layer (`Repository`)
+
+The **Repository** layer is the Librarian. It knows how to talk to the database.
+We define it using an Interface in `internal/database/database.go`.
+
+```go
+type DBStore interface {
+    GetUserStore(key string) (interface{}, error)
+    SetUserStore(key string, value interface{}) error
+    CountUsers() (int64, error)
+    // ...
+}
+```
+
+### Why usage Interface? (The Mocking Power)
+
+Imagine writing a test for `Service.CreateUser`.
+If `Service` depended on `*mongo.Client`, you would need to run a MongoDB Docker container just to run `go test`. That's slow.
+
+With an interface, we can do this:
+
+```go
+// mocks/db_mock.go
+type MockDB struct {
+    users map[string]interface{}
+}
+
+func (m *MockDB) SetUserStore(key string, val interface{}) error {
+    m.users[key] = val
+    return nil
+}
+```
+
+Now our unit tests run in milliseconds.
+
+### The "Store" Wrapper Pattern
+
+Golang4U uses a NoSQL database (MongoDB implied by key-value semantics in `database.go`).
+But we don't just dump the `User` struct. We wrap it.
+
+```go
+type Store struct {
+    User         User          // The Public Profile
+    ReferalCodes []ReferalCode // Internal Referral Data
+    Disable      bool          // Admin Flag
+    Lifetime     time.Time     // TTL for temp users
+}
+```
+
+This "Metadata Wrapper" allows us to add system-level flags (like `Disable`) without polluting the `User` object that might be returned to the frontend Main API.
+
+---
+
+# Chapter 6: Cross-Cutting Concerns
+
+Some logic touches every layer.
+
+### 6.1 Configuration (`config/`)
+We load config once in `main`, and pass it down.
+`Handler` needs `config.ClamavURL`.
+`Service` needs `config.GmailToken`.
+This is passed via the Constructor, ensuring every component has explicitly declared its configuration needs.
+
+### 6.2 Security (`security/` & `ipfilter/`)
+Security is often implemented as **Middleware** (wrapping the Handler).
+*   **IPFilter**: Checks IP before Handler logic.
+*   **RateLimit**: Checking frequency.
+*   **PASETO**: Checks Auth Tokens.
+
+But deep security (Encryption) happens in `Service` (as seen in `CreateUser`).
+
+---
+
+# Chapter 7: Error Handling Strategy
+
+Go errors are values. In `golang4u`, we propagate them up.
+
+1.  **Repository**: Returns `mongo.ErrNoDocuments`.
+2.  **Service**: Wraps it: `fmt.Errorf("user not found: %w", err)`.
+3.  **Handler**: Unwraps it (using `errors.Is`) and decides the HTTP status.
+    *   If `user not found` -> `404 Not Found`.
+    *   If `db connection failed` -> `500 Internal Error`.
+
+This keeps the "HTTPness" in the handler. The Service shouldn't decide if an error is a 400 or a 404; it just says "It failed because X".
 
 ---
 
 # Conclusion
 
-The architectural choices in Golang4U provide a stable foundation. By strictly separating **Transport (HTTP)** from **Logic** from **Storage**, we create a codebase that is easy to navigate and safe to modify. Dependencies flow *inwards*, and data flows *downwards*.
+The Golang4U architecture is an exercise in **Discipline**.
+It is tempting to just write a SQL query inside a Handler.
+It is tempting to just use a global `var DB`.
 
-In the next post of this series, we will look at how we secure this architecture using **Advanced Security Middleware** like Custom IP Filtering and Token Buckets.
+But by adhering to this **Service-Oriented-Architecture**, we gain:
+1.  **Isolation**: Bugs in the DB layer don't break the HTTP layer logic.
+2.  **Clarity**: New developers know exactly where to put new code.
+3.  **Confidence**: We can test every piece in isolation.
+
+This is the standard for professional Go engineering.
 

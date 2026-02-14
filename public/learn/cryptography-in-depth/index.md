@@ -1,187 +1,183 @@
-# Encryption Everywhere: End-to-End Security with ECIES and AES-GCM
+# The Golang4U Cryptography Bible: E2EE, ECIES & Blind Indexing
 
 
-# Introduction
+# Preface: Why TLS is Not Enough
 
-HTTPS (TLS) is fantastic. It encrypts the pipe between the user and your server. But what happens if:
-1.  You have a load balancer or CDN that terminates TLS before the request reaches your app?
-2.  You have a compromised middleware logging requests?
-3.  You want to ensure **nobody**, not even your infrastructure provider, can read a user's password in transit?
+HTTPS (TLS 1.3) protects data "In Transit."
+It prevents the Hacker in the Coffee Shop from reading your password.
+But it does **not** protect against:
+1.  **Malicious Proxies**: A corporate proxy (MITM) that terminates TLS.
+2.  **The Server Itself**: If our logs accidentally print `req.Body`.
+3.  **Memory Dumps**: If the server crashes and dumps RAM.
 
-This is where **Application-Layer Encryption** comes in.
-
-In Golang4U, we use **ECIES (Elliptic Curve Integrated Encryption Scheme)** for data in transit (Frontend -> Backend) and **AES-GCM** for data at rest.
-
----
-
-# 1. Understanding ECIES (Conceptual)
-
-ECIES is a hybrid encryption scheme. It combines the best of Asymmetric (Public Key) and Symmetric (Shared Key) cryptography.
-
-**The Actors:**
-*   **Alice (Browser)**: Wants to send a secret message.
-*   **Bob (Server)**: Has a static Public Key ($Pub_B$).
-
-**The Workflow:**
-1.  **Key Generation**: Alice generates a temporary (ephemeral) key pair ($Priv_A, Pub_A$).
-2.  **Key Agreement (ECDH)**: Alice uses her $Priv_A$ and Bob's $Pub_B$ to mathematically derive a **Shared Secret** ($S$).
-3.  **Encryption**: Alice encrypts the message with AES using $K_{enc}$ derived from $S$.
-4.  **Transmission**: Alice sends her Public Key ($Pub_A$) along with the ciphertext.
-
-```mermaid
-sequenceDiagram
-    participant Browser (Alice)
-    participant Hacker (Eve)
-    participant Server (Bob)
-
-    Note over Server (Bob): Has Static Keypair (PrivB, PubB)
-    Browser (Alice)->>Server (Bob): GET /public-key
-    Server (Bob)-->>Browser (Alice): Sends PubB
-    
-    Note over Browser (Alice): 1. Generates Ephemeral (PrivA, PubA)
-    Note over Browser (Alice): 2. Computes S = ECDH(PrivA, PubB)
-    Note over Browser (Alice): 3. Encrypts Msg with AES(S)
-    
-    Browser (Alice)->>Server (Bob): POST [PubA] + [Ciphertext]
-    
-    Note right of Hacker (Eve): Sees PubA and Ciphertext.
-    Note right of Hacker (Eve): Cannot compute S without PrivA or PrivB!
-    
-    Note over Server (Bob): 1. Receives PubA
-    Note over Server (Bob): 2. Computes S = ECDH(PrivB, PubA)
-    Note over Server (Bob): 3. Decrypts Msg with AES(S)
-```
-
-Bob receives it, does the math in reverse, regenerates $K_{enc}$, and decrypts the message.
+To fix this, we implement **End-to-End Encryption (E2EE)** at the Application Layer.
+The password is encrypted *in the browser* and only decrypted *inside the Service function*.
 
 ---
 
-# 2. Frontend Implementation (Web Crypto API)
+# Chapter 1: The Cryptographic Suite
 
-We don't need heavy JS libraries. Modern browsers support `SubtleCrypto`.
+We chose standard, NIST-approved algorithms to ensure broad compatibility (especially with browser WebCrypto API).
 
-```javascript
-// assets/js/crypto_utils.js (Simplified)
+### 1.1 Asymmetric: ECDH (P-256)
+*   **Algorithm**: Elliptic Curve Diffie-Hellman.
+*   **Curve**: NIST P-256 (also known as `prime256v1`).
+*   **Why?**: Native hardware acceleration on x86/ARM. Built-in to Chrome/Firefox/Safari.
 
-async function encryptData(plaintext, serverPublicKeyHex) {
-    // 1. Import Server's Public Key
-    const serverKey = await window.crypto.subtle.importKey(
-        "spki",
-        hexToArrayBuffer(serverPublicKeyHex),
-        { name: "ECDH", namedCurve: "P-256" },
-        false, []
-    );
+### 1.2 Symmetric: AES-GCM (256-bit)
+*   **Algorithm**: Advanced Encryption Standard.
+*   **Mode**: Galois/Counter Mode (GCM).
+*   **Why?**: Authenticated Encryption (AEAD). It protects both **Secrecy** (Reading) and **Integrity** (Tampering). If you flip a bit in the ciphertext, decryption fails; it doesn't just produce garbage.
 
-    // 2. Generate Ephemeral Key Pair for this encryption
-    const ephemeralKeyPair = await window.crypto.subtle.generateKey(
-        { name: "ECDH", namedCurve: "P-256" },
-        true, ["deriveKey"]
-    );
+---
 
-    // 3. Derive Shared Secret (AES-GCM key)
-    const sharedKey = await window.crypto.subtle.deriveKey(
-        { name: "ECDH", public: serverKey },
-        ephemeralKeyPair.privateKey,
-        { name: "AES-GCM", length: 256 },
-        false, ["encrypt"]
-    );
+# Chapter 2: ECIES (Elliptic Curve Integrated Encryption Scheme)
 
-    // 4. Encrypt
-    const iv = window.crypto.getRandomValues(new Uint8Array(12));
-    const encrypted = await window.crypto.subtle.encrypt(
-        { name: "AES-GCM", iv: iv },
-        sharedKey,
-        new TextEncoder().encode(plaintext)
-    );
+Public Key crypto (ECC) is slow. You can't encrypt a 1MB file with it.
+Symmetric crypto (AES) is fast. But you can't share the key safely.
 
-    // 5. Pack: EphemeralPublicKey + IV + Ciphertext
-    return pack(ephemeralKeyPair.publicKey, iv, encrypted);
+**ECIES** is the "Hybrid" answer.
+
+### 2.1 The Handshake (The Math)
+
+Let's assume **Alice** (Browser) sends data to **Bob** (Server).
+
+1.  **Bob** has a static keypair: $(b, B)$ where $B = b \times G$.
+2.  **Alice** generates ephemeral keypair: $(a, A)$ where $A = a \times G$.
+3.  **Alice** computes Shared Secret $S$:
+    $$S = a \times B = a \times (b \times G)$$
+4.  **Bob** computes Shared Secret $S$:
+    $$S = b \times A = b \times (a \times G)$$
+    $$(ab)G = (ba)G$$
+
+They now share the secret $S$ (the coordinate on the curve) without ever transmitting it.
+5.  **Alice** derives key $K = KDF(S)$.
+6.  **Alice** encrypts message $C = AES_{GCM}(M, K)$.
+7.  **Alice** sends: $[A] + [Nonce] + [C]$.
+
+---
+
+# Chapter 3: The Implementation (`internal/security`)
+
+### 3.1 Backend Key Loading (`LoadOrGenerateKey`)
+
+We need a persistent identity.
+In `internal/security/keys.go`:
+
+```go
+func LoadOrGenerateKey(path string) (*ecdh.PrivateKey, error) {
+    // 1. Try Read PEM from Disk
+    // ...
+    
+    // 2. Generate New (P-256)
+    priv, err := ecdh.P256().GenerateKey(rand.Reader)
+    
+    // 3. Save to Disk (PEM encoded)
+    // ...
+    return priv, nil
 }
 ```
 
-This effectively creates a secure tunnel *inside* the HTTPS tunnel.
+This Key is the "Server Identity".
 
----
+### 3.2 The Decryption Function (`DecryptECIES`)
 
-# 3. Backend Implementation (Go `crypto/ecdh`)
-
-On the Go side, we parse this package.
+When the server receives the payload, it must unpack it.
+Our format is critical: `Uncompressed_Pub_Key (65 bytes) || Nonce (12 bytes) || Ciphertext`.
 
 ```go
-// internal/crypto/ecies.go
-
-func Decrypt(payload []byte, serverPrivKey *ecdh.PrivateKey) ([]byte, error) {
-    // 1. Unpack payload
-    // [Pub Key (65 bytes)] [IV (12 bytes)] [Ciphertext (rest)]
-    clientPubKeyBytes := payload[:65]
-    iv := payload[65:77]
-    ciphertext := payload[77:]
+func DecryptECIES(serverPriv *ecdh.PrivateKey, payloadHex string) ([]byte, error) {
+    // 1. Decode Hex
+    data, _ := hex.DecodeString(payloadHex)
     
-    // 2. Parse Client's Ephemeral Public Key
-    clientPubKey, err := ecdh.P256().NewPublicKey(clientPubKeyBytes)
-    if err != nil { return nil, err }
+    // 2. Extract Parts
+    clientPubBytes := data[:65]
+    nonce := data[65:77]
+    ciphertext := data[77:]
     
-    // 3. ECDH: Derive Shared Secret
-    sharedSecret, err := serverPrivKey.ECDH(clientPubKey)
-    if err != nil { return nil, err }
+    // 3. Parse Client Ephemeral Public Key
+    clientPub, _ := ecdh.P256().NewPublicKey(clientPubBytes)
     
-    // 4. Derive AES Key (using HKDF or similar standard, usually just the secret directly if simple)
-    // In strict ECIES, we use KDF. For simple P-256+AES-GCM, we might just use the secret if 32 bytes 
-    // or run it through SHA-256.
+    // 4. ECDH (Perform the math)
+    sharedSecret, _ := serverPriv.ECDH(clientPub)
+    
+    // 5. Decrypt using Shared Secret as AES Key
+    // (Note: In production we use HKDF on sharedSecret, 
+    // strictly, P-256 x coordinate is 32 bytes, fits AES-256)
     block, _ := aes.NewCipher(sharedSecret)
     gcm, _ := cipher.NewGCM(block)
     
-    // 5. Decrypt
-    return gcm.Open(nil, iv, ciphertext, nil)
+    plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+    return plaintext, err
 }
 ```
-
-### Why P-256?
-We chose the **NIST P-256** curve because:
-1.  **Hardware Support**: It has hardware acceleration on most CPUs (AES-NI).
-2.  **Browser Standard**: It is universally supported by the Web Crypto API.
 
 ---
 
-# 4. Securing Data at Rest: AES-GCM
+# Chapter 4: Privacy & The Blind Index
 
-Once we decrypt the data, we might need to store it.
-*   **Passwords**: NEVER encrypt passwords. Always **Hash** them (Argon2 / bcrypt).
-*   **PII (Emails, Phones)**: Encrypt.
-*   **Tokens (OAuth, 2FA)**: Encrypt.
+We treat user data (Email) as toxic waste. We encrypt it at rest.
+`User.EncryptedEmail` = `a8d29f...`.
 
-We use **AES-GCM (Galois/Counter Mode)**.
+However, we have a problem: **Uniqueness**.
+We need to ensure `bob@gmail.com` doesn't sign up twice.
+But `Encrypt("bob@gmail.com")` produces a *different* ciphertext every time (because of the random Nonce).
+We cannot query `WHERE email = '...'`.
 
-### Authenticated Encryption
-AES in CBC (Cipher Block Chaining) mode is malleable. If an attacker flips a bit in the ciphertext, it decrypts to garbage—or worse, specific garbage.
-**GCM** solves this by adding an "Authentication Tag". If the ciphertext is tampered with (even 1 bit), the decryption function returns an error `authentication failed` rather than corrupt data.
+### 4.1 The Solution: HMAC Blind Indexing
+
+We create a separate field: `BlindIndex`.
+This is a deterministic hash.
+$$Index = HMAC_{SHA256}(Email, Server\_Secret\_Search\_Key)$$
+
+*   We store:
+    *   `EncryptedEmail`: Use for sending emails (Decryptable).
+    *   `BlindIndex`: Use for searching/uniqueness (Not Decryptable).
+
+### 4.2 Why HMAC? Why not SHA256?
+Plain `SHA256(email)` is vulnerable to **Rainbow Tables**. An attacker can pre-calculate the hash of every email on earth.
+`HMAC` requires a Secret Key. If the database leaks, the attacker has the hashes, but not the Secret Key. They cannot reverse the hashes (because hashes are one-way), and they cannot brute-force them (because they don't have the key).
+
+In `internal/service/user_service.go`:
 
 ```go
-func EncryptStorage(plaintext []byte) ([]byte, error) {
-    // Master Key loaded from secure env
-    block, _ := aes.NewCipher(masterKey)
-    gcm, _ := cipher.NewGCM(block)
-    
-    // ALWAYS use a random Nonce
-    nonce := make([]byte, gcm.NonceSize())
-    io.ReadFull(rand.Reader, nonce)
-    
-    // Seal = Encrypt + Append Auth Tag
-    return gcm.Seal(nonce, nonce, plaintext, nil), nil
+// Calculate Blind Index
+hash := hmac.New(sha256.New, []byte(os.Getenv("SEARCH_KEY")))
+hash.Write([]byte(plainEmail))
+index := hex.EncodeToString(hash.Sum(nil))
+
+// Check DB
+if s.db.Exists("idx_email_" + index) {
+    return Error("Email Taken")
 }
 ```
 
-### The Nonce Dangers
-The **Nonce** (Number used ONCE) is critical. If you reuse a nonce with the same key, an attacker can XOR the ciphertexts to recover the plaintext.
-*   **Fix**: We randomly generate a 12-byte nonce for *every* encryption operation and store it alongside the ciphertext.
+This guarantees **k-anonymity** and **uniqueness** simultaneously.
+
+---
+
+# Chapter 5: Frontend Integration (Web Crypto)
+
+The backend is only half the story. The browser must do the encryption.
+We use the native `window.crypto.subtle` API. No `npm install`.
+
+1.  **ImportKey**: Browser imports Server Public Key (SPKI).
+2.  **GenerateKey**: Browser makes ephemeral EC Keypair.
+3.  **DeriveKey**: ECDH + AES-GCM context.
+4.  **Encrypt**: AES-GCM Encrypt password.
+5.  **Export**: Pack bytes and Hex encode.
+
+This ensures that the plaintext password **never** travels over the network.
 
 ---
 
 # Conclusion
 
-Cryptography is a double-edged sword. Implemented correctly, it provides mathematical certainty of privacy. Implemented poorly (reused nonces, weak curves), it provides a false sense of security.
+We have built a system where:
+1.  **Secrecy**: Only the Server can read the data (ECIES).
+2.  **Privacy**: Even the DB admin cannot read the data (AES-GCM at rest).
+3.  **Integrity**: No one can tamper with the data (GCM Tags).
+4.  **Searchability**: We can still enforce rules (Blind Indexing).
 
-Golang4U adheres to strict standards: **ECDH P-256** for key exchange, **AES-256-GCM** for encryption, and standard **Web Crypto** APIs. This ensures our user's data remains theirs, regardless of who is listening on the wire.
-
-In the final post of our series, we tackle the implementation of **Two-Factor Authentication (TOTP)** to secure user accounts.
+This is cryptographic engineering at its finest.
 

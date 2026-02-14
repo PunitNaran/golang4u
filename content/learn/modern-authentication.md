@@ -1,175 +1,235 @@
 ---
-title: "The Evolution of Authentication: JWT, PASETO, and PASERK"
+title: "The Golang4U Authentication Bible: PASETO, Usage & Design"
 date: 2026-02-10T14:00:00+08:00
 lastmod: 2026-02-10T14:00:00+08:00
 author: "Punit Naran"
 authorLink: ""
-description: "A comprehensive masterclass on the history and future of token-based authentication. We analyze the cryptographic failures of JWT, the security-by-design of PASETO, and the emerging standard for key management: PASERK."
-tags: ["Go", "Authentication", "PASETO", "PASERK", "Security", "Cryptography", "JWT", "Ed25519"]
-categories: ["Authentication", "Deep Dive"]
+description: "The definitive guide to the Golang4U authentication system. We explore the move from JWT to PASETO v4, the implementation of PASERK key management, and the custom Echo middleware verifying every request."
+tags: ["Go", "Authentication", "PASETO", "PASERK", "Security", "Code Walkthrough", "JWT", "Ed25519"]
+categories: ["Authentication", "Engineering Handbook"]
 featuredImage: ""
 ---
 
-# Introduction
+# Preface: Authentication vs Authorization
 
-Authentication is the bedrock of modern application security. For years, developers have reached for **JWT (JSON Web Tokens)** as the default tool for stateless authentication.
+First, a distinction.
+*   **Authentication (AuthN)**: "Who are you?" (I am User 123).
+*   **Authorization (AuthZ)**: "What can you do?" (I can delete posts).
 
-But standards evolve. Vulnerabilities are found. Better tools are built.
-
-In this deep dive, we will trace the evolution of token security:
-1.  **Generation 1: JWT (RFC 7519)** - The Standard with Footguns.
-2.  **Generation 2: PASETO (Platform-Agnostic Security Tokens)** - The Secure Replacement.
-3.  **Generation 3: PASERK (Platform-Agnostic SERialized Keys)** - The Key Management Layer.
-
-We will strictly analyze *why* Golang4U moved to PASETO and how it prepares us for a PASERK future.
+This, guide focuses on **AuthN**. specifically, how we securely identify a user across stateless HTTP requests.
 
 ---
 
-# Part 1: The JWT Era (and its Cracks)
+# Chapter 1: The Fall of JWT (JSON Web Tokens)
 
-JWTs are flexible. Too flexible. A JWT header looks like this:
+For a decade, JWT (RFC 7519) was the king. But heavy lies the crown.
+A JWT is a string: `header.payload.signature`.
 
+### The Design Flaw: Cipher Agility
+The header tells the server how to verify the token.
 ```json
-{
-  "alg": "HS256",
-  "typ": "JWT"
+{ "alg": "HS256", "typ": "JWT" }
+```
+This "Cipher Agility" is a disaster.
+1.  **Alg="None" Attack**: Attackers change `HS256` to `None` and strip the signature. Many libraries defaulted to trusting the header.
+2.  **Algorithm Confusion**: Attackers change `RS256` (Asymmetric) to `HS256` (Symmetric). They sign the token using the Public Key (which they have) as the "Secret Key". The server verifies it using the Public Key (thinking it's the Secret Key). It matches. hacked.
+
+### The PASETO Solution
+**PASETO** (Platform-Agnostic Security Tokens) removes the choice.
+Format: `v4.public.payload.footer`
+
+*   **v4**: This Version implies exactly `Ed25519` for signatures. No negotiation.
+*   **public**: This Purpose implies Asymmetric crypto.
+
+If you send a `v2` token, the server rejects it. If you send a `local` token to a `public` endpoint, the server rejects it. The protocol is strict.
+
+---
+
+# Chapter 2: The Key Standard (PASERK)
+
+Managing keys is hard. Is this 32-byte string an AES key? An Ed25519 Seed? A Curve25519 Point?
+We use **PASERK** (Platform-Agnostic SERialized Keys).
+
+### 2.1 The Format
+`k4.local.A8F92...`
+
+*   **k4**: Version 4.
+*   **local**: Symmetric Key type.
+*   **Data**: Base64URL encoded key.
+
+### 2.2 Parsing Logic (`internal/token/paseto.go`)
+We enforce this format in our code.
+
+```go
+func getV4SymmetricKey(keyStr string) (paseto.V4SymmetricKey, error) {
+    // 1. Check Prefix (Type Safety)
+    if !strings.HasPrefix(keyStr, "k4.local.") {
+         return paseto.V4SymmetricKey{}, fmt.Errorf("invalid key format")
+    }
+
+    // 2. Decode Payload
+    encoded := strings.TrimPrefix(keyStr, "k4.local.")
+    bytes, _ := base64.RawURLEncoding.DecodeString(encoded)
+    
+    // 3. Import Key
+    return paseto.V4SymmetricKeyFromBytes(bytes)
 }
 ```
 
-The `alg` field tells the server *how* to verify the token. This design choice—letting the client specify the crypto—led to catastrophic vulnerabilities.
-
-### 1.1 The "None" Algorithm
-The spec defined `alg: none` for debugging.
-*   **Attack**: An attacker sends a token with `{"alg": "none"}` and removes the signature.
-*   **Result**: Naive libraries see "none", skip verification, and accept the token as valid.
-
-### 1.2 Algorithm Confusion (The RSA -> HMAC Attack)
-This is a classic cryptographic downgrade attack.
-*   **Scenario**: Server supports `RS256` (Public/Private key) but also `HS256` (Shared secret).
-*   **Attack**: 
-    1.  Attacker gets the Server's **Public Key** (it's public!).
-    2.  Attacker creates a malicious token.
-    3.  Attacker sets header to `{"alg": "HS256"}`.
-    4.  Attacker signs the token using the **Public Key** as the HMAC secret.
-*   **Result**: The server sees `HS256`, looks up its verification key (which it thinks is the Public Key), treats it as an HMAC secret, hashes the token, and... **IT MATCHES**. The attacker has forged a valid token using only public data.
+This prevents "Key Confusion" at the configuration level. You cannot accidentally use a `v2` key.
 
 ---
 
-# Part 2: PASETO (The Fix)
+# Chapter 3: The Token Maker (`PasetoMaker`)
 
-**PASETO** (Platform-Agnostic Security Tokens) was designed by security experts to eliminate these choices. It is **versioned**, not negotiated.
-
-### 2.1 The Format
-`v4.public.payload.footer`
-
-*   **v4**: Defines the *exact* cipher suite. No choices. No implementation errors.
-*   **public**: Defines the purpose (Public Key Signatures).
-
-### 2.2 Why v4?
-Golang4U uses **PASETO v4** because it uses state-of-the-art cryptography:
-*   **Signatures**: **Ed25519**. Fast, constant-time, and resistant to side-channel attacks.
-*   **Encryption**: **XChaCha20-Poly1305**. A stream cipher that is faster than AES on mobile devices and doesn't require hardware acceleration to be secure.
-
-### 2.3 Implementation in Go
-
-In `Golang4U`, we use `aidantwoods/go-paseto`. Here is how we enforce strict security rules.
+In `internal/token/paseto.go`, we define the `Maker` interface.
 
 ```go
-// internal/token/paseto_maker.go
+type Maker interface {
+    CreateToken(username string, duration time.Duration) (string, *Payload, error)
+    VerifyToken(token string) (*Payload, error)
+}
+```
 
-func (maker *PasetoMaker) VerifyToken(token string) (*PasetoPayload, error) {
+### 3.1 Creating the Token
+When `CreateUser` or `Login` succeeds, we mint a token:
+
+```go
+func (maker *PasetoMaker) CreateToken(username string, duration time.Duration) (string, *Payload, error) {
+    tokenObj := paseto.NewToken()
+    
+    // Standard Claims (RFC 7519 mapping)
+    tokenObj.SetJti(uuid.NewString())     // Unique ID
+    tokenObj.SetIssuedAt(time.Now())      // iat
+    tokenObj.SetNotBefore(time.Now())     // nbf
+    tokenObj.SetExpiration(time.Now().Add(duration)) // exp
+    
+    // Custom Claims
+    tokenObj.Set("username", username)
+    tokenObj.Set("role", "user")
+
+    // Encrypt (Symmetric V4 Local)
+    encrypted := tokenObj.V4Encrypt(maker.symmetricKey, nil)
+    return encrypted, payload, nil
+}
+```
+
+**Why specific timestamps?**
+*   `IssuedAt`: Good for audit logs.
+*   `NotBefore`: Prevents a token from being used if "created in the future" (Clock Skew protection).
+*   `Expiration`: Mandatory.
+
+### 3.2 Verifying the Token
+This is the most critical function in the system.
+
+```go
+func (maker *PasetoMaker) VerifyToken(token string) (*Payload, error) {
     parser := paseto.NewParser()
     
-    // Rule 1: Must not be expired
+    // 1. Rule: Must not be expired
     parser.AddRule(paseto.NotExpired())
     
-    // Rule 2: Must be issued by US
-    parser.AddRule(paseto.IssuedBy("Golang4U"))
+    // 2. Rule: Must NOT have a footer (Anti-Tamper)
+    // Attackers sometimes hide data in unencrypted footers.
+    // We enforce a "Closed System".
+    // (Note: library specific implementation varies, manual check below)
     
-    // Rule 3: Must be intended for 'access' (not refresh)
-    parser.AddRule(paseto.Subject("access_token"))
-    
-    parsedToken, err := parser.ParseV4Public(maker.publicKey, token, nil)
+    tokenObj, err := parser.ParseV4Local(maker.symmetricKey, token, nil)
     if err != nil {
         return nil, ErrInvalidToken
     }
     
-    return payloadFromToken(parsedToken), nil
+    // 3. Manual Footer Check
+    if len(tokenObj.Footer()) > 0 {
+        return nil, fmt.Errorf("footer not allowed")
+    }
+
+    return payloadFromToken(tokenObj), nil
 }
 ```
 
 ---
 
-# Part 3: PASERK (The Future of Keys)
+# Chapter 4: The Middleware (`PasetoMW`)
 
-So we have secure tokens. But how do we manage the **Keys**?
-If I send you a string `d8291...`, is it a Public Key? A Private Key? An AES key? Algorithm specific?
+How do we protect routes?
+In `internal/paseto_middleware/paseto.go`.
 
-This is where **PASERK (Platform-Agnostic SERialized Keys)** comes in. It is to Keys what PASETO is to Tokens.
-
-### 3.1 The Problem PASERK Solves
-"Key Confusion" is as dangerous as Token Algorithm confusion. If you accidentally paste a Private Key into a Public Key configuration field, you might expose your secrets.
-
-### 3.2 The Format
-PASERK wraps keys in a type-safe, versioned string format.
-
-*   `k4.public.d82...` -> This is clearly a v4 Public Key.
-*   `k4.secret.a19...` -> This is clearly a v4 Secret Key.
-*   `k4.lid...` -> Local Key ID.
-
-### 3.3 Wrapping Keys (Key Wrapping)
-PASERK also defines standard ways to **encrypt keys** for transport.
-Example: `k4.seal...`
-This allows us to store our Ed25519 private keys in the database, *encrypted by a Master Key*, in a standard format that any PASERK-aware library can decrypt.
-
-**Theoretical Implementation:**
+### 4.1 Lookup Strategy
+We support multiple clients (Web, CLI, Mobile).
+We look for the token in this order:
+1.  **Cookie**: `access_token` (Web Browser, prevents XSS reading).
+2.  **Header**: `Authorization: Bearer ...` (CLI/Mobile/Postman).
 
 ```go
-// Future-proofing Golang4U with PASERK
+func createTokenExtractor(lookup "cookie:access_token,header:Authorization") {
+    // splits string and returns a function that checks cookie then header
+}
+```
 
-func RotateKeys() string {
-    // Generate new Keypair
-    secretKey := paseto.NewV4AsymmetricSecretKey()
-    
-    // Serialize to PASERK for safe storage
-    paserkString := secretKey.ExportPaserk() // "k4.secret....."
-    
-    // In the future, we might wrap this with a master key
-    // wrapped := paserk.Wrap(masterKey, secretKey)
-    
-    return paserkString
+### 4.2 The Interceptor
+```go
+func (pmw *PasetoMW) Paseto(next echo.HandlerFunc) echo.HandlerFunc {
+    return func(c echo.Context) error {
+        // 1. Extract Token
+        tokenStr := extractToken(c)
+        if tokenStr == "" {
+             return c.JSON(401, "Missing Token")
+        }
+
+        // 2. Verify Crypto
+        payload, err := pmw.maker.VerifyToken(tokenStr)
+        if err != nil {
+             return c.JSON(401, "Invalid Token")
+        }
+
+        // 3. Inject into Context
+        // This is why handlers can do: user := c.Get("user")
+        c.Set("user", payload)
+
+        return next(c)
+    }
 }
 ```
 
 ---
 
-# Part 4: Beyond the Token (mTLS & Hitless TLS)
+# Chapter 5: Access vs Refresh Strategy
 
-Secure authentication is only one layer correctly. As we scale Golang4U, we look at the transport layer itself.
+We use a **Dual Token System**.
 
-### 4.1 mTLS (Mutual TLS)
-Standard TLS proves the **Server's** identity to the Client ("You are really google.com").
-**mTLS** proves the **Client's** identity to the Server ("You are really valid-service-A").
+### 5.1 Access Token (The "Wristband")
+*   **Type**: PASETO v4 Local.
+*   **Lifetime**: 15 Minutes.
+*   **Storage**: **HttpOnly** Cookie.
+*   **Logic**: Stateless. If the signature is valid, you are in.
 
-In a microservices architecture (e.g., if we split `Golang4U` into `AuthService` and `PostService`), we would use mTLS.
-1.  **PostService** presents a Client Certificate signed by our internal CA.
-2.  **AuthService** verifies the certificate.
-3.  If valid, the connection is allowed.
-This happens *before* any PASETO token is even sent. It is "Zero Trust" networking.
+### 5.2 Refresh Token (The "Ticket Stub")
+*   **Type**: PASETO v4 Local (Different Key!).
+*   **Lifetime**: 7 Days.
+*   **Storage**: **HttpOnly** Cookie (Path=`/refresh`).
+*   **Logic**: **Stateful**.
 
-### 4.2 Hitless TLS (Session Resumption)
-Establishing a TLS handshake is expensive (multiple round-trips).
-**Hitless TLS** (or Session Resumption) allows a client to reconnect quickly without a full handshake, using a **Session Ticket**.
-*   **Danger**: If the "Ticket Key" on the server is compromised, *all* previous sessions can be decrypted (Forward Secrecy violation).
-*   **Golang4U Key Rotation**: We configure our `tls.Config` to rotate Session Ticket Keys hourly, preserving Forward Secrecy while maintaining performance.
+**The Refresh Flow**:
+1.  Access Token expires (401).
+2.  Frontend calls `POST /refresh` (Browser sends Refresh Cookie automatically).
+3.  Server verifies Refresh Token signature.
+4.  **Critical Step**: Server checks DB: "Is User 123 Banned? Is Version matches?"
+5.  If OK, Server issues NEW Access Token (15 mins) and NEW Refresh Token (7 days).
+
+**Why Rotate Refresh Tokens?**
+If a hacker steals your Refresh Token, they have 7 days of access.
+By Rotating it (issuing a new one on every use), we detect theft.
+*   If the Hacker uses the Old Token -> We detect reuse -> We invalid the entire family of tokens. (Reuse Detection).
 
 ---
 
 # Conclusion
 
-Security is a moving target.
-1.  **JWT** served us well but showed its age with cryptographic footguns.
-2.  **PASETO** fixes the protocol level, giving us versioned, secure-by-default tokens.
-3.  **PASERK** simplifies the management of the keys themselves.
+Golang4U's Auth system is not just "import a library."
+It is a carefully designed machine:
+1.  **Strict Crypto**: PASETO v4 + PASERK.
+2.  **Strict Middleware**: Order of operations (Cookie -> Header -> Verify).
+3.  **Strict Lifecycle**: Access (15m) / Refresh (7d) Rotation.
 
-By choosing PASETO v4 (`Ed25519`) today, Golang4U is well-positioned to adopt PASERK and mTLS strategies as we scale from a monolith to a distributed system.
+This provides the speed of stateless architecture with the security controls of stateful sessions.

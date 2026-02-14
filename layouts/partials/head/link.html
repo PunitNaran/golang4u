@@ -1,6 +1,27 @@
 {{- $cdn := .Scratch.Get "cdn" | default dict -}}
 {{- $fingerprint := .Scratch.Get "fingerprint" -}}
 
+<script>
+    // Sync DoIt theme attribute to Tailwind 'dark' class
+    function syncTheme() {
+        const theme = document.body.getAttribute('theme');
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }
+
+    // Observer for theme changes
+    const observer = new MutationObserver(syncTheme);
+    document.addEventListener('DOMContentLoaded', () => {
+        observer.observe(document.body, { attributes: true, attributeFilter: ['theme'] });
+        syncTheme(); // Initial check
+    });
+</script>
+
+
+
 {{- if not .Site.Params.app.noFavicon -}}
 {{- with .Site.Params.app.svgFavicon -}}
 <link rel="icon" href="{{ . }}">

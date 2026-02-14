@@ -1,0 +1,23 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Service-Repository - Tag - Golang4U</title>
+        <link>http://localhost:1313/tags/service-repository/</link>
+        <description>Service-Repository - Tag - Golang4U</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 10:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/tags/service-repository/" rel="self" type="application/rss+xml" /><item>
+    <title>The Golang4U Architecture: A Service-Oriented Masterclass</title>
+    <link>http://localhost:1313/learn/architecture-deep-dive/</link>
+    <pubDate>Tue, 10 Feb 2026 10:00:00 &#43;0800</pubDate><author>
+        <name>Punit Naran</name>
+    </author><guid>http://localhost:1313/learn/architecture-deep-dive/</guid>
+    <description><![CDATA[<h1 id="preface-why-read-this" class="headerLink">
+    <a href="#preface-why-read-this" class="header-mark"></a>Preface: Why Read This?</h1><p>If you are just starting with Go, you might write everything in <code>main.go</code>. It works for a &ldquo;Hello World,&rdquo; but it fails for a production system.
+If you are an expert, you might argue about &ldquo;Clean Architecture&rdquo; vs &ldquo;Hexagonal&rdquo; vs &ldquo;Onion.&rdquo;</p>
+<p><strong>Golang4U</strong> adopts a pragmatic, production-ready <strong>Service-Oriented Architecture (SOA)</strong> structure. It is designed to be:</p>
+<ol>
+<li><strong>Testable</strong>: Every layer can be mocked.</li>
+<li><strong>Scalable</strong>: New features (like a &ldquo;Video&rdquo; post type) don&rsquo;t break old ones.</li>
+<li><strong>Readable</strong>: A new developer knows exactly where to put code.</li>
+</ol>
+<p>This guide is not a summary. It is a <strong>Masterclass</strong>. We will read the code together, line by line, layer by layer. By the end, you will understand not just <em>how</em> it works, but <em>why</em> it was built this way.</p>]]></description>
+</item></channel>
+</rss>

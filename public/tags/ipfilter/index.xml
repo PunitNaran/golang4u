@@ -4,38 +4,21 @@
         <link>http://localhost:1313/tags/ipfilter/</link>
         <description>IPFilter - Tag - Golang4U</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 12:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/tags/ipfilter/" rel="self" type="application/rss+xml" /><item>
-    <title>Fortifying the Backend: Advanced IP Filtering, Rate Limiting, and Headers</title>
+    <title>The Golang4U Security Bible: A Defense-in-Depth Masterclass</title>
     <link>http://localhost:1313/learn/advanced-security/</link>
     <pubDate>Tue, 10 Feb 2026 12:00:00 &#43;0800</pubDate><author>
         <name>Punit Naran</name>
     </author><guid>http://localhost:1313/learn/advanced-security/</guid>
-    <description><![CDATA[<h1 id="introduction" class="headerLink">
-    <a href="#introduction" class="header-mark"></a>Introduction</h1><p>In the modern internet landscape, deploying a backend without protection is akin to leaving your front door wide open. Automated bots, script kiddies, and targeted attackers are constantly scanning for vulnerabilities.</p>
-<p>&ldquo;Working code&rdquo; is not enough. We need <strong>Secure Code</strong>.</p>
-<p>In this article, we will implement three layers of defense for our Go backend:</p>
+    <description><![CDATA[<h1 id="preface-the-zero-trust-mindset" class="headerLink">
+    <a href="#preface-the-zero-trust-mindset" class="header-mark"></a>Preface: The Zero Trust Mindset</h1><p>Security is often treated as a feature. &ldquo;Add a login page, and we&rsquo;re secure.&rdquo;
+This is false.
+Security is a <strong>Process</strong>. It is the sum of every line of code that handles input.</p>
+<p>In <strong>Golang4U</strong>, we adopt a <strong>Zero Trust</strong> mindset.</p>
 <ol>
-<li><strong>Network Layer Defense</strong>: Application-level IP Filtering.</li>
-<li><strong>Traffic Control</strong>: Granular Rate Limiting/Throttling.</li>
-<li><strong>Browser Defense</strong>: Secure HTTP Headers.</li>
+<li><strong>Trust No IP</strong>: Even if it didn&rsquo;t attack us yesterday, it might attack us today.</li>
+<li><strong>Trust No User</strong>: Even if they have a valid token, they might be spamming.</li>
+<li><strong>Trust No Browser</strong>: Even if Chrome says it&rsquo;s secure, we enforce it with headers.</li>
 </ol>
-<h3 id="visualizing-defense-in-depth" class="headerLink">
-    <a href="#visualizing-defense-in-depth" class="header-mark"></a>Visualizing Defense in Depth</h3><pre class="mermaid">graph LR
-    Attacker[Attacker] -->|Request| FW[Firewall/WAF]
-    FW -->|Allowed| IP[1. IP Filter Middleware]
-    
-    IP -->|Blocked IP| 403[403 Forbidden]
-    IP -->|Allowed IP| Rate[2. Rate Limiter]
-    
-    Rate -->|Too Fast| 429[429 Too Many Requests]
-    Rate -->|OK| Auth[3. Auth Middleware]
-    
-    Auth -->|Invalid Token| 401[401 Unauthorized]
-    Auth -->|Valid User| Logic[Business Logic]
-    
-    Logic -->|Response| Headers[4. Secure Headers]
-    Headers -->|Safe HTML| Client[User Browser]
-</pre><hr>
-<h1 id="1-custom-ip-filtering-middleware" class="headerLink">
-    <a href="#1-custom-ip-filtering-middleware" class="header-mark"></a>1. Custom IP Filtering Middleware</h1><p>While firewalls (AWS WAF, Cloudflare) are your first line of defense, adding application-level filtering gives you granular control. You can dynamically block IPs based on application behavior (e.g., &ldquo;5 failed logins in 1 minute&rdquo;).</p>]]></description>
+<p>This guide will walk you through the three rings of defense: <strong>Network</strong>, <strong>Application</strong>, and <strong>Presentation</strong>.</p>]]></description>
 </item></channel>
 </rss>

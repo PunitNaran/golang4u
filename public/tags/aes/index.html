@@ -20,7 +20,24 @@
 <meta name="application-name" content="Golang 4 U">
 <meta name="apple-mobile-web-app-title" content="Golang 4 U">
 
-<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><script>
+    
+    function syncTheme() {
+        const theme = document.body.getAttribute('theme');
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }
+
+    
+    const observer = new MutationObserver(syncTheme);
+    document.addEventListener('DOMContentLoaded', () => {
+        observer.observe(document.body, { attributes: true, attributeFilter: ['theme'] });
+        syncTheme(); 
+    });
+</script><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/tags/aes/" /><link rel="alternate" href="/tags/aes/index.xml" type="application/rss+xml" title="Golang4U">
 <link rel="feed" href="/tags/aes/index.xml" type="application/rss+xml" title="Golang4U">
@@ -59,7 +76,7 @@
                     href="/addpost/" > Add a Post </a><a class="menu-item menu-item-login"
                     href="/login/" > Log In </a><a class="menu-item menu-item-signup"
                     href="/signup/" > Sign Up </a><a class="menu-item menu-item-admin"
-                    href="/admin/" > Admin </a><a class="menu-item menu-item-dashboard"
+                    href="/admin-panel/" > Admin </a><a class="menu-item menu-item-dashboard"
                     href="/dashboard/" > Dashboard </a><a class="menu-item menu-item-logout"
                     href="#ZgotmplZ" > Log Out </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                     <input type="text"
@@ -111,7 +128,7 @@
                 <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                     Cancel
                 </a>
-            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin-panel/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
                 <i class="fas fa-adjust fa-fw"></i>
             </a></div>
     </div>
@@ -123,7 +140,7 @@
     <div id="search-dropdown-mobile"></div>
 </div><main class="main">
             <div class="container"><div class="page archive"><h2 class="single-title animate__animated animate__pulse animate__faster"><i class="fas fa-tag fa-fw"></i>&nbsp;AES</h2><h3 class="group-title">2026</h3><article class="archive-item">
-                            <a href="/learn/cryptography-in-depth/" class="archive-item-link">Encryption Everywhere: End-to-End Security with ECIES and AES-GCM</a>
+                            <a href="/learn/cryptography-in-depth/" class="archive-item-link">The Golang4U Cryptography Bible: E2EE, ECIES &amp; Blind Indexing</a>
                             <span class="archive-item-date">02-10</span>
                         </article></div></div>
         </main><footer class="footer">

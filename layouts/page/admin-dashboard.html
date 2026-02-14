@@ -1,4 +1,54 @@
 {{ define "content" }}
+<script>
+    (async function () {
+        // 1. Fast Client-Side Check
+        if (!document.cookie.split(';').some((c) => c.trim().startsWith('logged_in='))) {
+            window.location.href = "/login";
+            return;
+        }
+
+        // 2. Show Loading Overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'auth-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = '#0f172a';
+        overlay.style.zIndex = '9999';
+        overlay.style.display = 'flex';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.innerHTML = '<h1 style="color:white; font-family:sans-serif;">Verifying Permissions...</h1>';
+        document.body.appendChild(overlay);
+
+        // 3. Verify Role with Backend
+        try {
+            // Check if we are in dev or prod to get correct API URL
+            // Re-using the logic from the bottom of the file would be cleaner, but we need this to run BEFORE content renders
+            // So we'll duplicate the simple check or just use relative path if on same domain, 
+            // but since frontend/backend are on different ports in dev (1313 vs 8080), we need the full URL.
+            // We'll peek at the template var:
+            const API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
+
+            const res = await fetch(`${API_URL}/profile`, { credentials: 'include' });
+            if (!res.ok) throw new Error('Auth failed');
+
+            const user = await res.json();
+            if (user.role !== 'admin') {
+                alert("Access Denied: Admins only.");
+                window.location.href = "/"; // Redirect to home
+            } else {
+                // Success - remove overlay
+                document.body.removeChild(overlay);
+            }
+        } catch (e) {
+            console.error("Auth Error:", e);
+            window.location.href = "/login";
+        }
+    })();
+</script>
 <div class="dashboard-container">
     <div class="glass-panel">
         <h1 class="gradient-text">Admin Dashboard</h1>
@@ -301,7 +351,7 @@
     async function fetchPendingPosts() {
         const container = document.getElementById('pending-posts-container');
         try {
-            const res = await fetch(`${API_URL}/admin/posts/pending`, { credentials: 'include' });
+            const res = await fetch(`${API_URL}/admin-panel/posts/pending`, { credentials: 'include' });
             if (!res.ok) throw new Error("Failed to load");
             const posts = await res.json();
 
@@ -373,7 +423,7 @@
     window.updateStatus = async function (id, status) {
         if (!confirm(`Mark this post as ${status}?`)) return;
         try {
-            const res = await fetch(`${API_URL}/admin/posts/status`, {
+            const res = await fetch(`${API_URL}/admin-panel/posts/status`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

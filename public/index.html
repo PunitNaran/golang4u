@@ -21,7 +21,24 @@
 <meta name="application-name" content="Golang 4 U">
 <meta name="apple-mobile-web-app-title" content="Golang 4 U">
 
-<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><script>
+    
+    function syncTheme() {
+        const theme = document.body.getAttribute('theme');
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }
+
+    
+    const observer = new MutationObserver(syncTheme);
+    document.addEventListener('DOMContentLoaded', () => {
+        observer.observe(document.body, { attributes: true, attributeFilter: ['theme'] });
+        syncTheme(); 
+    });
+</script><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/" /><link rel="alternate" href="/index.xml" type="application/rss+xml" title="Golang4U">
 <link rel="feed" href="/index.xml" type="application/rss+xml" title="Golang4U">
@@ -66,7 +83,7 @@
                     href="/addpost/" > Add a Post </a><a class="menu-item menu-item-login"
                     href="/login/" > Log In </a><a class="menu-item menu-item-signup"
                     href="/signup/" > Sign Up </a><a class="menu-item menu-item-admin"
-                    href="/admin/" > Admin </a><a class="menu-item menu-item-dashboard"
+                    href="/admin-panel/" > Admin </a><a class="menu-item menu-item-dashboard"
                     href="/dashboard/" > Dashboard </a><a class="menu-item menu-item-logout"
                     href="#ZgotmplZ" > Log Out </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                     <input type="text"
@@ -118,7 +135,7 @@
                 <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                     Cancel
                 </a>
-            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin-panel/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
                 <i class="fas fa-adjust fa-fw"></i>
             </a></div>
     </div>
@@ -155,6 +172,532 @@
             <ion-icon name="play-outline" class="text-xl"></ion-icon>
             Start Coding
         </a>
+    </div><div class="container mx-auto px-4 pb-16"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="col-span-1 md:col-span-2 lg:col-span-3 mb-8">
+
+
+
+
+
+
+
+
+<div
+    class="relative w-full rounded-3xl overflow-hidden shadow-2xl group ring-1 ring-gray-200 dark:ring-gray-700 bg-white dark:bg-gray-800 flex flex-col md:block md:h-[600px]">
+
+    
+    <a href="/learn/secure-file-uploads/" class="block w-full h-64 md:h-full md:absolute md:inset-0 relative overflow-hidden">
+        
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-gray-900">
+            <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+            </div>
+        </div>
+        
+    </a>
+
+    
+    <div
+        class="relative md:absolute bottom-0 left-0 p-6 md:p-12 w-full md:w-3/4 lg:w-2/3 flex flex-col justify-end z-10 bg-white dark:bg-gray-800 md:bg-transparent md:dark:bg-transparent">
+
+        <a href="/learn/secure-file-uploads/" class="block">
+            
+            <div class="flex items-center gap-2 mb-4">
+                <span
+                    class="bg-indigo-600 text-white text-[10px] uppercase font-bold px-3 py-1 rounded-full tracking-widest shadow-sm">
+                    Featured
+                </span>
+                
+                
+                <span
+                    class="bg-gray-100 dark:bg-gray-700/50 md:bg-white/10 md:backdrop-blur-md text-gray-600 dark:text-gray-300 md:text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-gray-200 dark:border-gray-600 md:border-white/20">
+                    Security
+                </span>
+                
+                
+            </div>
+
+            
+            <h2
+                class="text-3xl md:text-5xl lg:text-5xl font-black text-gray-900 dark:text-white md:text-white mb-4 leading-tight tracking-tight group-hover:text-indigo-600 md:group-hover:text-indigo-200 transition-colors duration-300 drop-shadow-lg md:drop-shadow-2xl">
+                The Golang4U File Upload Bible: Streaming to ClamAV
+            </h2>
+
+            
+            <p
+                class="text-gray-600 dark:text-gray-300 md:text-gray-200 text-base md:text-lg line-clamp-3 mb-6 font-medium leading-relaxed max-w-xl">
+                <h1 id="preface-the-upload-vulnerability" class="headerLink">
+    <a href="#preface-the-upload-vulnerability" class="header-mark"></a>Preface: The Upload Vulnerability</h1><p>Accepting user content is necessary but dangerous.
+A &ldquo;Profile Picture&rdquo; upload form is often a backdoor for:</p>
+<ol>
+<li><strong>Shell Uploads</strong>: Uploading <code>shell.php</code> to …</li></ol>
+            </p>
+        </a>
+
+        
+        <div
+            class="flex items-center gap-4 text-gray-500 dark:text-gray-400 md:text-white/90 md:border-t md:border-white/10 pt-4 md:pt-6">
+            <div class="flex items-center gap-3">
+                
+                <div
+                    class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 md:bg-white/10 flex items-center justify-center text-indigo-700 dark:text-indigo-300 md:text-white font-bold text-xs ring-1 ring-indigo-200 dark:ring-indigo-700 md:ring-white/30">
+                    P
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold leading-none text-gray-900 dark:text-white md:text-white">Punit Naran</span>
+                    <span class="text-[10px] uppercase tracking-wide opacity-80">Author</span>
+                </div>
+                
+            </div>
+
+            <div class="hidden md:block w-px h-8 bg-white/20"></div>
+
+            <div class="flex flex-col">
+                <span class="text-xs font-bold leading-none text-gray-900 dark:text-white md:text-white">Feb 14, 2026</span>
+                <span class="text-[10px] uppercase tracking-wide opacity-80">Published</span>
+            </div>
+
+            <div class="ml-auto">
+                <a href="/learn/secure-file-uploads/"
+                    class="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 md:text-white font-bold text-sm group/btn">
+                    Read Article
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 transform transition-transform group-hover/btn:translate-x-1" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div></div><div class="h-full">
+
+
+
+
+
+
+
+
+<article
+    class="bg-white dark:!bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full border border-gray-100 dark:border-gray-700/50 group">
+    <a href="/learn/implementing-2fa/" class="block relative overflow-hidden h-48 sm:h-56 bg-gray-50 dark:bg-gray-800">
+        
+        
+        <div
+            class="w-full h-full p-6 flex flex-col justify-between bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 group-hover:from-indigo-50 group-hover:to-purple-50 dark:group-hover:from-gray-800 dark:group-hover:to-gray-800 transition-colors duration-500 relative overflow-hidden">
+            
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl transform translate-x-10 -translate-y-10 group-hover:bg-indigo-500/10 transition-colors">
+            </div>
+            <div
+                class="absolute bottom-0 left-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl transform -translate-x-5 translate-y-5 group-hover:bg-purple-500/10 transition-colors">
+            </div>
+
+            <h3
+                class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-600 leading-none select-none pointer-events-none opacity-20 transform -rotate-2 scale-150 origin-top-left absolute top-4 left-4 whitespace-nowrap">
+                The Golang4U 2F...
+            </h3>
+
+            <div class="z-10 mt-auto">
+                <span
+                    class="text-4xl text-indigo-500/20 group-hover:text-indigo-500/40 transition-colors font-serif italic">#</span>
+            </div>
+        </div>
+        
+
+        <div class="absolute top-3 right-3">
+            
+            
+            <span
+                class="bg-white/90 dark:bg-black/60 backdrop-blur-md text-gray-800 dark:text-gray-200 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm border border-gray-200 dark:border-white/10">
+                Authentication
+            </span>
+            
+            
+        </div>
+    </a>
+
+    <div class="p-5 sm:p-6 flex-grow flex flex-col">
+        <div class="mb-3 flex items-center text-xs text-gray-500 dark:text-gray-400 gap-3 font-medium">
+            <span class="text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-wider text-[10px]">
+                Authentication
+            </span>
+            <span class="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></span>
+            <span>Feb 10</span>
+        </div>
+
+        <h3
+            class="text-lg font-bold mb-3 leading-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <a href="/learn/implementing-2fa/">
+                The Golang4U 2FA Bible: TOTP, QR Codes &amp; State Machines
+            </a>
+        </h3>
+
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-5 line-clamp-2 leading-relaxed">
+            <h1 id="preface-the-3-factors-of-auth" class="headerLink">
+    <a href="#preface-the-3-factors-of-auth" class="header-mark"></a>Preface: The 3 Factors of Auth</h1><p>Authentication is proving you are who you say you are. There are …</p>
+        </p>
+
+        <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-700/50">
+            
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-6 h-6 rounded-full bg-indigo-50 dark:bg-gray-700 flex items-center justify-center text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+                    P
+                </div>
+                <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Punit Naran</span>
+            </div>
+            
+
+            <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">
+                4 min read
+            </span>
+        </div>
+    </div>
+</article></div><div class="h-full">
+
+
+
+
+
+
+
+
+<article
+    class="bg-white dark:!bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full border border-gray-100 dark:border-gray-700/50 group">
+    <a href="/learn/cryptography-in-depth/" class="block relative overflow-hidden h-48 sm:h-56 bg-gray-50 dark:bg-gray-800">
+        
+        
+        <div
+            class="w-full h-full p-6 flex flex-col justify-between bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 group-hover:from-indigo-50 group-hover:to-purple-50 dark:group-hover:from-gray-800 dark:group-hover:to-gray-800 transition-colors duration-500 relative overflow-hidden">
+            
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl transform translate-x-10 -translate-y-10 group-hover:bg-indigo-500/10 transition-colors">
+            </div>
+            <div
+                class="absolute bottom-0 left-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl transform -translate-x-5 translate-y-5 group-hover:bg-purple-500/10 transition-colors">
+            </div>
+
+            <h3
+                class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-600 leading-none select-none pointer-events-none opacity-20 transform -rotate-2 scale-150 origin-top-left absolute top-4 left-4 whitespace-nowrap">
+                The Golang4U Cr...
+            </h3>
+
+            <div class="z-10 mt-auto">
+                <span
+                    class="text-4xl text-indigo-500/20 group-hover:text-indigo-500/40 transition-colors font-serif italic">#</span>
+            </div>
+        </div>
+        
+
+        <div class="absolute top-3 right-3">
+            
+            
+            <span
+                class="bg-white/90 dark:bg-black/60 backdrop-blur-md text-gray-800 dark:text-gray-200 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm border border-gray-200 dark:border-white/10">
+                Security
+            </span>
+            
+            
+        </div>
+    </a>
+
+    <div class="p-5 sm:p-6 flex-grow flex flex-col">
+        <div class="mb-3 flex items-center text-xs text-gray-500 dark:text-gray-400 gap-3 font-medium">
+            <span class="text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-wider text-[10px]">
+                Security
+            </span>
+            <span class="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></span>
+            <span>Feb 10</span>
+        </div>
+
+        <h3
+            class="text-lg font-bold mb-3 leading-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <a href="/learn/cryptography-in-depth/">
+                The Golang4U Cryptography Bible: E2EE, ECIES &amp; Blind Indexing
+            </a>
+        </h3>
+
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-5 line-clamp-2 leading-relaxed">
+            <h1 id="preface-why-tls-is-not-enough" class="headerLink">
+    <a href="#preface-why-tls-is-not-enough" class="header-mark"></a>Preface: Why TLS is Not Enough</h1><p>HTTPS (TLS 1.3) protects data &ldquo;In Transit.&rdquo;
+It …</p>
+        </p>
+
+        <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-700/50">
+            
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-6 h-6 rounded-full bg-indigo-50 dark:bg-gray-700 flex items-center justify-center text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+                    P
+                </div>
+                <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Punit Naran</span>
+            </div>
+            
+
+            <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">
+                4 min read
+            </span>
+        </div>
+    </div>
+</article></div><div class="h-full">
+
+
+
+
+
+
+
+
+<article
+    class="bg-white dark:!bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full border border-gray-100 dark:border-gray-700/50 group">
+    <a href="/learn/modern-authentication/" class="block relative overflow-hidden h-48 sm:h-56 bg-gray-50 dark:bg-gray-800">
+        
+        
+        <div
+            class="w-full h-full p-6 flex flex-col justify-between bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 group-hover:from-indigo-50 group-hover:to-purple-50 dark:group-hover:from-gray-800 dark:group-hover:to-gray-800 transition-colors duration-500 relative overflow-hidden">
+            
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl transform translate-x-10 -translate-y-10 group-hover:bg-indigo-500/10 transition-colors">
+            </div>
+            <div
+                class="absolute bottom-0 left-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl transform -translate-x-5 translate-y-5 group-hover:bg-purple-500/10 transition-colors">
+            </div>
+
+            <h3
+                class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-600 leading-none select-none pointer-events-none opacity-20 transform -rotate-2 scale-150 origin-top-left absolute top-4 left-4 whitespace-nowrap">
+                The Golang4U Au...
+            </h3>
+
+            <div class="z-10 mt-auto">
+                <span
+                    class="text-4xl text-indigo-500/20 group-hover:text-indigo-500/40 transition-colors font-serif italic">#</span>
+            </div>
+        </div>
+        
+
+        <div class="absolute top-3 right-3">
+            
+            
+            <span
+                class="bg-white/90 dark:bg-black/60 backdrop-blur-md text-gray-800 dark:text-gray-200 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm border border-gray-200 dark:border-white/10">
+                Authentication
+            </span>
+            
+            
+        </div>
+    </a>
+
+    <div class="p-5 sm:p-6 flex-grow flex flex-col">
+        <div class="mb-3 flex items-center text-xs text-gray-500 dark:text-gray-400 gap-3 font-medium">
+            <span class="text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-wider text-[10px]">
+                Authentication
+            </span>
+            <span class="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></span>
+            <span>Feb 10</span>
+        </div>
+
+        <h3
+            class="text-lg font-bold mb-3 leading-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <a href="/learn/modern-authentication/">
+                The Golang4U Authentication Bible: PASETO, Usage &amp; Design
+            </a>
+        </h3>
+
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-5 line-clamp-2 leading-relaxed">
+            <h1 id="preface-authentication-vs-authorization" class="headerLink">
+    <a href="#preface-authentication-vs-authorization" class="header-mark"></a>Preface: Authentication vs Authorization</h1><p>First, a distinction.</p>
+<ul>
+<li><strong>Authentication (AuthN)</strong>: …</li></ul>
+        </p>
+
+        <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-700/50">
+            
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-6 h-6 rounded-full bg-indigo-50 dark:bg-gray-700 flex items-center justify-center text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+                    P
+                </div>
+                <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Punit Naran</span>
+            </div>
+            
+
+            <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">
+                5 min read
+            </span>
+        </div>
+    </div>
+</article></div><div class="h-full">
+
+
+
+
+
+
+
+
+<article
+    class="bg-white dark:!bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full border border-gray-100 dark:border-gray-700/50 group">
+    <a href="/learn/advanced-security/" class="block relative overflow-hidden h-48 sm:h-56 bg-gray-50 dark:bg-gray-800">
+        
+        
+        <div
+            class="w-full h-full p-6 flex flex-col justify-between bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 group-hover:from-indigo-50 group-hover:to-purple-50 dark:group-hover:from-gray-800 dark:group-hover:to-gray-800 transition-colors duration-500 relative overflow-hidden">
+            
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl transform translate-x-10 -translate-y-10 group-hover:bg-indigo-500/10 transition-colors">
+            </div>
+            <div
+                class="absolute bottom-0 left-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl transform -translate-x-5 translate-y-5 group-hover:bg-purple-500/10 transition-colors">
+            </div>
+
+            <h3
+                class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-600 leading-none select-none pointer-events-none opacity-20 transform -rotate-2 scale-150 origin-top-left absolute top-4 left-4 whitespace-nowrap">
+                The Golang4U Se...
+            </h3>
+
+            <div class="z-10 mt-auto">
+                <span
+                    class="text-4xl text-indigo-500/20 group-hover:text-indigo-500/40 transition-colors font-serif italic">#</span>
+            </div>
+        </div>
+        
+
+        <div class="absolute top-3 right-3">
+            
+            
+            <span
+                class="bg-white/90 dark:bg-black/60 backdrop-blur-md text-gray-800 dark:text-gray-200 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm border border-gray-200 dark:border-white/10">
+                Security
+            </span>
+            
+            
+        </div>
+    </a>
+
+    <div class="p-5 sm:p-6 flex-grow flex flex-col">
+        <div class="mb-3 flex items-center text-xs text-gray-500 dark:text-gray-400 gap-3 font-medium">
+            <span class="text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-wider text-[10px]">
+                Security
+            </span>
+            <span class="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></span>
+            <span>Feb 10</span>
+        </div>
+
+        <h3
+            class="text-lg font-bold mb-3 leading-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <a href="/learn/advanced-security/">
+                The Golang4U Security Bible: A Defense-in-Depth Masterclass
+            </a>
+        </h3>
+
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-5 line-clamp-2 leading-relaxed">
+            <h1 id="preface-the-zero-trust-mindset" class="headerLink">
+    <a href="#preface-the-zero-trust-mindset" class="header-mark"></a>Preface: The Zero Trust Mindset</h1><p>Security is often treated as a feature. &ldquo;Add a login …</p>
+        </p>
+
+        <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-700/50">
+            
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-6 h-6 rounded-full bg-indigo-50 dark:bg-gray-700 flex items-center justify-center text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+                    P
+                </div>
+                <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Punit Naran</span>
+            </div>
+            
+
+            <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">
+                5 min read
+            </span>
+        </div>
+    </div>
+</article></div><div class="h-full">
+
+
+
+
+
+
+
+
+<article
+    class="bg-white dark:!bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full border border-gray-100 dark:border-gray-700/50 group">
+    <a href="/learn/architecture-deep-dive/" class="block relative overflow-hidden h-48 sm:h-56 bg-gray-50 dark:bg-gray-800">
+        
+        
+        <div
+            class="w-full h-full p-6 flex flex-col justify-between bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 group-hover:from-indigo-50 group-hover:to-purple-50 dark:group-hover:from-gray-800 dark:group-hover:to-gray-800 transition-colors duration-500 relative overflow-hidden">
+            
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl transform translate-x-10 -translate-y-10 group-hover:bg-indigo-500/10 transition-colors">
+            </div>
+            <div
+                class="absolute bottom-0 left-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl transform -translate-x-5 translate-y-5 group-hover:bg-purple-500/10 transition-colors">
+            </div>
+
+            <h3
+                class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-600 leading-none select-none pointer-events-none opacity-20 transform -rotate-2 scale-150 origin-top-left absolute top-4 left-4 whitespace-nowrap">
+                The Golang4U Ar...
+            </h3>
+
+            <div class="z-10 mt-auto">
+                <span
+                    class="text-4xl text-indigo-500/20 group-hover:text-indigo-500/40 transition-colors font-serif italic">#</span>
+            </div>
+        </div>
+        
+
+        <div class="absolute top-3 right-3">
+            
+            
+            <span
+                class="bg-white/90 dark:bg-black/60 backdrop-blur-md text-gray-800 dark:text-gray-200 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm border border-gray-200 dark:border-white/10">
+                Architecture
+            </span>
+            
+            
+        </div>
+    </a>
+
+    <div class="p-5 sm:p-6 flex-grow flex flex-col">
+        <div class="mb-3 flex items-center text-xs text-gray-500 dark:text-gray-400 gap-3 font-medium">
+            <span class="text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-wider text-[10px]">
+                Architecture
+            </span>
+            <span class="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></span>
+            <span>Feb 10</span>
+        </div>
+
+        <h3
+            class="text-lg font-bold mb-3 leading-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <a href="/learn/architecture-deep-dive/">
+                The Golang4U Architecture: A Service-Oriented Masterclass
+            </a>
+        </h3>
+
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-5 line-clamp-2 leading-relaxed">
+            <h1 id="preface-why-read-this" class="headerLink">
+    <a href="#preface-why-read-this" class="header-mark"></a>Preface: Why Read This?</h1><p>If you are just starting with Go, you might write everything in <code>main.go …</code></p>
+        </p>
+
+        <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-700/50">
+            
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-6 h-6 rounded-full bg-indigo-50 dark:bg-gray-700 flex items-center justify-center text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+                    P
+                </div>
+                <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Punit Naran</span>
+            </div>
+            
+
+            <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">
+                8 min read
+            </span>
+        </div>
+    </div>
+</article></div></div><div class="mt-12"></div>
     </div></div></div>
         </main><footer class="footer">
     <div class="footer-container"><div class="footer-line">

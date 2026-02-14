@@ -1,0 +1,28 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>FileUploads - Tag - Golang4U</title>
+        <link>http://localhost:1313/tags/fileuploads/</link>
+        <description>FileUploads - Tag - Golang4U</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 14 Feb 2026 09:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/tags/fileuploads/" rel="self" type="application/rss+xml" /><item>
+    <title>The Golang4U File Upload Bible: Streaming to ClamAV</title>
+    <link>http://localhost:1313/learn/secure-file-uploads/</link>
+    <pubDate>Sat, 14 Feb 2026 09:00:00 &#43;0800</pubDate><author>
+        <name>Punit Naran</name>
+    </author><guid>http://localhost:1313/learn/secure-file-uploads/</guid>
+    <description><![CDATA[<h1 id="preface-the-upload-vulnerability" class="headerLink">
+    <a href="#preface-the-upload-vulnerability" class="header-mark"></a>Preface: The Upload Vulnerability</h1><p>Accepting user content is necessary but dangerous.
+A &ldquo;Profile Picture&rdquo; upload form is often a backdoor for:</p>
+<ol>
+<li><strong>Shell Uploads</strong>: Uploading <code>shell.php</code> to execute code.</li>
+<li><strong>Malware Distribution</strong>: Hosting a standard Windows virus on your domain.</li>
+<li><strong>DoS Attacks</strong>: Uploading a 50GB file to fill your disk.</li>
+</ol>
+<p>In <strong>Golang4U</strong>, we treat every file as a potential bomb.
+This guide explains how we defuse them using <strong>Streaming</strong> and <strong>ClamAV</strong>.</p>
+<hr>
+<h1 id="chapter-1-the-magic-bytes-trust-nothing" class="headerLink">
+    <a href="#chapter-1-the-magic-bytes-trust-nothing" class="header-mark"></a>Chapter 1: The Magic Bytes (Trust Nothing)</h1><p>First rule: <strong>Never trust the file extension.</strong>
+A file named <code>cute_cat.jpg</code> might actually be a <code>.exe</code>.
+A file named <code>report.pdf</code> might be a shell script.</p>]]></description>
+</item></channel>
+</rss>

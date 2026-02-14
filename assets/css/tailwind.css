@@ -4,19 +4,19 @@
 
 @layer base {
   h1 {
-    @apply tw-text-3xl tw-font-bold tw-m-8;
+    @apply text-3xl font-bold m-8;
   }
   h2 {
-    @apply tw-text-2xl tw-font-bold tw-m-6;
+    @apply text-2xl font-bold m-6;
   }
   h3 {
-    @apply tw-text-xl tw-font-bold tw-m-4;
+    @apply text-xl font-bold m-4;
   }
   ol {
-    @apply tw-list-decimal tw-list-outside;
+    @apply list-decimal list-outside;
   }
   ul {
-    @apply tw-list-disc tw-list-outside;
+    @apply list-disc list-outside;
   }
   
 }

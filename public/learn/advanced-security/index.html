@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noodp" />
-    <title>Fortifying the Backend: Advanced IP Filtering, Rate Limiting, and Headers - Golang4U</title><meta name="Description" content="A deep technical guide on implementing defense-in-depth in Go. We create a custom IP Filtering middleware, implement granular Rate Limiting, and configure secure HTTP headers to prevent XSS and Clickjacking."><meta property="og:url" content="http://localhost:1313/learn/advanced-security/">
+    <title>The Golang4U Security Bible: A Defense-in-Depth Masterclass - Golang4U</title><meta name="Description" content="A definitive guide to securing a Go backend. We dissect the `ipFilter` middleware (Mutex/Radix Tree), the `Tollbooth` rate limiter (Token Bucket), and the rigorous HSTS/CSP header configuration that protects Golang4U users."><meta property="og:url" content="http://localhost:1313/learn/advanced-security/">
   <meta property="og:site_name" content="Golang4U">
-  <meta property="og:title" content="Fortifying the Backend: Advanced IP Filtering, Rate Limiting, and Headers">
-  <meta property="og:description" content="A deep technical guide on implementing defense-in-depth in Go. We create a custom IP Filtering middleware, implement granular Rate Limiting, and configure secure HTTP headers to prevent XSS and Clickjacking.">
+  <meta property="og:title" content="The Golang4U Security Bible: A Defense-in-Depth Masterclass">
+  <meta property="og:description" content="A definitive guide to securing a Go backend. We dissect the `ipFilter` middleware (Mutex/Radix Tree), the `Tollbooth` rate limiter (Token Bucket), and the rigorous HSTS/CSP header configuration that protects Golang4U users.">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="learn">
@@ -24,12 +24,29 @@
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="http://localhost:1313/logo.png">
-  <meta name="twitter:title" content="Fortifying the Backend: Advanced IP Filtering, Rate Limiting, and Headers">
-  <meta name="twitter:description" content="A deep technical guide on implementing defense-in-depth in Go. We create a custom IP Filtering middleware, implement granular Rate Limiting, and configure secure HTTP headers to prevent XSS and Clickjacking.">
+  <meta name="twitter:title" content="The Golang4U Security Bible: A Defense-in-Depth Masterclass">
+  <meta name="twitter:description" content="A definitive guide to securing a Go backend. We dissect the `ipFilter` middleware (Mutex/Radix Tree), the `Tollbooth` rate limiter (Token Bucket), and the rigorous HSTS/CSP header configuration that protects Golang4U users.">
 <meta name="application-name" content="Golang 4 U">
 <meta name="apple-mobile-web-app-title" content="Golang 4 U">
 
-<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<meta name="theme-color" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><script>
+    
+    function syncTheme() {
+        const theme = document.body.getAttribute('theme');
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }
+
+    
+    const observer = new MutationObserver(syncTheme);
+    document.addEventListener('DOMContentLoaded', () => {
+        observer.observe(document.body, { attributes: true, attributeFilter: ['theme'] });
+        syncTheme(); 
+    });
+</script><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/learn/advanced-security/" /><link rel="prev" href="http://localhost:1313/learn/architecture-deep-dive/" /><link rel="next" href="http://localhost:1313/learn/modern-authentication/" />
 <link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
@@ -39,18 +56,18 @@
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "Fortifying the Backend: Advanced IP Filtering, Rate Limiting, and Headers",
+        "headline": "The Golang4U Security Bible: A Defense-in-Depth Masterclass",
         "inLanguage": "en",
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "http:\/\/localhost:1313\/learn\/advanced-security\/"
-        },"genre": "learn","keywords": "Go, Security, Middleware, IPFilter, RateLimit, Cybersecurity, HTTP","wordcount":  1243 ,
+        },"genre": "learn","keywords": "Go, Security, Middleware, IPFilter, RateLimit, Cybersecurity, Zero Trust, HSTS, CSP","wordcount":  1055 ,
         "url": "http:\/\/localhost:1313\/learn\/advanced-security\/","datePublished": "2026-02-10T12:00:00+08:00","dateModified": "2026-02-10T12:00:00+08:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
                 "@type": "Person",
                 "name": "Punit Naran"
-            },"description": "A deep technical guide on implementing defense-in-depth in Go. We create a custom IP Filtering middleware, implement granular Rate Limiting, and configure secure HTTP headers to prevent XSS and Clickjacking."
+            },"description": "A definitive guide to securing a Go backend. We dissect the `ipFilter` middleware (Mutex/Radix Tree), the `Tollbooth` rate limiter (Token Bucket), and the rigorous HSTS/CSP header configuration that protects Golang4U users."
     }
     </script><script src="/lib/instantpage/instantpage.js" type="module" defer></script></head>
 
@@ -84,7 +101,7 @@
                     href="/addpost/" > Add a Post </a><a class="menu-item menu-item-login"
                     href="/login/" > Log In </a><a class="menu-item menu-item-signup"
                     href="/signup/" > Sign Up </a><a class="menu-item menu-item-admin"
-                    href="/admin/" > Admin </a><a class="menu-item menu-item-dashboard"
+                    href="/admin-panel/" > Admin </a><a class="menu-item menu-item-dashboard"
                     href="/dashboard/" > Dashboard </a><a class="menu-item menu-item-logout"
                     href="#ZgotmplZ" > Log Out </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                     <input type="text"
@@ -136,7 +153,7 @@
                 <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                     Cancel
                 </a>
-            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
+            </div><a class="menu-item menu-item-news" href="/news/" title="" >News</a><a class="menu-item menu-item-tags" href="/tags/" title="" >Tags</a><a class="menu-item menu-item-learn" href="/learn/" title="" >Learning</a><a class="menu-item menu-item-events" href="/events/" title="" >Events</a><a class="menu-item menu-item-casts" href="/casts/" title="" >Casts</a><a class="menu-item menu-item-jobs" href="/jobs/" title="" >Jobs</a><a class="menu-item menu-item-marketplace" href="/marketplace/" title="" >Marketplace</a><a class="menu-item menu-item-contactus" href="/contactus/" title="" >Contact Us</a><a class="menu-item menu-item-playground" href="/playground/" title="" >Playground</a><a class="menu-item menu-item-addpost" href="/addpost/" title="" >Add a Post</a><a class="menu-item menu-item-login" href="/login/" title="" >Log In</a><a class="menu-item menu-item-signup" href="/signup/" title="" >Sign Up</a><a class="menu-item menu-item-admin" href="/admin-panel/" title="" >Admin</a><a class="menu-item menu-item-dashboard" href="/dashboard/" title="" >Dashboard</a><a class="menu-item menu-item-logout" href="#ZgotmplZ" title="" >Log Out</a><a href="javascript:void(0);" class="menu-item theme-switch" title="">
                 <i class="fas fa-adjust fa-fw"></i>
             </a></div>
     </div>
@@ -147,344 +164,31 @@
 <div class="search-dropdown mobile">
     <div id="search-dropdown-mobile"></div>
 </div><main class="main">
-            <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">Fortifying the Backend: Advanced IP Filtering, Rate Limiting, and Headers</h1><div class="content" id="content"><h1 id="introduction" class="headerLink">
-    <a href="#introduction" class="header-mark"></a>Introduction</h1><p>In the modern internet landscape, deploying a backend without protection is akin to leaving your front door wide open. Automated bots, script kiddies, and targeted attackers are constantly scanning for vulnerabilities.</p>
-<p>&ldquo;Working code&rdquo; is not enough. We need <strong>Secure Code</strong>.</p>
-<p>In this article, we will implement three layers of defense for our Go backend:</p>
+            <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">The Golang4U Security Bible: A Defense-in-Depth Masterclass</h1><div class="content" id="content"><h1 id="preface-the-zero-trust-mindset" class="headerLink">
+    <a href="#preface-the-zero-trust-mindset" class="header-mark"></a>Preface: The Zero Trust Mindset</h1><p>Security is often treated as a feature. &ldquo;Add a login page, and we&rsquo;re secure.&rdquo;
+This is false.
+Security is a <strong>Process</strong>. It is the sum of every line of code that handles input.</p>
+<p>In <strong>Golang4U</strong>, we adopt a <strong>Zero Trust</strong> mindset.</p>
 <ol>
-<li><strong>Network Layer Defense</strong>: Application-level IP Filtering.</li>
-<li><strong>Traffic Control</strong>: Granular Rate Limiting/Throttling.</li>
-<li><strong>Browser Defense</strong>: Secure HTTP Headers.</li>
+<li><strong>Trust No IP</strong>: Even if it didn&rsquo;t attack us yesterday, it might attack us today.</li>
+<li><strong>Trust No User</strong>: Even if they have a valid token, they might be spamming.</li>
+<li><strong>Trust No Browser</strong>: Even if Chrome says it&rsquo;s secure, we enforce it with headers.</li>
 </ol>
-<h3 id="visualizing-defense-in-depth" class="headerLink">
-    <a href="#visualizing-defense-in-depth" class="header-mark"></a>Visualizing Defense in Depth</h3><pre class="mermaid">graph LR
-    Attacker[Attacker] -->|Request| FW[Firewall/WAF]
-    FW -->|Allowed| IP[1. IP Filter Middleware]
-    
-    IP -->|Blocked IP| 403[403 Forbidden]
-    IP -->|Allowed IP| Rate[2. Rate Limiter]
-    
-    Rate -->|Too Fast| 429[429 Too Many Requests]
-    Rate -->|OK| Auth[3. Auth Middleware]
-    
-    Auth -->|Invalid Token| 401[401 Unauthorized]
-    Auth -->|Valid User| Logic[Business Logic]
-    
-    Logic -->|Response| Headers[4. Secure Headers]
-    Headers -->|Safe HTML| Client[User Browser]
-</pre><hr>
-<h1 id="1-custom-ip-filtering-middleware" class="headerLink">
-    <a href="#1-custom-ip-filtering-middleware" class="header-mark"></a>1. Custom IP Filtering Middleware</h1><p>While firewalls (AWS WAF, Cloudflare) are your first line of defense, adding application-level filtering gives you granular control. You can dynamically block IPs based on application behavior (e.g., &ldquo;5 failed logins in 1 minute&rdquo;).</p>
-<h3 id="11-the-challenge-real-ip-address" class="headerLink">
-    <a href="#11-the-challenge-real-ip-address" class="header-mark"></a>1.1 The Challenge: &ldquo;Real&rdquo; IP Address</h3><p>In a containerized environment (Docker/Kubernetes) or behind a Reverse Proxy (Nginx), <code>RemoteAddr</code> gets obscured. It usually shows the IP of the internal docker gateway (e.g., <code>172.18.0.1</code>).</p>
-<p><strong>The Solution</strong>: We must trust distinct headers, but <em>only from trusted proxies</em>.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// internal/ipFilter/ip_filter.go source analysis
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">GetRealIP</span><span class="p">(</span><span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 1. Check X-Forwarded-For (Standard)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// Format: client, proxy1, proxy2
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">xff</span> <span class="o">:=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;X-Forwarded-For&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">xff</span> <span class="o">!=</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">parts</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">Split</span><span class="p">(</span><span class="nx">xff</span><span class="p">,</span> <span class="s">&#34;,&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">TrimSpace</span><span class="p">(</span><span class="nx">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1">// First IP is the client
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    
-</span></span><span class="line"><span class="cl">    <span class="c1">// 2. Check X-Real-IP (Nginx specific)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">xri</span> <span class="o">:=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;X-Real-IP&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">xri</span> <span class="o">!=</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">xri</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    
-</span></span><span class="line"><span class="cl">    <span class="c1">// 3. Fallback to RemoteAddr (strip port)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">ip</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">net</span><span class="p">.</span><span class="nf">SplitHostPort</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">RemoteAddr</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">ip</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="12-implementing-the-blocklist" class="headerLink">
-    <a href="#12-implementing-the-blocklist" class="header-mark"></a>1.2 Implementing the Blocklist</h3><p>We maintain a list of banned CIDRs (Classless Inter-Domain Routing). This allows us to block single IPs (<code>192.168.1.5/32</code>) or entire subnets (<code>10.0.0.0/8</code>).</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">IPFilter</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">bannedSubnets</span> <span class="p">[]</span><span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">IPNet</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewIPFilter</span><span class="p">(</span><span class="nx">bannedList</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="o">*</span><span class="nx">IPFilter</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">subnets</span> <span class="p">[]</span><span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">IPNet</span>
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">cidr</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">bannedList</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">_</span><span class="p">,</span> <span class="nx">network</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">net</span><span class="p">.</span><span class="nf">ParseCIDR</span><span class="p">(</span><span class="nx">cidr</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="c1">// Handle error: maybe log specific bad entry
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">continue</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">subnets</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">subnets</span><span class="p">,</span> <span class="nx">network</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">IPFilter</span><span class="p">{</span><span class="nx">bannedSubnets</span><span class="p">:</span> <span class="nx">subnets</span><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">IPFilter</span><span class="p">)</span> <span class="nf">IsBanned</span><span class="p">(</span><span class="nx">ipStr</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">parsedIP</span> <span class="o">:=</span> <span class="nx">net</span><span class="p">.</span><span class="nf">ParseIP</span><span class="p">(</span><span class="nx">ipStr</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">parsedIP</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">false</span> <span class="c1">// Malformed IP, technically safely ignored or strictly blocked
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">subnet</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">f</span><span class="p">.</span><span class="nx">bannedSubnets</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">subnet</span><span class="p">.</span><span class="nf">Contains</span><span class="p">(</span><span class="nx">parsedIP</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">true</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">false</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Middleware Integration</strong>:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">IPFilter</span><span class="p">)</span> <span class="nf">Middleware</span><span class="p">(</span><span class="nx">next</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">)</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">HandlerFunc</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">ip</span> <span class="o">:=</span> <span class="nf">GetRealIP</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nf">Request</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">f</span><span class="p">.</span><span class="nf">IsBanned</span><span class="p">(</span><span class="nx">ip</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="c1">// Return 403 Forbidden
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">// Optionally: Log this attempt to a security audit log
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">return</span> <span class="nx">echo</span><span class="p">.</span><span class="nf">NewHTTPError</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusForbidden</span><span class="p">,</span> <span class="s">&#34;Access Denied by IP Policy&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">next</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><hr>
-<h1 id="2-rate-limiting-traffic-control" class="headerLink">
-    <a href="#2-rate-limiting-traffic-control" class="header-mark"></a>2. Rate Limiting (Traffic Control)</h1><p>Rate limiting protects your resources from exhaustion (CPU/Memory/DB Connections) and prevents brute-force attacks.</p>
-<h3 id="21-token-bucket-algorithm-conceptual" class="headerLink">
-    <a href="#21-token-bucket-algorithm-conceptual" class="header-mark"></a>2.1 Token Bucket Algorithm (Conceptual)</h3><p>Imagine a bucket that holds <strong>Tokens</strong>.</p>
-<ul>
-<li>The bucket has a maximum capacity (e.g., 5 tokens).</li>
-<li>New tokens &ldquo;drip&rdquo; into the bucket at a constant rate (e.g., 1 token per second).</li>
-<li>When a request comes in, it must take a token to proceed.</li>
-<li>If the bucket is empty, the request is rejected (429 Too Many Requests).</li>
-</ul>
-<p>This allows for <strong>Bursty traffic</strong> (the user can make 5 fast requests) but enforces a long-term <strong>Average rate</strong>.</p>
-<h3 id="22-implementation-in-echo" class="headerLink">
-    <a href="#22-implementation-in-echo" class="header-mark"></a>2.2 Implementation in Echo</h3><p>We use <code>echo-middleware/rate</code> (or similar libraries like <code>golang.org/x/time/rate</code>).</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;golang.org/x/time/rate&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s">&#34;github.com/labstack/echo/v4/middleware&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">RateLimitConfig</span><span class="p">()</span> <span class="nx">middleware</span><span class="p">.</span><span class="nx">RateLimiterConfig</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">middleware</span><span class="p">.</span><span class="nx">RateLimiterConfig</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">Skipper</span><span class="p">:</span> <span class="nx">middleware</span><span class="p">.</span><span class="nx">DefaultSkipper</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">Store</span><span class="p">:</span> <span class="nx">middleware</span><span class="p">.</span><span class="nf">NewRateLimiterMemoryStoreWithConfig</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">            <span class="nx">middleware</span><span class="p">.</span><span class="nx">RateLimiterMemoryStoreConfig</span><span class="p">{</span><span class="nx">Rate</span><span class="p">:</span> <span class="nx">rate</span><span class="p">.</span><span class="nf">Limit</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="nx">Burst</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="nx">ExpiresIn</span><span class="p">:</span> <span class="mi">3</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="p">},</span>
-</span></span><span class="line"><span class="cl">        <span class="p">),</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">IdentifierExtractor</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="c1">// Rate limit based on IP address
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">return</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">RealIP</span><span class="p">(),</span> <span class="kc">nil</span><span class="p">,</span> 
-</span></span><span class="line"><span class="cl">        <span class="p">},</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">ErrorHandler</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">context</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="nx">context</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusTooManyRequests</span><span class="p">,</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="s">&#34;error&#34;</span><span class="p">:</span> <span class="s">&#34;Rate limit exceeded. Please slow down.&#34;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">            <span class="p">})</span>
-</span></span><span class="line"><span class="cl">        <span class="p">},</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">DenyHandler</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">context</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">identifier</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="nx">context</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusTooManyRequests</span><span class="p">,</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="s">&#34;error&#34;</span><span class="p">:</span> <span class="s">&#34;Rate limit exceeded&#34;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">            <span class="p">})</span>
-</span></span><span class="line"><span class="cl">        <span class="p">},</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Advanced Strategy:</strong>
-We don&rsquo;t just apply one global limit. We apply different limits to different routes:</p>
-<ul>
-<li><strong>Public API (<code>GET /posts</code>)</strong>: High limit (e.g., 100 req/min).</li>
-<li><strong>Auth API (<code>POST /login</code>)</strong>: Strict limit (e.g., 5 req/min) to prevent credential stuffing.</li>
-</ul>
+<p>This guide will walk you through the three rings of defense: <strong>Network</strong>, <strong>Application</strong>, and <strong>Presentation</strong>.</p>
 <hr>
-<h1 id="3-secure-http-headers" class="headerLink">
-    <a href="#3-secure-http-headers" class="header-mark"></a>3. Secure HTTP Headers</h1><p>Headers are instructions to the browser on how to behave securely.</p>
-<h3 id="31-key-headers-explained" class="headerLink">
-    <a href="#31-key-headers-explained" class="header-mark"></a>3.1 Key Headers Explained</h3><table>
-  <thead>
-      <tr>
-          <th style="text-align: left">Header</th>
-          <th style="text-align: left">Value</th>
-          <th style="text-align: left">Purpose</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td style="text-align: left"><code>X-Content-Type-Options</code></td>
-          <td style="text-align: left"><code>nosniff</code></td>
-          <td style="text-align: left">Tells the browser <em>not</em> to guess the file type. If we send a file as <code>text/plain</code>, Chrome shouldn&rsquo;t try to execute it as JavaScript even if it looks like code.</td>
-      </tr>
-      <tr>
-          <td style="text-align: left"><code>X-Frame-Options</code></td>
-          <td style="text-align: left"><code>DENY</code> or <code>SAMEORIGIN</code></td>
-          <td style="text-align: left">Prevents <strong>Clickjacking</strong>. It ensures your site cannot be embedded in an <code>&lt;iframe&gt;</code> on an attacker&rsquo;s site (where they might overlay invisible buttons).</td>
-      </tr>
-      <tr>
-          <td style="text-align: left"><code>X-XSS-Protection</code></td>
-          <td style="text-align: left"><code>1; mode=block</code></td>
-          <td style="text-align: left">(Legacy) Activates browser&rsquo;s built-in XSS filter.</td>
-      </tr>
-      <tr>
-          <td style="text-align: left"><code>Strict-Transport-Security</code></td>
-          <td style="text-align: left"><code>max-age=31536000</code></td>
-          <td style="text-align: left"><strong>HSTS</strong>. Tells the browser &ldquo;Only talk to me over HTTPS&rdquo;. Even if the user types <code>http://</code>, the browser upgrades the request internally.</td>
-      </tr>
-      <tr>
-          <td style="text-align: left"><code>Content-Security-Policy</code></td>
-          <td style="text-align: left"><code>default-src 'self'</code></td>
-          <td style="text-align: left"><strong>CSP</strong>. The holy grail. It defines exactly where scripts, images, and styles can load from.</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="32-implementation-in-go" class="headerLink">
-    <a href="#32-implementation-in-go" class="header-mark"></a>3.2 Implementation in Go</h3><p>Calls to <code>c.Response().Header().Set(k, v)</code> in a middleware ensure these are present on <em>every</em> response, even 404s.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">SecureHeadersMiddleware</span><span class="p">(</span><span class="nx">next</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">)</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">HandlerFunc</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">header</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nf">Response</span><span class="p">().</span><span class="nf">Header</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">        
-</span></span><span class="line"><span class="cl">        <span class="nx">header</span><span class="p">.</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;X-Frame-Options&#34;</span><span class="p">,</span> <span class="s">&#34;DENY&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">header</span><span class="p">.</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;X-Content-Type-Options&#34;</span><span class="p">,</span> <span class="s">&#34;nosniff&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">header</span><span class="p">.</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;X-XSS-Protection&#34;</span><span class="p">,</span> <span class="s">&#34;1; mode=block&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">header</span><span class="p">.</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;Strict-Transport-Security&#34;</span><span class="p">,</span> <span class="s">&#34;max-age=31536000; includeSubDomains&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        
-</span></span><span class="line"><span class="cl">        <span class="c1">// A rigid CSP example
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">csp</span> <span class="o">:=</span> <span class="s">&#34;default-src &#39;self&#39;; script-src &#39;self&#39; &#39;unsafe-inline&#39; https://trusted.cdn.com; img-src &#39;self&#39; data: https:;&#34;</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">header</span><span class="p">.</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;Content-Security-Policy&#34;</span><span class="p">,</span> <span class="nx">csp</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">next</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="33-sanitize-request-models" class="headerLink">
-    <a href="#33-sanitize-request-models" class="header-mark"></a>3.3 Sanitize Request Models</h3><p>We must also scrub input. We use basic strippers on JSON input.</p>
+<h1 id="chapter-1-the-network-layer-ip-filtering" class="headerLink">
+    <a href="#chapter-1-the-network-layer-ip-filtering" class="header-mark"></a>Chapter 1: The Network Layer (IP Filtering)</h1><p>Before a request can even touch our business logic, it must pass the <strong>IP Filter</strong>.
+This is our &ldquo;Bouncer.&rdquo;</p>
+<h3 id="11-the-architecture-of-internalipfilter" class="headerLink">
+    <a href="#11-the-architecture-of-internalipfilter" class="header-mark"></a>1.1 The Architecture of <code>internal/ipFilter</code></h3><p>We don&rsquo;t use a simple <code>map[string]bool</code>. Why?
+Because IP ranges exist. Blocking <code>192.168.1.0/24</code> means blocking 256 addresses. A map cannot handle CIDR ranges efficiently.</p>
+<p>We use a <strong>Radix Tree</strong> (via <code>github.com/jpillora/ipfilter</code>).</p>
+<ul>
+<li><strong>Time Complexity</strong>: $O(k)$ where $k$ is the number of bits in the IP (32 for IPv4, 128 for IPv6).</li>
+<li><strong>Space Complexity</strong>: Extremely efficient. It compresses common prefixes.</li>
+</ul>
+<h3 id="12-the-implementation-ip_filtergo" class="headerLink">
+    <a href="#12-the-implementation-ip_filtergo" class="header-mark"></a>1.2 The Implementation (<code>ip_filter.go</code>)</h3><p>Let&rsquo;s look at the <code>IPFilter</code> struct in <code>internal/ipFilter/ip_filter.go</code>.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -493,39 +197,24 @@ We don&rsquo;t just apply one global limit. We apply different limits to differe
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;strings&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">SanitizeInput</span><span class="p">(</span><span class="nx">input</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// Basic example: Remove html tags
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// In production, use &#34;github.com/microcosm-cc/bluemonday&#34;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">ReplaceAll</span><span class="p">(</span><span class="nx">input</span><span class="p">,</span> <span class="s">&#34;&lt;script&gt;&#34;</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><hr>
-<h1 id="4-data-leakage-prevention" class="headerLink">
-    <a href="#4-data-leakage-prevention" class="header-mark"></a>4. Data Leakage Prevention</h1><p>One common security flaw is <strong>Data Leakage in API Responses</strong>.
-<strong>Example</strong>: Returning the entire User struct in a JSON response.</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// BAD
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">ID</span>       <span class="kt">string</span> <span class="s">`json:&#34;id&#34;`</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Password</span> <span class="kt">string</span> <span class="s">`json:&#34;password&#34;`</span> <span class="c1">// OOPS! This gets sent to the client!
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">IPFilter</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ipBlockList</span> <span class="o">*</span><span class="nx">ipfilter</span><span class="p">.</span><span class="nx">IPFilter</span> <span class="c1">// The Radix Tree Engine
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">writer</span>      <span class="o">*</span><span class="nx">bufio</span><span class="p">.</span><span class="nx">Writer</span>      <span class="c1">// Buffered Writer for Persistence
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">file</span>        <span class="o">*</span><span class="nx">os</span><span class="p">.</span><span class="nx">File</span>           <span class="c1">// File Handle
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">mu</span>          <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>         <span class="c1">// The &#34;Bathroom Key&#34;
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p><strong>The Fix</strong>: Use <strong>DTOs (Data Transfer Objects)</strong> or explicit JSON tags.</p>
+</div><p><strong>The Concurrency Problem</strong>:
+Echo is multi-threaded. If two distinct requests try to ban an IP at the same time, they will race to write to <code>bannedIps.txt</code>.</p>
+<ul>
+<li>Thread A writes: &ldquo;1.2.3.4\n&rdquo;</li>
+<li>Thread B writes: &ldquo;5.6.7.8\n&rdquo;
+Without a lock, the OS might interleave the bytes: &ldquo;1.2.35.6.7.4.8\n&rdquo;. The file is now corrupt.</li>
+</ul>
+<p><strong>The Solution (Mutex)</strong>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -544,45 +233,202 @@ We don&rsquo;t just apply one global limit. We apply different limits to differe
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// GOOD
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">ID</span>       <span class="kt">string</span> <span class="s">`json:&#34;id&#34;`</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Password</span> <span class="kt">string</span> <span class="s">`json:&#34;-&#34;`</span> <span class="c1">// Dash always ignores this field
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// BETTER: Explicit Response Struct
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">UserResponse</span> <span class="kd">struct</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">ID</span>    <span class="kt">string</span> <span class="s">`json:&#34;id&#34;`</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Email</span> <span class="kt">string</span> <span class="s">`json:&#34;email&#34;`</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">Role</span>  <span class="kt">string</span> <span class="s">`json:&#34;role&#34;`</span>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">IPFilter</span><span class="p">)</span> <span class="nf">BlockIP</span><span class="p">(</span><span class="nx">ip</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">f</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>         <span class="c1">// STOP. Only one thread passes.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">defer</span> <span class="nx">f</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span> <span class="c1">// OK, carry on.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 1. Update Memory (Instant)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">f</span><span class="p">.</span><span class="nx">ipBlockList</span><span class="p">.</span><span class="nf">BlockIP</span><span class="p">(</span><span class="nx">ip</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// 2. Update Disk (Persistent)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">f</span><span class="p">.</span><span class="nx">writer</span><span class="p">.</span><span class="nf">WriteString</span><span class="p">(</span><span class="nx">ip</span> <span class="o">+</span> <span class="s">&#34;\n&#34;</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// 3. Flush (Durability)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// We force the OS to write the buffer to disk immediately.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nx">f</span><span class="p">.</span><span class="nx">writer</span><span class="p">.</span><span class="nf">Flush</span><span class="p">()</span> 
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">ToUserResponse</span><span class="p">(</span><span class="nx">u</span> <span class="o">*</span><span class="nx">User</span><span class="p">)</span> <span class="nx">UserResponse</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">UserResponse</span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">ID</span><span class="p">:</span>    <span class="nx">u</span><span class="p">.</span><span class="nx">ID</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">Email</span><span class="p">:</span> <span class="nx">u</span><span class="p">.</span><span class="nx">Email</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">Role</span><span class="p">:</span>  <span class="nx">u</span><span class="p">.</span><span class="nx">Role</span><span class="p">,</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="13-the-middleware-hook" class="headerLink">
+    <a href="#13-the-middleware-hook" class="header-mark"></a>1.3 The Middleware Hook</h3><p>In <code>server.go</code>, we see:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">s</span><span class="p">.</span><span class="nx">e</span><span class="p">.</span><span class="nf">Use</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">ipfilter</span><span class="p">.</span><span class="nx">IPBlockerMiddleware</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Inside <code>IPBlockerMiddleware</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">IPFilter</span><span class="p">)</span> <span class="nf">IPBlockerMiddleware</span><span class="p">(</span><span class="nx">next</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">)</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">HandlerFunc</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="nx">echo</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Critical: c.RealIP() parses X-Forwarded-For headers
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">ip</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nf">RealIP</span><span class="p">()</span> 
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">f</span><span class="p">.</span><span class="nx">ipBlockList</span><span class="p">.</span><span class="nf">Blocked</span><span class="p">(</span><span class="nx">ip</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// We return 403 Forbidden immediately.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">// The request NEVER reaches the Database.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nf">String</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusForbidden</span><span class="p">,</span> <span class="s">&#34;Your IP is banned.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">next</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>At Golang4U, we adhere to strict DTO usage. The Service layer returns domain models, and the Handler layer converts them to DTOs before sending. This acts as a firewall for your data structure.</p>
+</div><hr>
+<h1 id="chapter-2-the-application-layer-rate-limiting" class="headerLink">
+    <a href="#chapter-2-the-application-layer-rate-limiting" class="header-mark"></a>Chapter 2: The Application Layer (Rate Limiting)</h1><p>Once the IP is allowed in, we must ensure they behave.
+A &ldquo;Good&rdquo; user might turn &ldquo;Bad&rdquo; if their script malfunctions and hits our API 1,000 times a second.</p>
+<p>We use <strong>Tollbooth</strong> (a generic middleware for rate limiting).</p>
+<h3 id="21-the-token-bucket-algorithm" class="headerLink">
+    <a href="#21-the-token-bucket-algorithm" class="header-mark"></a>2.1 The Token Bucket Algorithm</h3><p>Imagine a bucket with a small hole in the bottom.</p>
+<ul>
+<li><strong>Tokens (Water)</strong> drip out at a steady rate (1 request/second).</li>
+<li><strong>Burst Capacity</strong>: The size of the bucket (5 requests).</li>
+<li><strong>Action</strong>: Using the API adds water.</li>
+<li><strong>Overflow</strong>: If the bucket is full, the water spills (Request Rejected).</li>
+</ul>
+<p>This allows a user to &ldquo;click fast&rdquo; for a few seconds (burst), but prevents sustained spam.</p>
+<h3 id="22-granular-application" class="headerLink">
+    <a href="#22-granular-application" class="header-mark"></a>2.2 Granular Application</h3><p>We don&rsquo;t rate limit everything equally.</p>
+<ul>
+<li><strong>Serving Images</strong>: Fast, Cheap. Limit = 100 req/sec.</li>
+<li><strong>Hashing Passwords</strong>: Slow, Expensive (Argon2). Limit = 1 req/sec.</li>
+</ul>
+<p>In <code>server.go</code> (<code>EstablishRoutes</code>):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Only limit the Login route aggressively
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">s</span><span class="p">.</span><span class="nx">e</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/login&#34;</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nx">h</span><span class="p">.</span><span class="nx">Login</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nx">rateLimit</span><span class="p">.</span><span class="nx">Middleware</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h1 id="chapter-3-the-presentation-layer-secure-headers" class="headerLink">
+    <a href="#chapter-3-the-presentation-layer-secure-headers" class="header-mark"></a>Chapter 3: The Presentation Layer (Secure Headers)</h1><p>The browser is a hostile environment. We use HTTP Headers to configure the browser&rsquo;s security sandbox.
+Configured in <code>internal/server/server.go</code> via <code>middleware.SecureWithConfig</code>.</p>
+<h3 id="31-hsts-strict-transport-security" class="headerLink">
+    <a href="#31-hsts-strict-transport-security" class="header-mark"></a>3.1 HSTS (Strict-Transport-Security)</h3><p><strong>The Vulnerability</strong>: SSL Stripping.
+A hacker sits in a coffee shop Wi-Fi. You type <code>golang4u.com</code>. Your browser sends <code>GET http://golang4u.com</code>. The hacker intercepts this unencrypted packet and proxies the connection. You never see the padlock.</p>
+<p><strong>The Fix</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">HSTSMaxAge</span><span class="p">:</span> <span class="mi">31536000</span><span class="p">,</span> <span class="c1">// 1 Year
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>This header tells Chrome: &ldquo;For the next 365 days, NEVER send an unencrypted packet to this domain. Internalize the redirect to HTTPS.&rdquo;</p>
+<h3 id="32-x-frame-options" class="headerLink">
+    <a href="#32-x-frame-options" class="header-mark"></a>3.2 X-Frame-Options</h3><p><strong>The Vulnerability</strong>: Clickjacking.
+A site <code>win-iphone.com</code> loads <code>golang4u.com/delete-account</code> in an invisible <code>&lt;iframe&gt;</code>. The user clicks &ldquo;Claim Prize&rdquo; on the parent page, but the click passes through to the &ldquo;Delete&rdquo; button on your site.</p>
+<p><strong>The Fix</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">XFrameOptions</span><span class="p">:</span> <span class="s">&#34;SAMEORIGIN&#34;</span><span class="p">,</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This tells the browser: &ldquo;Only page on <code>golang4u.com</code> can iframe <code>golang4u.com</code>.&rdquo;</p>
+<h3 id="33-csp-content-security-policy" class="headerLink">
+    <a href="#33-csp-content-security-policy" class="header-mark"></a>3.3 CSP (Content-Security-Policy)</h3><p><strong>The Vulnerability</strong>: XSS (Cross-Site Scripting).
+A user posts a comment: <code>&lt;script&gt;stealCookies()&lt;/script&gt;</code>. If you render this, the script runs in everyone&rsquo;s browser.</p>
+<p><strong>The Fix</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">ContentSecurityPolicy</span><span class="p">:</span> <span class="s">&#34;default-src &#39;self&#39;&#34;</span><span class="p">,</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This tells the browser: &ldquo;Only load scripts from My Domain. If you see a script pointing to <code>evil.com</code>, BLOCK IT.&rdquo;</p>
+<hr>
+<h1 id="chapter-4-data-layer-defense-the-blind-index" class="headerLink">
+    <a href="#chapter-4-data-layer-defense-the-blind-index" class="header-mark"></a>Chapter 4: Data Layer Defense (The Blind Index)</h1><p>We touched on this in Architecture, but let&rsquo;s look at the Security implications.</p>
+<p><strong>Problem</strong>: We encrypt emails in the DB (<code>EncryptedEmail</code>). But we need to stop duplicate signups.
+<strong>Naive Solution</strong>: Decrypt every row to check. (Slow + Insecure).
+<strong>Insecure Solution</strong>: Store <code>Hash(email)</code>. (Rainbow Table Attack possible).</p>
+<p><strong>The Secure Solution</strong>: HMAC-SHA256 Blind Index.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// internal/service/user_service.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">key</span> <span class="o">:=</span> <span class="s">&#34;idx_email_&#34;</span> <span class="o">+</span> <span class="nf">Hex</span><span class="p">(</span><span class="nf">HMAC</span><span class="p">(</span><span class="nx">email</span><span class="p">,</span> <span class="nx">SecretKey</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>HMAC</strong>: Hash-based Message Authentication Code.</li>
+<li>It is impossible to reverse the hash without the <code>SecretKey</code> (stored in ENV, not DB).</li>
+<li>If the DB leaks, the attacker sees <code>idx_email_a8f92...</code>. They cannot guess the email because they don&rsquo;t have the Secret Key to generate the hashes for their dictionary attack.</li>
+</ul>
+<p>This is <strong>k-anonymity</strong>.</p>
+<hr>
+<h1 id="chapter-5-docker--infrastructure-security" class="headerLink">
+    <a href="#chapter-5-docker--infrastructure-security" class="header-mark"></a>Chapter 5: Docker &amp; Infrastructure Security</h1><p>Security doesn&rsquo;t stop at Go code.</p>
+<h3 id="51-the-rootless-container" class="headerLink">
+    <a href="#51-the-rootless-container" class="header-mark"></a>5.1 The Rootless Container</h3><p>In our <code>Dockerfile</code>, we should never run as root.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="c"># Create a group and user</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> addgroup -S appgroup <span class="o">&amp;&amp;</span> adduser -S appuser -G appgroup<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">USER</span><span class="s"> appuser</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>If a hacker exploits a vulnerability in Echo to get Remote Code Execution (RCE), they are trapped as <code>appuser</code>. They cannot install packages, modify system files, or read <code>/etc/shadow</code>.</p>
+<h3 id="52-secrets-management" class="headerLink">
+    <a href="#52-secrets-management" class="header-mark"></a>5.2 Secrets Management</h3><p>We NEVER commit secrets to Git.
+We use <code>config/config.go</code> to read from Environment Variables.
+<code>config.GmailToken = os.Getenv(&quot;GMAIL_TOKEN&quot;)</code></p>
+<p>In production (Kubernetes), these are injected as k8s Secrets.</p>
 <hr>
 <h1 id="conclusion" class="headerLink">
-    <a href="#conclusion" class="header-mark"></a>Conclusion</h1><p>Security is not a feature; it&rsquo;s a mindset. By implementing:</p>
+    <a href="#conclusion" class="header-mark"></a>Conclusion</h1><p>Review the checklist for <strong>Golang4U</strong>:</p>
 <ol>
-<li><strong>IP Filtering</strong> to reduce the attack surface,</li>
-<li><strong>Rate Limiting</strong> to mitigate abuse,</li>
-<li><strong>Secure Headers</strong> to protect the client,</li>
-<li>and <strong>DTOs</strong> to prevent leaks,</li>
+<li><i class="far fa-check-square fa-fw"></i> <strong>IP Filter</strong>: Stops the bots at the door.</li>
+<li><i class="far fa-check-square fa-fw"></i> <strong>Rate Limit</strong>: Stops the flooding.</li>
+<li><i class="far fa-check-square fa-fw"></i> <strong>HSTS/CSP</strong>: Stops the browser tricks.</li>
+<li><i class="far fa-check-square fa-fw"></i> <strong>HMAC Index</strong>: Stops the DB leak from revealing emails.</li>
+<li><i class="far fa-check-square fa-fw"></i> <strong>Rootless Docker</strong>: Stops the RCE from taking over the server.</li>
 </ol>
-<p>We create a robust backend that is resilient against the most common web attacks. In the next post, we discuss <strong>Authentication</strong> and why we chose PASETO over the industry-standard JWT.</p>
+<p>This is what &ldquo;Production Ready&rdquo; looks like.</p>
 </div></div></div>
         </main><footer class="footer">
     <div class="footer-container"><div class="footer-line">

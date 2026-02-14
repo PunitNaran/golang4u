@@ -1,131 +1,169 @@
-# Double the Security: Implementing Two-Factor Authentication (TOTP)
+# The Golang4U 2FA Bible: TOTP, QR Codes & State Machines
 
 
-# Introduction
+# Preface: The 3 Factors of Auth
 
-Passwords are distinctively terrible.
-*   Users reuse them.
-*   Users choose "Password123".
-*   Users write them on sticky notes.
+Authentication is proving you are who you say you are. There are 3 ways to do this:
+1.  **Something you Know (Knowledge)**: Password, PIN, Mother's Maiden Name.
+2.  **Something you Have (Possession)**: Phone, YubiKey, RSA Token.
+3.  **Something you Are (Inherence)**: Fingerprint, FaceID, Retina.
 
-Even with strong password policies, a database leak from *another* site can compromise your users. **Two-Factor Authentication (2FA)** mitigates this by requiring a second factor: something physically in the user's possession (their phone).
-
-In this guide, we implement standard **TOTP (Time-based One-Time Password)**, compatible with Google Authenticator, Authy, and Microsoft Authenticator.
-
----
-
-# 1. Understanding TOTP (RFC 6238)
-
-TOTP is built on top of **HOTP (HMAC-based One-Time Password)**.
-
-### The Algorithm
-$$TOTP(K, T) = Truncate(HMAC-SHA-1(K, T))$$
-
-Where:
-*   $K$ is the **Shared Secret** (a random string of bytes known only to Server and User).
-*   $T$ is the **Time Counter**, calculated as $\lfloor \frac{CurrentUnixTime}{30} \rfloor$.
-*   **30** is the standard step size (seconds).
-
-Every 30 seconds, the value $T$ increments by 1. The algorithms on the phone and server independently run the HMAC hash and produce the same 6-digit code.
+A Password alone is weak because it can be phished.
+**2FA (Two-Factor)** combines #1 and #2. Even if a hacker phishes your password, they cannot physically steal your phone over the internet.
 
 ---
 
-# 2. Implementation Lifecycle
+# Chapter 1: The TOTP Standard (RFC 6238)
 
-### 2.1 Setup (Enable 2FA)
+We use **TOTP** (Time-based One-Time Password).
+This is the standard used by Google Authenticator, Authy, etc.
 
-When a user wants to enable 2FA:
+### 1.1 The Math
+It is a function of Time ($T$) and a Secret Keys ($K$).
 
-1.  **Generate Secret**: We generate a cryptographically secure random key (20 bytes).
-2.  **Generate URI**: We format this into a standard URL scheme:
-    `otpauth://totp/Golang4U:user@email.com?secret=JBSWY3DPEHPK3PXP&issuer=Golang4U`
-3.  **Generate QR Code**: We render this URL as a QR code image (PNG) so the user can scan it.
+$$OTP = Truncate(HMAC_{SHA1}(K, \lfloor \frac{CurrentTime}{30} \rfloor))$$
 
-**Go Code (using `pquerna/otp`)**:
+*   **Step 1**: Get Unix Epoch Time (seconds since 1970).
+*   **Step 2**: Divide by 30 (floor). This creates a "Time Step". The code is valid for 30 seconds.
+*   **Step 3**: Hash the Step with the Secret Key ($K$).
+*   **Step 4**: Take the last 4 bits of the hash to find an offset.
+*   **Step 5**: Extract 4 bytes from the hash at that offset.
+*   **Step 6**: Modulo 1,000,000 to get a 6-digit number.
+
+### 1.2 The "Shared Secret"
+The magic is that both the Server and your Phone perform this same math independently.
+They only need to share $K$ once (via the QR Code).
+
+---
+
+# Chapter 2: The Implementation (`internal/service`)
+
+The biggest risk in 2FA is **User Lockout**.
+If we enable 2FA on the account *before* the user has successfully scanned the QR code, and their camera breaks... they are locked out forever.
+
+We implement a **3-Phase Commit Protocol**.
+
+### Phase 1: Setup (The Proposal)
+
+User visits `/2fa/setup`.
+We generate the secret, but we DO NOT save it to the user profile yet.
 
 ```go
-import (
-    "github.com/pquerna/otp/totp"
-    "bytes"
-    "image/png"
-)
+// internal/service/user_service.go
 
-func Generate2FASetup(email string) (*totp.Key, []byte, error) {
-    // Generate Key
-    key, err := totp.Generate(totp.GenerateOpts{
-        Issuer:      "Golang4U",
-        AccountName: email,
-    })
-    if err != nil { return nil, nil, err }
+func (s *UserService) Setup2FA(username string) ([]byte, error) {
+    // 1. Generate Random Secret (20 bytes)
+    otp, _ := twofactor.NewTOTP(username, "Golang4U", crypto.SHA1, 6)
     
-    // Generate QR Code Image
-    var buf bytes.Buffer
-    img, err := key.Image(200, 200)
-    png.Encode(&buf, img)
+    // 2. Serialize Secret
+    secretBytes, _ := otp.ToBytes() // This is "K"
     
-    return key, buf.Bytes(), nil
+    // 3. Store in TTL Cache (Temporary!)
+    // We store it for 10 minutes. If they don't finish setup, it vanishes.
+    s.ttlDB.Set(username+"_2fa_pending", secretBytes, 10*time.Minute)
+    
+    // 4. Return QR Code (PNG)
+    return otp.QR()
 }
 ```
 
-### 2.2 Verification (The Handshake)
+### Phase 2: Activation (The Proof)
 
-We **cannot** enable 2FA just because we generated a key. The user *must* prove they scanned it successfully.
-1.  Frontend displays QR Code.
-2.  User scans it and enters the 6-digit code (`123456`) shown on their screen.
-3.  Server validates `123456` against the generated secret.
-4.  **Only if valid**, we save the Secret to the User's DB profile (Encrypted!) and set `two_factor_enabled = true`.
+User scans QR, types `123456`. Sends to `/2fa/activate`.
 
-### 2.3 Login Flow with 2FA
-
-Once enabled, the login flow changes:
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Server
-
-    User->>Server: POST /login (email, password)
-    Server->>Server: Verify Password
-    alt 2FA Enabled
-        Server-->>User: 200 OK { status: "2fa_required", temp_token: "..." }
-        User->>Server: POST /verify-2fa (code: "123456", temp_token)
-        Server->>Server: totp.Validate(code, userSecret)
-        Server-->>User: 200 OK { token: "PASETO..." }
-    else No 2FA
-        Server-->>User: 200 OK { token: "PASETO..." }
-    end
+```go
+func (s *UserService) Activate2FA(username, pin string) error {
+    // 1. Retrieve Pending Secret from Cache
+    item := s.ttlDB.Get(username + "_2fa_pending")
+    if item == nil {
+        return Error("Setup Expired. Start over.")
+    }
+    
+    // 2. Validate The PIN
+    // Does math(Secret, Time) == pin?
+    secret := item.Value().([]byte)
+    valid := twofactor.Validate(secret, pin) 
+    
+    if !valid {
+         return Error("Wrong Code")
+    }
+    
+    // 3. COMMIT (Persistence)
+    // NOW we save it to the DB.
+    user.Profile.TwoFactorSecret = secret
+    s.repo.Save(user)
+    
+    // 4. Cleanup
+    s.ttlDB.Delete(username + "_2fa_pending")
+    
+    return nil
+}
 ```
 
-**The "Temp Token"**: This is a critical security detail. The initial response *must not* be a valid session token. It should be a restricted token that *only* allows access to the `/verify-2fa` endpoint. In Golang4U, we use a PASETO with a special `scope: "pre-auth"`.
+This guarantees that 2FA is only enabled if the user has proved they can generate codes.
+
+### Phase 3: Verification (The Login)
+
+In `internal/handler/login.go`:
+
+```go
+func (h *Handler) Login(...) {
+    // Check Password... OK.
+    
+    if len(user.TwoFactorSecret) > 0 {
+        // 2FA is Enabled.
+        // DO NOT return Access Token.
+        // Return a "Temporary Auth Token".
+        return c.JSON(200, {
+            "status": "2fa_required",
+            "temp_token": "..." // Only valid for /verify-2fa endpoint
+        })
+    }
+}
+```
 
 ---
 
-# 3. Recovery: The "Bus Factor"
+# Chapter 3: Time Drift & Windowing
 
-What if the user drops their phone in a lake? They are locked out forever.
-This is why **Recovery Codes** are mandatory.
+Clocks are not perfect. The user's phone might be 5 seconds fast. The server might be 2 seconds slow.
+If we only check the exact 30-second window, valid codes might fail at the boundary (e.g., at 12:00:29 vs 12:00:30).
 
-When 2FA is enabled, we generate 5-10 random strings (e.g., `a1b2-c3d4`).
-*   **User Side**: "Save these codes in a safe place."
-*   **Server Side**: We Hash them (bcrypt) and store them in a `recovery_codes` collection.
+**The Solution: Windowing.**
+We verify the Current Window ($T$), the Previous Window ($T-1$), and the Next Window ($T+1$).
+This gives a $\pm 30$ second tolerance.
 
-If the user cannot generate a TOTP, they can use a Recovery Code.
-*   Server verifies Code against Hash.
-*   **Important**: The used code is immediately **deleted** from the DB. Use only once.
+```go
+// twofactor library does this automatically
+otp.Validate(pin) // Checks T, T-1, T+1
+```
 
 ---
 
-# 4. Security Considerations
+# Chapter 4: Recovery (The "Bus Factor")
 
-1.  **Time Drift**: Clocks aren't perfect. We allow a verification window of `1` step (current time +/- 30 seconds) to account for slight network or device delays.
-2.  **Rate Limiting**: The `/verify-2fa` endpoint MUST be strictly rate-limited (e.g., 3 attempts per minute). 6 digits is only 1 million combinations; a brute force attack is trivial without rate limiting.
-3.  **Encrypted Secrets**: The TOTP secret in the database allows anyone with read access to clone the user's 2FA device. This field MUST be encrypted with AES-GCM (as discussed in the Cryptography article).
+Phones break. Users lose them.
+A robust system MUST provide **Recovery Codes**.
+
+1.  **Generation**: When 2FA is activated, we generate 10 random strings: `A1B2-C3D4`.
+2.  **Storage**: We Hash them (bcrypt). We treat them like 10 one-time passwords.
+3.  **Usage**:
+    *   User enters code.
+    *   We check hashes.
+    *   Match? Log them in AND **Delete** that code.
+
+This ensures that even if someone sees your printed recovery sheet, they can only use each code once (though they shouldn't see it at all!).
 
 ---
 
 # Conclusion
 
-By implementing TOTP, Golang4U aligns with industry best practices for account security. It adds a trivial amount of friction for a massive gain in trust. Combined with our ECIES encryption and PASETO tokens, our authentication system is defense-in-depth incarnate.
+Implementing 2FA is a responsibility.
+It adds friction to the user experience in exchange for massive security gains.
+Our implementation focuses on **Availability**:
+*   TTL Cache prevents "Ghost" setups.
+*   Windowing prevents "My code was right!" frustration.
+*   Recovery codes prevents "I lost my phone" support tickets.
 
-This concludes our deep dive series into the Golang4U architecture. We hope these articles have provided you with a clear roadmap for building your own secure, scalable Go applications.
+This completes the Auth lifecycle for Golang4U.
 

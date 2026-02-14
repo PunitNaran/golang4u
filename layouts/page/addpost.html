@@ -15,6 +15,7 @@
                         <option value="events">Events</option>
                         <option value="casts">Casts</option>
                         <option value="jobs">Jobs</option>
+                        <option value="marketplace">Marketplace</option>
                     </select>
                 </div>
             </div>
@@ -44,10 +45,6 @@
         --input-bg: rgba(0, 0, 0, 0.2);
     }
 
-    body {
-        /* Assuming theme handles body, but ensuring overrides */
-    }
-
     .post-creator-container {
         display: flex;
         justify-content: center;
@@ -72,6 +69,7 @@
 
     .gradient-text {
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-size: 2.5rem;
@@ -343,17 +341,24 @@
     const API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
 
     // Auth Check
+    // Auth Check & Role Management
     document.addEventListener('DOMContentLoaded', () => {
-        // Simple check: if we can't get profile, kick 'em out.
-        // Or check for cookie existence if possible (client-side HttpOnly check is hard).
-        // Better: Make a lightweight call or rely on global auth state if available.
-        // For now, let's assume if they don't have the global 'user' object or similar?
-        // Actually, let's just do a quick fetch to /profile/me. If 401, bye.
         fetch(`${API_URL}/profile/me`, { credentials: 'include' })
             .then(res => {
-                if (!res.ok) window.location.href = '/login?redirect=/addpost';
+                if (!res.ok) throw new Error('Unauthorized');
+                return res.json();
             })
-            .catch(() => window.location.href = '/login?redirect=/addpost');
+            .then(user => {
+                // User is logged in
+                // Check for Admin Role to show Marketplace Tab
+                if (user.profile && user.profile.role === 'admin') {
+                    const marketTab = document.getElementById('marketplace-tab');
+                    if (marketTab) marketTab.classList.remove('hidden');
+                }
+            })
+            .catch(() => {
+                window.location.href = '/login?redirect=/addpost';
+            });
     });
 
     const typeConfigs = {
@@ -391,6 +396,12 @@
             { id: 'casts-hosts', label: 'Hosts', type: 'text' },
             { id: 'casts-link', label: 'Link', type: 'url' },
             { id: 'casts-body', label: 'Description', type: 'textarea', required: true }
+        ],
+        marketplace: [
+            { id: 'marketplace-title', label: 'Product Title', type: 'text', required: true },
+            { id: 'marketplace-description', label: 'Small Description', type: 'textarea', required: true },
+            { id: 'marketplace-link', label: 'Amazon Link (OneLink)', type: 'url', required: true },
+            { id: 'marketplace-image', label: 'Product Image', type: 'file', accept: 'image/*', required: true }
         ]
     };
 

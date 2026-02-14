@@ -4,22 +4,19 @@
         <link>http://localhost:1313/tags/totp/</link>
         <description>TOTP - Tag - Golang4U</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 18:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/tags/totp/" rel="self" type="application/rss+xml" /><item>
-    <title>Double the Security: Implementing Two-Factor Authentication (TOTP)</title>
+    <title>The Golang4U 2FA Bible: TOTP, QR Codes &amp; State Machines</title>
     <link>http://localhost:1313/learn/implementing-2fa/</link>
     <pubDate>Tue, 10 Feb 2026 18:00:00 &#43;0800</pubDate><author>
         <name>Punit Naran</name>
     </author><guid>http://localhost:1313/learn/implementing-2fa/</guid>
-    <description><![CDATA[<h1 id="introduction" class="headerLink">
-    <a href="#introduction" class="header-mark"></a>Introduction</h1><p>Passwords are distinctively terrible.</p>
-<ul>
-<li>Users reuse them.</li>
-<li>Users choose &ldquo;Password123&rdquo;.</li>
-<li>Users write them on sticky notes.</li>
-</ul>
-<p>Even with strong password policies, a database leak from <em>another</em> site can compromise your users. <strong>Two-Factor Authentication (2FA)</strong> mitigates this by requiring a second factor: something physically in the user&rsquo;s possession (their phone).</p>
-<p>In this guide, we implement standard <strong>TOTP (Time-based One-Time Password)</strong>, compatible with Google Authenticator, Authy, and Microsoft Authenticator.</p>
-<hr>
-<h1 id="1-understanding-totp-rfc-6238" class="headerLink">
-    <a href="#1-understanding-totp-rfc-6238" class="header-mark"></a>1. Understanding TOTP (RFC 6238)</h1><p>TOTP is built on top of <strong>HOTP (HMAC-based One-Time Password)</strong>.</p>]]></description>
+    <description><![CDATA[<h1 id="preface-the-3-factors-of-auth" class="headerLink">
+    <a href="#preface-the-3-factors-of-auth" class="header-mark"></a>Preface: The 3 Factors of Auth</h1><p>Authentication is proving you are who you say you are. There are 3 ways to do this:</p>
+<ol>
+<li><strong>Something you Know (Knowledge)</strong>: Password, PIN, Mother&rsquo;s Maiden Name.</li>
+<li><strong>Something you Have (Possession)</strong>: Phone, YubiKey, RSA Token.</li>
+<li><strong>Something you Are (Inherence)</strong>: Fingerprint, FaceID, Retina.</li>
+</ol>
+<p>A Password alone is weak because it can be phished.
+<strong>2FA (Two-Factor)</strong> combines #1 and #2. Even if a hacker phishes your password, they cannot physically steal your phone over the internet.</p>]]></description>
 </item></channel>
 </rss>
