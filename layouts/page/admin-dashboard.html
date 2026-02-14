@@ -277,170 +277,193 @@
 </style>
 
 <script>
-    const API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
+    // --- 🧱 DASHBOARD CONTROLLER ---
+    class DashboardController extends BaseController {
+        constructor(apiUrl) {
+            super(apiUrl);
+            this.init();
+        }
 
-    async function handleForm(formId, url, resultId, successMsg) {
-        document.getElementById(formId).addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const resultBox = document.getElementById(resultId);
-            const btn = e.target.querySelector('button');
+        async init() {
+            // Setup Forms
+            this.setupForm('generate-form', '/generate_referrals', 'gen-result', 'Codes Generated!');
+            this.setupForm('enable-form', '/enable_code', 'enable-result', 'Code Enabled!');
 
-            btn.disabled = true;
-            btn.innerText = 'Processing...';
-            resultBox.style.display = 'none';
+            // Initial Data Load
+            this.fetchPendingPosts();
+        }
 
-            const formData = new FormData(e.target);
-            let data;
+        setupForm(formId, endpoint, resultId, successMsg) {
+            const form = document.getElementById(formId);
+            if (!form) return;
 
-            // Handle different data structures needed
-            if (formId === 'enable-form') {
-                data = new URLSearchParams(formData);
-                // For URLSearchParams over JSON to match specific bind needs if any
-                // But Admin usually strictly JSON. Let's start with JSON for uniformity with dashboard
-                // Re-evaluating previous logic: referals.go binding.
-                // Let's stick to what we decided: JSON.
-                data = JSON.stringify(Object.fromEntries(formData.entries()));
-                data = JSON.parse(data);
-            } else {
-                // GenerateReferrals uses a struct `Request`
-                data = JSON.stringify(Object.fromEntries(formData.entries()));
-                data = JSON.parse(data); // ensure numbers are correct types if needed?
-                // count needs to be int.
-                if (data.count) data.count = parseInt(data.count);
-            }
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                const resultBox = document.getElementById(resultId);
+                const originalText = btn.innerText;
 
-            try {
-                const headers = {};
-                headers['Content-Type'] = 'application/json';
-                const body = JSON.stringify(data);
+                // UI Loading State
+                btn.disabled = true;
+                btn.innerText = 'Processing...';
+                resultBox.style.display = 'none';
 
-                const response = await fetch(`${API_URL}${url}`, {
-                    method: 'POST',
-                    headers: headers,
-                    credentials: 'include',
-                    body: body
-                });
+                try {
+                    const formData = new FormData(e.target);
+                    let data;
 
-                if (response.ok) {
-                    const json = await response.json();
-                    resultBox.innerText = successMsg + '\nResult: ' + JSON.stringify(json, null, 2);
+                    // Data normalization
+                    if (formId === 'generate-form') {
+                        data = Object.fromEntries(formData.entries());
+                        if (data.count) data.count = parseInt(data.count);
+                    } else {
+                        data = Object.fromEntries(formData.entries());
+                    }
+
+                    const res = await fetch(`${this.apiUrl}${endpoint}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!res.ok) throw new Error(await res.text());
+
+                    const json = await res.json();
+                    resultBox.innerText = `${successMsg}\nResult: ${JSON.stringify(json, null, 2)}`;
                     resultBox.style.display = 'block';
                     resultBox.style.color = '#4ade80';
-                } else {
-                    const txt = await response.text();
-                    throw new Error(txt);
+                    window.toaster.show(successMsg, 'success');
+                    form.reset();
+                } catch (err) {
+                    resultBox.innerText = `Error: ${err.message}`;
+                    resultBox.style.display = 'block';
+                    resultBox.style.color = '#f87171';
+                    window.toaster.show('Operation failed', 'error');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = originalText;
                 }
-            } catch (err) {
-                resultBox.innerText = 'Error: ' + err.message;
-                resultBox.style.display = 'block';
-                resultBox.style.color = '#f87171';
-            } finally {
-                btn.disabled = false;
-                btn.innerText = btn.getAttribute('original-text') || 'Submit';
+            });
+        }
+
+        async fetchPendingPosts() {
+            const container = document.getElementById('pending-posts-container');
+
+            // 🧱 Prevent Race Conditions: Abort previous request if running
+            // BaseController handles this via fetchSafe if we passed a key,
+            // but here we are manually managing DOM so we'll just use fetchSafe for the data.
+
+            try {
+                container.innerHTML = '<p style="text-align:center; color:#94a3b8;">Loading pending posts...</p>';
+
+                const posts = await this.fetchSafe('pending-posts', '/admin-panel/posts/pending');
+
+                if (posts === null) return; // Aborted
+
+                if (!posts || posts.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#94a3b8;">No pending posts.</p>';
+                    return;
+                }
+
+                // 🚀 Performance: Use DocumentFragment for batch DOM update
+                const fragment = document.createDocumentFragment();
+
+                posts.forEach(post => {
+                    const card = Utils.el('div', ['post-card']);
+                    fragment.appendChild(card);
+                });
+
+                container.innerHTML = '';
+                container.appendChild(fragment);
+
+            } catch (e) {
+                container.innerHTML = `<p style="text-align:center; color:#f87171;">Error: ${e.message}</p>`;
+                const retryBtn = Utils.el('button', ['submit-btn'], 'Retry');
+                retryBtn.style.maxWidth = '200px';
+                retryBtn.style.margin = '1rem auto';
+                retryBtn.style.display = 'block';
+                retryBtn.onclick = () => this.fetchPendingPosts();
+                container.appendChild(retryBtn);
             }
-        });
-    }
+        }
 
-    // Capture original text
-    document.querySelectorAll('button').forEach(b => b.setAttribute('original-text', b.innerText));
+        createPostCard(post) {
+            const card = Utils.el('div', ['post-card']);
 
-    handleForm('generate-form', '/generate_referrals', 'gen-result', 'Codes Generated!');
-    handleForm('enable-form', '/enable_code', 'enable-result', 'Code Enabled!');
+            // Left Info
+            const infoDiv = Utils.el('div', ['post-info']);
 
-    // --- Moderation Logic ---
-    async function fetchPendingPosts() {
-        const container = document.getElementById('pending-posts-container');
-        try {
-            const res = await fetch(`${API_URL}/admin-panel/posts/pending`, { credentials: 'include' });
-            if (!res.ok) throw new Error("Failed to load");
-            const posts = await res.json();
+            const h3 = Utils.el('h3', [], `${post.title} `);
+            const badge = Utils.el('span', ['badge'], post.type);
+            h3.appendChild(badge);
 
-            if (!posts || posts.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#94a3b8;">No pending posts.</p>';
-                return;
-            }
+            const pAuthor = Utils.el('p', ['author'], `By ${post.author} • ${new Date(post.createdAt).toLocaleDateString()}`);
 
-            container.innerHTML = '';
-            posts.forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'post-card';
+            infoDiv.appendChild(h3);
+            infoDiv.appendChild(pAuthor);
 
-                // Post Info
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'post-info';
+            // Cover Link (Sanitized)
+            if (post.cover || post.featuredImage) {
+                const rawUrl = post.cover || post.featuredImage;
+                const safeUrl = Utils.sanitizeUrl(rawUrl);
 
-                const h3 = document.createElement('h3');
-                h3.textContent = post.title + ' ';
-                const badge = document.createElement('span');
-                badge.className = 'badge';
-                badge.textContent = post.type;
-                h3.appendChild(badge);
-                infoDiv.appendChild(h3);
-
-                const pAuthor = document.createElement('p');
-                pAuthor.className = 'author';
-                pAuthor.textContent = `By ${post.author} • ${new Date(post.createdAt).toLocaleDateString()}`;
-                infoDiv.appendChild(pAuthor);
-
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'actions';
-                if (post.cover || post.featuredImage) {
-                    const a = document.createElement('a');
-                    a.href = post.cover || post.featuredImage;
+                if (safeUrl) {
+                    const actionsDiv = Utils.el('div', ['actions']);
+                    const a = Utils.el('a', ['preview-link'], 'View Cover');
+                    a.href = safeUrl;
                     a.target = '_blank';
-                    a.className = 'preview-link';
-                    a.textContent = 'View Cover';
+                    a.rel = 'noopener noreferrer'; // 🛡️ Security: Prevent tabnabbing
                     actionsDiv.appendChild(a);
+                    infoDiv.appendChild(actionsDiv);
                 }
-                infoDiv.appendChild(actionsDiv);
-                card.appendChild(infoDiv);
+            }
 
-                // Buttons
-                const btnDiv = document.createElement('div');
-                btnDiv.className = 'mod-buttons';
+            card.appendChild(infoDiv);
 
-                const approveBtn = document.createElement('button');
-                approveBtn.className = 'btn-approve';
-                approveBtn.textContent = 'Approve';
-                approveBtn.onclick = () => window.updateStatus(post.id, 'approved');
-                btnDiv.appendChild(approveBtn);
+            // Right Buttons
+            const btnDiv = Utils.el('div', ['mod-buttons']);
 
-                const rejectBtn = document.createElement('button');
-                rejectBtn.className = 'btn-reject';
-                rejectBtn.textContent = 'Reject';
-                rejectBtn.onclick = () => window.updateStatus(post.id, 'rejected');
-                btnDiv.appendChild(rejectBtn);
+            const approveBtn = Utils.el('button', ['btn-approve'], 'Approve');
+            approveBtn.onclick = () => this.updateStatus(post.id, 'approved');
 
-                card.appendChild(btnDiv);
-                container.appendChild(card);
-            });
+            const rejectBtn = Utils.el('button', ['btn-reject'], 'Reject');
+            rejectBtn.onclick = () => this.updateStatus(post.id, 'rejected');
 
-        } catch (e) {
-            container.innerHTML = '<p style="text-align:center; color:#f87171;">Error loading posts.</p>';
+            btnDiv.appendChild(approveBtn);
+            btnDiv.appendChild(rejectBtn);
+            card.appendChild(btnDiv);
+
+            return card;
+        }
+
+        async updateStatus(id, status) {
+            // Basic confirm is okay here, but could be replaced with custom modal
+            if (!confirm(`Mark this post as ${status}?`)) return;
+
+            try {
+                const res = await fetch(`${this.apiUrl}/admin-panel/posts/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ id, status })
+                });
+
+                if (res.ok) {
+                    window.toaster.show(`Post ${status} successfully`, 'success');
+                    this.fetchPendingPosts(); // Refresh list
+                } else {
+                    throw new Error("Failed to update");
+                }
+            } catch (e) {
+                window.toaster.show(e.message, 'error');
+            }
         }
     }
 
-    window.updateStatus = async function (id, status) {
-        if (!confirm(`Mark this post as ${status}?`)) return;
-        try {
-            const res = await fetch(`${API_URL}/admin-panel/posts/status`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ id, status })
-            });
-            if (res.ok) {
-                fetchPendingPosts(); // Refresh list
-            } else {
-                alert("Failed to update status");
-            }
-        } catch (e) {
-            alert("Error: " + e.message);
-        }
-    };
-
-    // Initial Load
-    fetchPendingPosts();
+    // Initialize
+    const API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
+    const app = new DashboardController(API_URL);
 
 </script>
 {{ end }}

@@ -39,7 +39,10 @@
         observer.observe(document.body, { attributes: true, attributeFilter: ['theme'] });
         syncTheme(); 
     });
-</script><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+</script>
+
+
+<script src="/js/core.js"></script><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/admin-dashboard/" /><link rel="prev" href="http://localhost:1313/dashboard/" /><link rel="next" href="http://localhost:1313/activate/" />
 <link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
@@ -436,170 +439,193 @@
 </style>
 
 <script>
-    const API_URL = "http://localhost:8080";
+    
+    class DashboardController extends BaseController {
+        constructor(apiUrl) {
+            super(apiUrl);
+            this.init();
+        }
 
-    async function handleForm(formId, url, resultId, successMsg) {
-        document.getElementById(formId).addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const resultBox = document.getElementById(resultId);
-            const btn = e.target.querySelector('button');
-
-            btn.disabled = true;
-            btn.innerText = 'Processing...';
-            resultBox.style.display = 'none';
-
-            const formData = new FormData(e.target);
-            let data;
+        async init() {
+            
+            this.setupForm('generate-form', '/generate_referrals', 'gen-result', 'Codes Generated!');
+            this.setupForm('enable-form', '/enable_code', 'enable-result', 'Code Enabled!');
 
             
-            if (formId === 'enable-form') {
-                data = new URLSearchParams(formData);
-                
-                
-                
-                
-                data = JSON.stringify(Object.fromEntries(formData.entries()));
-                data = JSON.parse(data);
-            } else {
-                
-                data = JSON.stringify(Object.fromEntries(formData.entries()));
-                data = JSON.parse(data); 
-                
-                if (data.count) data.count = parseInt(data.count);
-            }
+            this.fetchPendingPosts();
+        }
 
-            try {
-                const headers = {};
-                headers['Content-Type'] = 'application/json';
-                const body = JSON.stringify(data);
+        setupForm(formId, endpoint, resultId, successMsg) {
+            const form = document.getElementById(formId);
+            if (!form) return;
 
-                const response = await fetch(`${API_URL}${url}`, {
-                    method: 'POST',
-                    headers: headers,
-                    credentials: 'include',
-                    body: body
-                });
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                const resultBox = document.getElementById(resultId);
+                const originalText = btn.innerText;
 
-                if (response.ok) {
-                    const json = await response.json();
-                    resultBox.innerText = successMsg + '\nResult: ' + JSON.stringify(json, null, 2);
+                
+                btn.disabled = true;
+                btn.innerText = 'Processing...';
+                resultBox.style.display = 'none';
+
+                try {
+                    const formData = new FormData(e.target);
+                    let data;
+
+                    
+                    if (formId === 'generate-form') {
+                        data = Object.fromEntries(formData.entries());
+                        if (data.count) data.count = parseInt(data.count);
+                    } else {
+                        data = Object.fromEntries(formData.entries());
+                    }
+
+                    const res = await fetch(`${this.apiUrl}${endpoint}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!res.ok) throw new Error(await res.text());
+
+                    const json = await res.json();
+                    resultBox.innerText = `${successMsg}\nResult: ${JSON.stringify(json, null, 2)}`;
                     resultBox.style.display = 'block';
                     resultBox.style.color = '#4ade80';
-                } else {
-                    const txt = await response.text();
-                    throw new Error(txt);
+                    window.toaster.show(successMsg, 'success');
+                    form.reset();
+                } catch (err) {
+                    resultBox.innerText = `Error: ${err.message}`;
+                    resultBox.style.display = 'block';
+                    resultBox.style.color = '#f87171';
+                    window.toaster.show('Operation failed', 'error');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = originalText;
                 }
-            } catch (err) {
-                resultBox.innerText = 'Error: ' + err.message;
-                resultBox.style.display = 'block';
-                resultBox.style.color = '#f87171';
-            } finally {
-                btn.disabled = false;
-                btn.innerText = btn.getAttribute('original-text') || 'Submit';
-            }
-        });
-    }
+            });
+        }
 
-    
-    document.querySelectorAll('button').forEach(b => b.setAttribute('original-text', b.innerText));
+        async fetchPendingPosts() {
+            const container = document.getElementById('pending-posts-container');
 
-    handleForm('generate-form', '/generate_referrals', 'gen-result', 'Codes Generated!');
-    handleForm('enable-form', '/enable_code', 'enable-result', 'Code Enabled!');
+            
+            
+            
 
-    
-    async function fetchPendingPosts() {
-        const container = document.getElementById('pending-posts-container');
-        try {
-            const res = await fetch(`${API_URL}/admin-panel/posts/pending`, { credentials: 'include' });
-            if (!res.ok) throw new Error("Failed to load");
-            const posts = await res.json();
+            try {
+                container.innerHTML = '<p style="text-align:center; color:#94a3b8;">Loading pending posts...</p>';
 
-            if (!posts || posts.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#94a3b8;">No pending posts.</p>';
-                return;
-            }
+                const posts = await this.fetchSafe('pending-posts', '/admin-panel/posts/pending');
 
-            container.innerHTML = '';
-            posts.forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'post-card';
+                if (posts === null) return; 
+
+                if (!posts || posts.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#94a3b8;">No pending posts.</p>';
+                    return;
+                }
 
                 
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'post-info';
+                const fragment = document.createDocumentFragment();
 
-                const h3 = document.createElement('h3');
-                h3.textContent = post.title + ' ';
-                const badge = document.createElement('span');
-                badge.className = 'badge';
-                badge.textContent = post.type;
-                h3.appendChild(badge);
-                infoDiv.appendChild(h3);
+                posts.forEach(post => {
+                    const card = Utils.el('div', ['post-card']);
+                    fragment.appendChild(card);
+                });
 
-                const pAuthor = document.createElement('p');
-                pAuthor.className = 'author';
-                pAuthor.textContent = `By ${post.author} • ${new Date(post.createdAt).toLocaleDateString()}`;
-                infoDiv.appendChild(pAuthor);
+                container.innerHTML = '';
+                container.appendChild(fragment);
 
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'actions';
-                if (post.cover || post.featuredImage) {
-                    const a = document.createElement('a');
-                    a.href = post.cover || post.featuredImage;
+            } catch (e) {
+                container.innerHTML = `<p style="text-align:center; color:#f87171;">Error: ${e.message}</p>`;
+                const retryBtn = Utils.el('button', ['submit-btn'], 'Retry');
+                retryBtn.style.maxWidth = '200px';
+                retryBtn.style.margin = '1rem auto';
+                retryBtn.style.display = 'block';
+                retryBtn.onclick = () => this.fetchPendingPosts();
+                container.appendChild(retryBtn);
+            }
+        }
+
+        createPostCard(post) {
+            const card = Utils.el('div', ['post-card']);
+
+            
+            const infoDiv = Utils.el('div', ['post-info']);
+
+            const h3 = Utils.el('h3', [], `${post.title} `);
+            const badge = Utils.el('span', ['badge'], post.type);
+            h3.appendChild(badge);
+
+            const pAuthor = Utils.el('p', ['author'], `By ${post.author} • ${new Date(post.createdAt).toLocaleDateString()}`);
+
+            infoDiv.appendChild(h3);
+            infoDiv.appendChild(pAuthor);
+
+            
+            if (post.cover || post.featuredImage) {
+                const rawUrl = post.cover || post.featuredImage;
+                const safeUrl = Utils.sanitizeUrl(rawUrl);
+
+                if (safeUrl) {
+                    const actionsDiv = Utils.el('div', ['actions']);
+                    const a = Utils.el('a', ['preview-link'], 'View Cover');
+                    a.href = safeUrl;
                     a.target = '_blank';
-                    a.className = 'preview-link';
-                    a.textContent = 'View Cover';
+                    a.rel = 'noopener noreferrer'; 
                     actionsDiv.appendChild(a);
+                    infoDiv.appendChild(actionsDiv);
                 }
-                infoDiv.appendChild(actionsDiv);
-                card.appendChild(infoDiv);
+            }
 
-                
-                const btnDiv = document.createElement('div');
-                btnDiv.className = 'mod-buttons';
+            card.appendChild(infoDiv);
 
-                const approveBtn = document.createElement('button');
-                approveBtn.className = 'btn-approve';
-                approveBtn.textContent = 'Approve';
-                approveBtn.onclick = () => window.updateStatus(post.id, 'approved');
-                btnDiv.appendChild(approveBtn);
+            
+            const btnDiv = Utils.el('div', ['mod-buttons']);
 
-                const rejectBtn = document.createElement('button');
-                rejectBtn.className = 'btn-reject';
-                rejectBtn.textContent = 'Reject';
-                rejectBtn.onclick = () => window.updateStatus(post.id, 'rejected');
-                btnDiv.appendChild(rejectBtn);
+            const approveBtn = Utils.el('button', ['btn-approve'], 'Approve');
+            approveBtn.onclick = () => this.updateStatus(post.id, 'approved');
 
-                card.appendChild(btnDiv);
-                container.appendChild(card);
-            });
+            const rejectBtn = Utils.el('button', ['btn-reject'], 'Reject');
+            rejectBtn.onclick = () => this.updateStatus(post.id, 'rejected');
 
-        } catch (e) {
-            container.innerHTML = '<p style="text-align:center; color:#f87171;">Error loading posts.</p>';
+            btnDiv.appendChild(approveBtn);
+            btnDiv.appendChild(rejectBtn);
+            card.appendChild(btnDiv);
+
+            return card;
+        }
+
+        async updateStatus(id, status) {
+            
+            if (!confirm(`Mark this post as ${status}?`)) return;
+
+            try {
+                const res = await fetch(`${this.apiUrl}/admin-panel/posts/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ id, status })
+                });
+
+                if (res.ok) {
+                    window.toaster.show(`Post ${status} successfully`, 'success');
+                    this.fetchPendingPosts(); 
+                } else {
+                    throw new Error("Failed to update");
+                }
+            } catch (e) {
+                window.toaster.show(e.message, 'error');
+            }
         }
     }
 
-    window.updateStatus = async function (id, status) {
-        if (!confirm(`Mark this post as ${status}?`)) return;
-        try {
-            const res = await fetch(`${API_URL}/admin-panel/posts/status`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ id, status })
-            });
-            if (res.ok) {
-                fetchPendingPosts(); 
-            } else {
-                alert("Failed to update status");
-            }
-        } catch (e) {
-            alert("Error: " + e.message);
-        }
-    };
-
     
-    fetchPendingPosts();
+    const API_URL = "http://localhost:8080";
+    const app = new DashboardController(API_URL);
 
 </script>
 </div>

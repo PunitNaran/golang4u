@@ -39,7 +39,10 @@
         observer.observe(document.body, { attributes: true, attributeFilter: ['theme'] });
         syncTheme(); 
     });
-</script><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+</script>
+
+
+<script src="/js/core.js"></script><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/signup/" /><link rel="prev" href="http://localhost:1313/playground/" /><link rel="next" href="http://localhost:1313/login/" />
 <link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
@@ -353,77 +356,85 @@
 </style>
 
 <script>
-    const API_URL = window.GO4U_API_URL;
+    const API_URL = "http://localhost:8080";
 
-    document.getElementById('signup-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('submit-btn');
-        const msg = document.getElementById('form-message');
-        const loader = btn.querySelector('.loader');
+    class SignupController extends BaseController {
+        constructor(apiUrl) {
+            super(apiUrl);
+            this.form = document.getElementById('signup-form');
+            if (this.form) {
+                this.form.addEventListener('submit', (e) => this.handleSignup(e));
+            }
+        }
 
-        btn.disabled = true;
-        loader.style.display = 'block';
-        msg.innerText = '';
-        msg.className = 'message';
+        async handleSignup(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const msg = document.getElementById('form-message');
+            const loader = btn.querySelector('.loader');
 
-        const formData = new FormData(e.target);
-        
-        const data = {
-            "avatar_name": formData.get("avatar_name"),
-            "email": formData.get("email"),
-            "password": formData.get("password"),
-            "refered_avatar_code": formData.get("refered_avatar_code"),
-            "country": formData.get("country")
-        };
+            btn.disabled = true;
+            if (loader) loader.style.display = 'block';
+            msg.innerText = '';
+            msg.className = 'message';
 
+            try {
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
 
-        try {
-            const response = await fetch(`${API_URL}/new_user`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
+                
+                if (typeof CryptoUtils === 'undefined') {
+                    throw new Error("Encryption library missing. Please refresh.");
+                }
+
+                
+                const payload = {
                     profile: {
                         avatar_name: data.avatar_name,
-                        role: "user", 
+                        role: "user",
                         verification: {
                             encrypted_email: await CryptoUtils.encrypt(data.email),
                             encrypted_pass: await CryptoUtils.encrypt(data.password)
                         }
                     },
                     refered_avatar_code: data.refered_avatar_code,
-                    country: data.country
-                })
-            });
+                    country: data.country || "US"
+                };
 
-            if (response.ok) {
-                
+                const res = await fetch(`${this.apiUrl}/new_user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    let errMsg = await res.text();
+                    try { errMsg = JSON.parse(errMsg).message || errMsg; } catch (_) { }
+                    throw new Error(errMsg || 'Signup failed');
+                }
+
                 msg.innerText = 'Account Created! Redirecting to verification...';
                 msg.classList.add('success');
-                e.target.reset();
+                window.toaster.show('Account Created!', 'success');
 
-                
+                const username = data.avatar_name;
                 setTimeout(() => {
-                    const username = data.avatar_name || data['avatar_name'];
                     window.location.href = `/activate?username=${encodeURIComponent(username)}`;
                 }, 1500);
-            } else {
-                const errText = await response.text();
-                let errMsg = errText;
-                try {
-                    errMsg = JSON.parse(errText).message || errText;
-                } catch (e) { }
-                throw new Error('Signup failed: ' + errMsg);
+
+            } catch (error) {
+                msg.innerText = error.message;
+                msg.classList.add('error');
+                this.handleError(error, 'Signup Failed');
+            } finally {
+                btn.disabled = false;
+                if (loader) loader.style.display = 'none';
             }
-        } catch (error) {
-            msg.innerText = error.message;
-            msg.classList.add('error');
-        } finally {
-            btn.disabled = false;
-            loader.style.display = 'none';
         }
-    });
+    }
+
+    const app = new SignupController(API_URL);
 </script>
 </div>
         </main><footer class="footer">

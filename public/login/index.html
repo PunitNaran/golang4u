@@ -39,7 +39,10 @@
         observer.observe(document.body, { attributes: true, attributeFilter: ['theme'] });
         syncTheme(); 
     });
-</script><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+</script>
+
+
+<script src="/js/core.js"></script><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://localhost:1313/login/" /><link rel="prev" href="http://localhost:1313/signup/" /><link rel="next" href="http://localhost:1313/dashboard/" />
 <link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/color.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/fontawesome-free/all.min.css">
@@ -361,61 +364,82 @@
 </style>
 
 <script>
-    const API_URL = window.GO4U_API_URL;
+    const API_URL = "http://localhost:8080";
 
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('submit-btn');
-        const msg = document.getElementById('form-message');
-        const loader = btn.querySelector('.loader');
+    class AuthController extends BaseController {
+        constructor(apiUrl) {
+            super(apiUrl);
+            this.form = document.getElementById('login-form');
+            if (this.form) {
+                this.form.addEventListener('submit', (e) => this.handleLogin(e));
+            }
+        }
 
-        btn.disabled = true;
-        loader.style.display = 'block';
-        msg.innerText = '';
-        msg.className = 'message';
+        async handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const msg = document.getElementById('form-message');
+            const loader = btn.querySelector('.loader');
 
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries()); 
+            btn.disabled = true;
+            if (loader) loader.style.display = 'block';
+            msg.innerText = '';
+            msg.className = 'message';
 
-        try {
-            const response = await fetch(`${API_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include', 
+            try {
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+
                 
-                body: JSON.stringify({
+                if (typeof CryptoUtils === 'undefined') {
+                    throw new Error("Encryption library missing. Please refresh.");
+                }
+
+                const payload = {
                     avatar_name: data.avatar_name,
                     verification: {
                         "2fa_pin": data.pin,
                         encrypted_pass: await CryptoUtils.encrypt(data.password)
                     }
-                })
-            });
+                };
 
-            if (response.ok) {
+                const res = await fetch(`${this.apiUrl}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    let errMsg = await res.text();
+                    try { errMsg = JSON.parse(errMsg).message || errMsg; } catch (_) { }
+                    throw new Error(errMsg || 'Login failed');
+                }
+
                 msg.innerText = 'Login successful! Redirecting...';
                 msg.classList.add('success');
+                window.toaster.show('Login successful', 'success');
+
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirect = urlParams.get('redirect') || '/dashboard';
+
                 setTimeout(() => {
-                    window.location.href = '/dashboard';
+                    window.location.href = redirect;
                 }, 1000);
-            } else {
-                const errText = await response.text();
-                let errMsg = errText;
-                try {
-                    errMsg = JSON.parse(errText).message || errText;
-                } catch (e) { }
-                throw new Error('Login failed: ' + errMsg);
+
+            } catch (error) {
+                msg.innerText = error.message;
+                msg.classList.add('error');
+                this.handleError(error, 'Login Failed');
+            } finally {
+                btn.disabled = false;
+                if (loader) loader.style.display = 'none';
             }
-        } catch (error) {
-            msg.innerText = error.message;
-            msg.classList.add('error');
-        } finally {
-            btn.disabled = false;
-            loader.style.display = 'none';
         }
-    });
+    }
+
+    const app = new AuthController(API_URL);
 </script>
 </div>
         </main><footer class="footer">
