@@ -34,7 +34,7 @@
     padding: 0 1.5rem 0 5%; // Tighter padding for tablets
   }
 
-  &.open .menu-item.search input {
+  #header-desktop.open .header-wrapper .menu .menu-item.search input {
     width: clamp(10rem, 15vw, 14rem); // Smaller search on tablets
   }
 }
