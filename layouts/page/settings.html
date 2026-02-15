@@ -51,6 +51,20 @@
                     </div>
                 </div>
 
+                <!-- Recovery Codes Display (Hidden by default) -->
+                <div id="recovery-codes-container"
+                    style="display:none; margin-top: 1rem; background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--glass-border);">
+                    <h3 style="color: #fca5a5; margin-top:0;">⚠️ Save your Recovery Codes!</h3>
+                    <p style="color: #cbd5e1; margin-bottom: 1rem;">These codes are the <strong>ONLY</strong> way to
+                        access your account if you lose your authenticator. Copy them to a safe place now!</p>
+                    <div id="recovery-codes-list"
+                        style="font-family: monospace; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem;">
+                    </div>
+                    <button id="close-recovery-btn" class="submit-btn"
+                        style="background: linear-gradient(135deg, #22c55e, #16a34a); width: 100%;">I have saved these
+                        codes</button>
+                </div>
+
                 <!-- Disable 2FA -->
                 <div id="disable-2fa-container" style="display:none;">
                     <p>Two-Factor Authentication is currently active.</p>
@@ -317,9 +331,40 @@
             });
 
             if (response.ok) {
-                msg.innerText = '2FA Activated Successfully!';
-                msg.className = 'message success';
-                setTimeout(loadSettings, 1500); // Reload to update UI
+                const data = await response.json();
+
+                if (data.recovery_codes && data.recovery_codes.length > 0) {
+                    // Hide Verify Form
+                    document.getElementById('qr-setup-area').style.display = 'none';
+
+                    // Populate Recovery Codes
+                    const list = document.getElementById('recovery-codes-list');
+                    list.innerHTML = '';
+                    data.recovery_codes.forEach(code => {
+                        const el = document.createElement('div');
+                        el.innerText = code;
+                        el.style.background = 'rgba(255, 255, 255, 0.1)';
+                        el.style.padding = '8px';
+                        el.style.borderRadius = '6px';
+                        el.style.textAlign = 'center';
+                        list.appendChild(el);
+                    });
+
+                    // Show Container
+                    document.getElementById('recovery-codes-container').style.display = 'block';
+
+                    // Setup Close Button
+                    document.getElementById('close-recovery-btn').onclick = () => {
+                        loadSettings();
+                    };
+
+                    msg.innerText = '2FA Activated! Save your codes below.';
+                    msg.className = 'message success';
+                } else {
+                    msg.innerText = '2FA Activated Successfully!';
+                    msg.className = 'message success';
+                    setTimeout(loadSettings, 1500);
+                }
             } else {
                 msg.innerText = 'Invalid PIN. Try again.';
                 msg.className = 'message error';
