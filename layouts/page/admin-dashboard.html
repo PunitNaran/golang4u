@@ -355,7 +355,7 @@
             try {
                 container.innerHTML = '<p style="text-align:center; color:#94a3b8;">Loading pending posts...</p>';
 
-                const posts = await this.fetchSafe('pending-posts', '/admin-panel/posts/pending');
+                const posts = await this.fetchSafe('pending-posts', '/admin-dashboard/posts/pending');
 
                 if (posts === null) return; // Aborted
 
@@ -440,7 +440,7 @@
             if (!confirm(`Mark this post as ${status}?`)) return;
 
             try {
-                const res = await fetch(`${this.apiUrl}/admin-panel/posts/status`, {
+                const res = await fetch(`${this.apiUrl}/admin-dashboard/posts/status`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
