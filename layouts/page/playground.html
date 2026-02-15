@@ -14,7 +14,17 @@
                 class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded text-sm font-bold transition-colors">
                 <i class="fas fa-play"></i> Run
             </button>
+            <button id="share-btn"
+                class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded text-sm font-bold transition-colors">
+                <i class="fas fa-share-alt"></i> Share
+            </button>
         </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"
+        class="fixed top-24 left-20 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-xl transform -translate-y-full opacity-0 transition-all duration-300 z-50 font-bold border border-gray-700 pointer-events-none hidden">
+        <span id="toast-message"></span>
     </div>
 
     <!-- Main Content: Split View -->
@@ -41,8 +51,17 @@
 <!-- Async Monaco Loader: Delays loading until after footer scripts (KaTeX/TypeIt) have run. -->
 <!-- This prevents Monaco's AMD loader from breaking UMD scripts. -->
 <script>
-    window.addEventListener('load', function () {
-        console.log("[Playground] Window loaded. Injecting Monaco Loader...");
+    console.log("[Playground] Inline script execution started.");
+    window.GO4U_API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
+    console.log("[Playground] API URL set to:", window.GO4U_API_URL);
+
+    function initPlayground() {
+        if (window.playgroundInitialized) {
+            console.log("[Playground] Already initialized, skipping.");
+            return;
+        }
+        window.playgroundInitialized = true;
+        console.log("[Playground] Initializing...");
 
         var loaderScript = document.createElement('script');
         loaderScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js';
@@ -50,11 +69,9 @@
 
         loaderScript.onload = function () {
             console.log("[Playground] Monaco Loader ready. Loading logic...");
-
-            // Monaco defines 'define' and 'require'.
-            // Now we load our playground.js which uses 'require'.
             var ps = document.createElement('script');
-            ps.src = '/js/playground.js';
+            // Use time hash to prevent caching during debug
+            ps.src = '/js/playground.js?v=' + Date.now();
             document.body.appendChild(ps);
         };
 
@@ -65,6 +82,17 @@
         };
 
         document.body.appendChild(loaderScript);
-    });
+    }
+
+    // Run immediately if ready, otherwise wait for load
+    if (document.readyState === 'complete') {
+        console.log("[Playground] Document already complete. Running init.");
+        initPlayground();
+    } else {
+        window.addEventListener('load', function () {
+            console.log("[Playground] Load event fired. Running init.");
+            initPlayground();
+        });
+    }
 </script>
 {{ end }}

@@ -71,6 +71,30 @@ if (editorContainer) {
         }
     }
 
+    // Toast Logic
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toast-message');
+        if (toast && toastMsg) {
+            toastMsg.innerText = message;
+
+            // Show
+            toast.classList.remove('hidden');
+            // Force reflow
+            toast.offsetHeight;
+            toast.classList.remove('-translate-y-full', 'opacity-0', 'pointer-events-none');
+
+            // Auto-hide after 5s
+            setTimeout(() => {
+                toast.classList.add('-translate-y-full', 'opacity-0', 'pointer-events-none');
+                // Fully hide after transition ends
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 300);
+            }, 5000);
+        }
+    }
+
     // Run Button Logic
     const runBtn = document.getElementById('run-btn');
     if (runBtn) {
@@ -119,5 +143,89 @@ if (editorContainer) {
                 }
             }
         });
+    }
+
+    // Share Button Logic
+    const shareBtn = document.getElementById('share-btn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', async () => {
+            if (!window.editor) {
+                showToast("Editor not ready! Please wait. ⏳");
+                return;
+            }
+            const code = window.editor.getValue();
+            const btnHtml = shareBtn.innerHTML;
+            shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            shareBtn.disabled = true;
+
+            try {
+                const apiUrl = window.GO4U_API_URL || "http://localhost:8080";
+                const response = await fetch(`${apiUrl}/snippet`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ code: code })
+                });
+
+                if (response.status === 401) {
+                    showToast("Please login to share snippets! 🔐");
+                    return;
+                }
+
+                if (!response.ok) throw new Error("Failed to save snippet");
+
+                const data = await response.json();
+
+                // Update URL
+                const newUrl = `${window.location.pathname}?id=${data.id}`;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+
+                // Copy to Clipboard
+                await navigator.clipboard.writeText(window.location.href);
+                showToast("Link copied to clipboard! 📋");
+
+            } catch (error) {
+                console.error(error);
+                if (error.name === 'TypeError') {
+                    showToast("Network error: Please check your connection or CORS settings 🌐");
+                } else {
+                    showToast("Error saving snippet ❌");
+                }
+            } finally {
+                shareBtn.innerHTML = btnHtml;
+                shareBtn.disabled = false;
+            }
+        });
+    }
+
+    // Load Snippet from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const snippetId = urlParams.get('id');
+    if (snippetId) {
+        const apiUrl = window.GO4U_API_URL || "http://localhost:8080";
+        fetch(`${apiUrl}/snippet/${snippetId}`, { credentials: 'include' })
+            .then(res => {
+                if (!res.ok) throw new Error("Snippet not found");
+                return res.json();
+            })
+            .then(data => {
+                if (window.editor) {
+                    window.editor.setValue(data.code);
+                } else {
+                    // If editor not ready, wait for it (simple retry)
+                    const checkEditor = setInterval(() => {
+                        if (window.editor) {
+                            window.editor.setValue(data.code);
+                            clearInterval(checkEditor);
+                        }
+                    }, 100);
+                }
+            })
+            .catch(err => {
+                console.error("Failed to load snippet:", err);
+                showToast("Snippet not found or expired ⚠️");
+            });
     }
 }
