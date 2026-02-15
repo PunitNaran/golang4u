@@ -283,7 +283,10 @@
         const msg = document.getElementById('security-message');
         msg.innerText = '';
         try {
-            const response = await fetch(`${API_URL}/2fa/setup`, { credentials: 'include' });
+            const response = await fetch(`${API_URL}/2fa/setup`, {
+                method: 'POST',
+                credentials: 'include'
+            });
             if (response.ok) {
                 const blob = await response.blob();
                 const imgUrl = URL.createObjectURL(blob);
