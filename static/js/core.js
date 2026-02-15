@@ -84,8 +84,18 @@ class Toaster {
 }
 
 // Global instance
-const toaster = new Toaster();
-window.toaster = toaster;
+// Global instance - Init on load to ensure document.body exists
+window.toaster = {
+    show: function (message, type) {
+        // Queue or console log if called before ready (fallback)
+        console.warn("Toaster not ready yet:", message);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const t = new Toaster();
+    window.toaster = t;
+});
 
 // --- BASE CONTROLLER ---
 class BaseController {
