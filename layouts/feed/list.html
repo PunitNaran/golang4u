@@ -1,0 +1,323 @@
+{{ define "main" }}
+<div class="feed-container">
+    <div class="glass-header">
+        <h1 class="gradient-text">{{ .Title }}</h1>
+        <p class="subtitle">{{ .Params.summary }}</p>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" data-type="">All</button>
+            <button class="filter-btn" data-type="news">News</button>
+            <button class="filter-btn" data-type="learn">Learn</button>
+            <button class="filter-btn" data-type="events">Events</button>
+            <button class="filter-btn" data-type="jobs">Jobs</button>
+            <button class="filter-btn" data-type="casts">Casts</button>
+        </div>
+    </div>
+
+    <div id="posts-grid" class="posts-grid">
+        <!-- Posts injected here -->
+        <div class="loader"></div>
+    </div>
+
+    <div class="pagination-container">
+        <button id="load-more-btn" class="load-more-btn" style="display: none;">Load More</button>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary: #6366f1;
+        --secondary: #ec4899;
+        --bg-card: rgba(255, 255, 255, 0.05);
+        --border-card: rgba(255, 255, 255, 0.1);
+    }
+
+    .feed-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        min-height: 80vh;
+    }
+
+    .glass-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: var(--bg-card);
+        backdrop-filter: blur(12px);
+        border-radius: 20px;
+        border: 1px solid var(--border-card);
+    }
+
+    .gradient-text {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 3rem;
+        font-weight: 800;
+    }
+
+    .filter-bar {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .filter-btn {
+        background: transparent;
+        border: 1px solid var(--border-card);
+        color: #cbd5e1;
+        padding: 0.5rem 1.5rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .post-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .post-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .post-image {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+        background: #1e293b;
+    }
+
+    .post-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .post-tag {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--secondary);
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+    }
+
+    .post-title {
+        font-size: 1.25rem;
+        margin: 0 0 1rem 0;
+        color: #f8fafc;
+    }
+
+    .post-meta {
+        font-size: 0.875rem;
+        color: #94a3b8;
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .loader {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 2rem;
+        color: white;
+    }
+
+    .pagination-container {
+        text-align: center;
+        margin-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    .load-more-btn {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        color: white;
+        padding: 1rem 3rem;
+        border-radius: 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .load-more-btn:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        transform: translateY(-2px);
+    }
+</style>
+
+<script>
+    const grid = document.getElementById('posts-grid');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    let currentType = '';
+    let currentPage = 1;
+    const limit = 20;
+    let isLoading = false;
+
+    // Helper to clear grid but keep loader if needed (not used in append mode)
+    function clearGrid() {
+        grid.innerHTML = '<div class="loader">Loading...</div>';
+    }
+
+    async function fetchPosts(type = '', page = 1) {
+        if (isLoading) return;
+        isLoading = true;
+
+        if (page === 1) {
+            grid.innerHTML = '<div class="loader">Loading...</div>';
+            loadMoreBtn.style.display = 'none';
+        } else {
+            loadMoreBtn.innerText = 'Loading...';
+        }
+
+        try {
+            const url = `http://localhost:8080/posts?type=${type}&page=${page}&limit=${limit}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Failed to fetch');
+
+            const posts = await response.json();
+
+            // Remove loader if it exists
+            const loader = grid.querySelector('.loader');
+            if (loader) loader.remove();
+
+            renderPosts(posts, page === 1);
+
+            // Handle Load More visibility
+            if (posts.length < limit) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'inline-block';
+                loadMoreBtn.innerText = 'Load More';
+            }
+
+        } catch (error) {
+            if (page === 1) {
+                grid.innerHTML = `<div style="text-align:center; color:red; grid-column:1/-1;">Error loading posts: ${error.message}</div>`;
+            } else {
+                console.error(error);
+                loadMoreBtn.innerText = 'Error loading more';
+            }
+        } finally {
+            isLoading = false;
+        }
+    }
+
+    function renderPosts(posts, isNew) {
+        if (isNew) grid.innerHTML = '';
+
+        if ((!posts || posts.length === 0) && isNew) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.style.textAlign = 'center';
+            emptyDiv.style.color = '#94a3b8';
+            emptyDiv.style.gridColumn = '1/-1';
+            emptyDiv.textContent = 'No posts found.';
+            grid.appendChild(emptyDiv);
+            return;
+        }
+
+        posts.forEach(post => {
+            const card = document.createElement('div');
+            card.className = 'post-card';
+
+            // 1. Image Div
+            const imgDiv = document.createElement('div');
+            imgDiv.className = 'post-image';
+
+            let imgUrl = post.cover || post.featuredImage;
+            if (imgUrl) {
+                if (imgUrl.startsWith('/')) {
+                    imgUrl = 'http://localhost:8080' + imgUrl;
+                }
+                imgUrl = imgUrl.replace(/\\/g, '/');
+                // Basic URL validation/sanitization could happen here
+                // For now, assigning to style.backgroundImage is relatively safe if we trust the backend to not serve malicious URLs
+                // But to be safer, we can check protocol
+                if (imgUrl.startsWith('http:') || imgUrl.startsWith('https:')) {
+                    imgDiv.style.backgroundImage = `url('${imgUrl}')`;
+                    imgDiv.style.backgroundSize = 'cover';
+                    imgDiv.style.backgroundPosition = 'center';
+                }
+            } else {
+                imgDiv.style.background = 'linear-gradient(45deg, #1e293b, #334155)';
+            }
+            card.appendChild(imgDiv);
+
+            // 2. Content Container
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'post-content';
+
+            // 3. Tag
+            const tagSpan = document.createElement('span');
+            tagSpan.className = 'post-tag';
+            tagSpan.textContent = post.type || 'General';
+            contentDiv.appendChild(tagSpan);
+
+            // 4. Title
+            const titleH3 = document.createElement('h3');
+            titleH3.className = 'post-title';
+            titleH3.textContent = post.title || 'Untitled';
+            contentDiv.appendChild(titleH3);
+
+            // 5. Meta
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'post-meta';
+            const dateSpan = document.createElement('span');
+            dateSpan.textContent = new Date(post.createdAt).toLocaleDateString();
+            metaDiv.appendChild(dateSpan);
+            contentDiv.appendChild(metaDiv);
+
+            card.appendChild(contentDiv);
+            grid.appendChild(card);
+        });
+    }
+
+    // Filter Listeners
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+
+            currentType = e.target.dataset.type;
+            currentPage = 1;
+            fetchPosts(currentType, currentPage);
+        });
+    });
+
+    // Load More Listener
+    loadMoreBtn.addEventListener('click', () => {
+        currentPage++;
+        fetchPosts(currentType, currentPage);
+    });
+
+    // Initial Load
+    fetchPosts();
+</script>
+{{ end }}

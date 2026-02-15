@@ -1,0 +1,109 @@
+{{ $image := .Params.featuredImagePreview | default .Params.featuredImage }}
+{{ $imgSrc := "" }}
+{{ with .Resources.GetMatch (printf "%s" ($image)) }}
+{{ $imgSrc = .RelPermalink }}
+{{ else }}
+{{ with .Resources.GetMatch "featured-image" }}
+{{ $imgSrc = .RelPermalink }}
+{{ end }}
+{{ end }}
+{{ if not $imgSrc }}
+{{ $imgSrc = $image }}
+{{ end }}
+
+<div
+    class="relative w-full rounded-3xl overflow-hidden shadow-2xl group ring-1 ring-gray-200 dark:ring-gray-700 bg-white dark:bg-gray-800 flex flex-col md:block md:h-[600px]">
+
+    {{/* Image Section */}}
+    <a href="{{ .RelPermalink }}" class="block w-full h-64 md:h-full md:absolute md:inset-0 relative overflow-hidden">
+        {{ if $imgSrc }}
+        <img src="{{ $imgSrc }}" alt="{{ .Title }}"
+            class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110">
+        {{/* Desktop Gradient Overlay */}}
+        <div
+            class="hidden md:block absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent opacity-100">
+        </div>
+        <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/80 to-transparent">
+        </div>
+        {{ else }}
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-gray-900">
+            <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+            </div>
+        </div>
+        {{ end }}
+    </a>
+
+    {{/* Content Section - Relative on Mobile, Absolute on Desktop */}}
+    <div
+        class="relative md:absolute bottom-0 left-0 p-6 md:p-12 w-full md:w-3/4 lg:w-2/3 flex flex-col justify-end z-10 bg-white dark:bg-gray-800 md:bg-transparent md:dark:bg-transparent">
+
+        <a href="{{ .RelPermalink }}" class="block">
+            {{/* Categories */}}
+            <div class="flex items-center gap-2 mb-4">
+                <span
+                    class="bg-indigo-600 text-white text-[10px] uppercase font-bold px-3 py-1 rounded-full tracking-widest shadow-sm">
+                    Featured
+                </span>
+                {{ with .Params.categories }}
+                {{ range first 1 . }}
+                <span
+                    class="bg-gray-100 dark:bg-gray-700/50 md:bg-white/10 md:backdrop-blur-md text-gray-600 dark:text-gray-300 md:text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-gray-200 dark:border-gray-600 md:border-white/20">
+                    {{ . }}
+                </span>
+                {{ end }}
+                {{ end }}
+            </div>
+
+            {{/* Title */}}
+            <h2
+                class="text-3xl md:text-5xl lg:text-5xl font-black text-gray-900 dark:text-white md:text-white mb-4 leading-tight tracking-tight group-hover:text-indigo-600 md:group-hover:text-indigo-200 transition-colors duration-300 drop-shadow-lg md:drop-shadow-2xl">
+                {{ .Title }}
+            </h2>
+
+            {{/* Summary */}}
+            <p
+                class="text-gray-600 dark:text-gray-300 md:text-gray-200 text-base md:text-lg line-clamp-3 mb-6 font-medium leading-relaxed max-w-xl">
+                {{ .Summary | truncate 200 }}
+            </p>
+        </a>
+
+        {{/* Footer / Meta */}}
+        <div
+            class="flex items-center gap-4 text-gray-500 dark:text-gray-400 md:text-white/90 md:border-t md:border-white/10 pt-4 md:pt-6">
+            <div class="flex items-center gap-3">
+                {{ if .Params.author }}
+                <div
+                    class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 md:bg-white/10 flex items-center justify-center text-indigo-700 dark:text-indigo-300 md:text-white font-bold text-xs ring-1 ring-indigo-200 dark:ring-indigo-700 md:ring-white/30">
+                    {{ substr .Params.author 0 1 }}
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold leading-none text-gray-900 dark:text-white md:text-white">{{
+                        .Params.author }}</span>
+                    <span class="text-[10px] uppercase tracking-wide opacity-80">Author</span>
+                </div>
+                {{ end }}
+            </div>
+
+            <div class="hidden md:block w-px h-8 bg-white/20"></div>
+
+            <div class="flex flex-col">
+                <span class="text-xs font-bold leading-none text-gray-900 dark:text-white md:text-white">{{ .Date.Format
+                    "Jan 2, 2006" }}</span>
+                <span class="text-[10px] uppercase tracking-wide opacity-80">Published</span>
+            </div>
+
+            <div class="ml-auto">
+                <a href="{{ .RelPermalink }}"
+                    class="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 md:text-white font-bold text-sm group/btn">
+                    Read Article
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 transform transition-transform group-hover/btn:translate-x-1" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

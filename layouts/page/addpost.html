@@ -1,0 +1,728 @@
+{{ define "content" }}
+<script src="https://unpkg.com/stackedit-js@1.0.7/docs/lib/stackedit.min.js"></script>
+<div class="post-creator-container">
+    <div class="glass-panel">
+        <h1 class="gradient-text">Create Something Amazing</h1>
+        <p class="subtitle">Share your knowledge with the world.</p>
+
+        <form id="create-post-form">
+            <div class="form-group">
+                <label for="content_type">What kind of post is this?</label>
+                <div class="select-wrapper">
+                    <select id="content_type" name="content_type" required>
+                        <option value="news">News</option>
+                        <option value="learn">Learn</option>
+                        <option value="events">Events</option>
+                        <option value="casts">Casts</option>
+                        <option value="jobs">Jobs</option>
+                        <option value="marketplace">Marketplace</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dynamic Sections -->
+            <div id="dynamic-fields">
+                <!-- Fields will be injected here via JS -->
+            </div>
+
+            <button type="submit" id="submit-btn" class="submit-btn">
+                <span class="btn-text">Submit Post</span>
+                <div class="loader" style="display:none;"></div>
+            </button>
+            <p id="form-message" class="message"></p>
+        </form>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #6366f1;
+        --secondary-color: #a855f7;
+        --bg-color: #0f172a;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text-color: #f8fafc;
+        --input-bg: rgba(0, 0, 0, 0.2);
+    }
+
+    .post-creator-container {
+        display: flex;
+        justify-content: center;
+        padding: 2px;
+        /* reduced padding */
+        min-height: 80vh;
+    }
+
+    .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        /* Safari */
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 2rem;
+        /* increased padding */
+        width: 100%;
+        max-width: 800px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #94a3b8;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #e2e8f0;
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px 16px;
+        background: var(--input-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: var(--text-color);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .select-wrapper {
+        position: relative;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s, opacity 0.2s;
+        margin-top: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    .message {
+        text-align: center;
+        margin-top: 1rem;
+        font-weight: 600;
+    }
+
+    .success {
+        color: #4ade80;
+    }
+
+    .error {
+        color: #f87171;
+    }
+
+    .field-group {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 1.5rem;
+        border-radius: 16px;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Loaders */
+    .loader {
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 3px solid #fff;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+        margin-left: 10px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Tag Chips */
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 8px;
+        background: var(--input-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        min-height: 48px;
+    }
+
+    .tag-container:focus-within {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .tag-chip {
+        background: var(--primary-color);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 16px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .tag-chip span {
+        cursor: pointer;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+    }
+
+    .tag-chip span:hover {
+        background: rgba(255, 255, 255, 0.4);
+    }
+
+
+    /* File Upload - Drag & Drop */
+    .file-drop-zone {
+        border: 2px dashed var(--glass-border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        position: relative;
+    }
+
+    .file-drop-zone:hover,
+    .file-drop-zone.dragover {
+        border-color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.1);
+    }
+
+    .file-drop-zone input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-drop-zone .icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .file-preview {
+        margin-top: 1rem;
+        max-height: 200px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: none;
+    }
+
+    .file-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* StackEdit Editor Area */
+    .editor-wrapper {
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        background: var(--input-bg);
+        overflow: hidden;
+    }
+
+    .editor-toolbar {
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid var(--glass-border);
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .editor-btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .editor-btn:hover {
+        opacity: 0.9;
+    }
+
+    .editor-preview {
+        padding: 1rem;
+        min-height: 150px;
+        max-height: 400px;
+        overflow-y: auto;
+        color: #d1d5db;
+        font-family: inherit;
+        white-space: pre-wrap;
+        /* Preserve formatting */
+        border-top: 1px solid var(--glass-border);
+    }
+
+    .editor-preview:empty::before {
+        content: "Click 'Open Editor' to start writing...";
+        color: #64748b;
+        font-style: italic;
+    }
+
+    /* StackEdit Dark Mode Hack */
+    [theme="dark"] iframe[src*="stackedit"],
+    [theme="black"] iframe[src*="stackedit"] {
+        filter: invert(1) hue-rotate(180deg);
+    }
+</style>
+
+<script>
+    const API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
+
+    // Auth Check
+    // Auth Check & Role Management
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch(`${API_URL}/profile/me`, { credentials: 'include' })
+            .then(res => {
+                if (!res.ok) throw new Error('Unauthorized');
+                return res.json();
+            })
+            .then(user => {
+                // User is logged in
+                // Check for Admin Role to show Marketplace Tab
+                if (user.profile && user.profile.role === 'admin') {
+                    const marketTab = document.getElementById('marketplace-tab');
+                    if (marketTab) marketTab.classList.remove('hidden');
+                }
+            })
+            .catch(() => {
+                window.location.href = '/login?redirect=/addpost';
+            });
+    });
+
+    const typeConfigs = {
+        news: [
+            { id: 'news-title', label: 'Title', type: 'text', required: true },
+            { id: 'news-author', label: 'Author', type: 'text', required: true },
+            { id: 'news-cover', label: 'Cover Image', type: 'file', accept: 'image/*' },
+            { id: 'news-categories', label: 'Categories', type: 'tags' },
+            { id: 'news-tags', label: 'Tags', type: 'tags' },
+            { id: 'news-body', label: 'Content (Markdown)', type: 'textarea', required: true }
+        ],
+        learn: [
+            { id: 'learn-title', label: 'Title', type: 'text', required: true },
+            { id: 'learn-subtitle', label: 'Subtitle', type: 'text' },
+            { id: 'learn-featuredImage', label: 'Featured Image', type: 'file', accept: 'image/*' },
+            { id: 'learn-categories', label: 'Categories', type: 'tags' },
+            { id: 'learn-tags', label: 'Tags', type: 'tags' },
+            { id: 'learn-body', label: 'Content (Markdown)', type: 'textarea', required: true }
+        ],
+        events: [
+            { id: 'events-title', label: 'Title', type: 'text', required: true },
+            { id: 'events-date', label: 'Date', type: 'datetime-local', required: true },
+            { id: 'events-location', label: 'Location', type: 'text' },
+            { id: 'events-body', label: 'Details', type: 'textarea', required: true }
+        ],
+        jobs: [
+            { id: 'jobs-title', label: 'Job Title', type: 'text', required: true },
+            { id: 'jobs-company', label: 'Company', type: 'text', required: true },
+            { id: 'jobs-type', label: 'Type', type: 'select', options: ['Full-time', 'Part-time', 'Contract'] },
+            { id: 'jobs-location', label: 'Location', type: 'text' },
+            { id: 'jobs-body', label: 'Description', type: 'textarea', required: true }
+        ],
+        casts: [
+            { id: 'casts-title', label: 'Title', type: 'text', required: true },
+            { id: 'casts-hosts', label: 'Hosts', type: 'text' },
+            { id: 'casts-link', label: 'Link', type: 'url' },
+            { id: 'casts-body', label: 'Description', type: 'textarea', required: true }
+        ],
+        marketplace: [
+            { id: 'marketplace-title', label: 'Product Title', type: 'text', required: true },
+            { id: 'marketplace-description', label: 'Small Description', type: 'textarea', required: true },
+            { id: 'marketplace-link', label: 'Amazon Link (OneLink)', type: 'url', required: true },
+            { id: 'marketplace-image', label: 'Product Image', type: 'file', accept: 'image/*', required: true }
+        ]
+    };
+
+    const dynamicContainer = document.getElementById('dynamic-fields');
+
+    function renderFields(type) {
+        dynamicContainer.innerHTML = '';
+        const fields = typeConfigs[type] || [];
+
+        fields.forEach(field => {
+            const group = document.createElement('div');
+            group.className = 'form-group';
+
+            const label = document.createElement('label');
+            label.htmlFor = field.id;
+            label.innerText = field.label;
+            group.appendChild(label);
+
+            let input;
+
+            if (field.type === 'textarea') {
+                // StackEdit Integration
+                const wrapper = document.createElement('div');
+                wrapper.className = 'editor-wrapper';
+
+                const toolbar = document.createElement('div');
+                toolbar.className = 'editor-toolbar';
+
+                const openBtn = document.createElement('button');
+                openBtn.type = 'button';
+                openBtn.className = 'editor-btn';
+                openBtn.innerHTML = '✏️ Open Full Editor';
+                toolbar.appendChild(openBtn);
+
+                const preview = document.createElement('div');
+                preview.className = 'editor-preview';
+                preview.id = field.id + '-preview';
+
+                // Hidden textarea for form submission
+                input = document.createElement('textarea');
+                input.id = field.id;
+                input.name = field.id;
+                input.style.display = 'none';
+
+                wrapper.appendChild(toolbar);
+                wrapper.appendChild(preview);
+                wrapper.appendChild(input);
+                group.appendChild(wrapper);
+
+                // StackEdit Logic
+                const stackedit = new Stackedit();
+
+                openBtn.addEventListener('click', () => {
+                    stackedit.openFile({
+                        name: 'Post Content',
+                        content: {
+                            text: input.value || ''
+                        }
+                    });
+                });
+
+                stackedit.on('fileChange', (file) => {
+                    input.value = file.content.text;
+                    preview.innerText = file.content.text;
+                    saveDraft(type, field.id, input.value);
+                });
+
+                // Restore Draft
+                const draft = getDraft(type, field.id);
+                if (draft) {
+                    input.value = draft;
+                    preview.innerText = draft;
+                }
+
+            } else if (field.type === 'file') {
+                // Custom Drag & Drop Zone
+                const dropZone = document.createElement('div');
+                dropZone.className = 'file-drop-zone';
+
+                const icon = document.createElement('div');
+                icon.className = 'icon';
+                icon.innerHTML = '📁';
+
+                const text = document.createElement('p');
+                text.innerText = 'Drag & Drop or Click to Upload';
+
+                input = document.createElement('input');
+                input.type = 'file';
+                input.accept = field.accept;
+                input.id = field.id;
+                input.name = field.id;
+
+                const filePreview = document.createElement('div');
+                filePreview.className = 'file-preview';
+
+                dropZone.appendChild(input);
+                dropZone.appendChild(icon);
+                dropZone.appendChild(text);
+                dropZone.appendChild(filePreview);
+                group.appendChild(dropZone);
+
+                // Events
+                input.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        text.innerText = e.target.files[0].name;
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            filePreview.style.display = 'block';
+                            filePreview.innerHTML = `<img src="${e.target.result}" />`;
+                        }
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+
+                // Drag effects
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+
+                function highlight(e) {
+                    dropZone.classList.add('dragover');
+                }
+                function unhighlight(e) {
+                    dropZone.classList.remove('dragover');
+                }
+
+
+            } else if (field.type === 'select') {
+                input = document.createElement('select');
+                field.options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt;
+                    option.innerText = opt;
+                    input.appendChild(option);
+                });
+                // Restore Draft
+                const draft = getDraft(type, field.id);
+                if (draft) input.value = draft;
+                input.addEventListener('change', (e) => saveDraft(type, field.id, e.target.value));
+
+                input.id = field.id;
+                input.name = field.id;
+                group.appendChild(input);
+
+            } else if (field.type === 'tags') {
+                // Create custom tag input structure
+                const container = document.createElement('div');
+                container.className = 'tag-container';
+                container.id = field.id + '-container';
+
+                // Hidden input to store value
+                input = document.createElement('input');
+                input.type = 'hidden';
+                input.id = field.id;
+                input.name = field.id;
+                group.appendChild(input);
+
+                // Visible text input
+                const tagInput = document.createElement('input');
+                tagInput.type = 'text';
+                tagInput.className = 'tag-input';
+                tagInput.placeholder = 'Type and press Enter...';
+
+                container.appendChild(tagInput);
+                group.appendChild(container); // Append container to group
+
+                // Tag Logic
+                let tags = [];
+                // Restore Draft
+                const draft = getDraft(type, field.id);
+                if (draft) {
+                    tags = draft.split(',').filter(t => t);
+                    input.value = draft;
+                    renderTags();
+                }
+
+                function updateHidden() {
+                    const val = tags.join(',');
+                    input.value = val;
+                    saveDraft(type, field.id, val);
+                }
+
+                function addTag(text) {
+                    const clean = text.trim();
+                    if (clean && !tags.includes(clean)) {
+                        tags.push(clean);
+                        updateHidden();
+                        renderTags();
+                    }
+                    tagInput.value = '';
+                }
+
+                function removeTag(index) {
+                    tags.splice(index, 1);
+                    updateHidden();
+                    renderTags();
+                }
+
+                function renderTags() {
+                    // Remove existing chips (keep input)
+                    const chips = container.querySelectorAll('.tag-chip');
+                    chips.forEach(c => c.remove());
+
+                    // Add chips before input
+                    tags.forEach((tag, idx) => {
+                        const chip = document.createElement('div');
+                        chip.className = 'tag-chip';
+
+                        const closeBtn = document.createElement('span');
+                        closeBtn.innerHTML = '×';
+                        closeBtn.onclick = () => removeTag(idx);
+
+                        chip.innerText = tag + " ";
+                        chip.appendChild(closeBtn);
+
+                        container.insertBefore(chip, tagInput);
+                    });
+                }
+
+                // Initial render if draft loaded
+                if (tags.length > 0) renderTags();
+
+                tagInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addTag(tagInput.value);
+                    } else if (e.key === 'Backspace' && tagInput.value === '' && tags.length > 0) {
+                        removeTag(tags.length - 1);
+                    }
+                });
+
+            } else {
+                input = document.createElement('input');
+                input.type = field.type;
+                if (field.accept) input.accept = field.accept;
+
+                input.id = field.id;
+                input.name = field.id;
+
+                // Restore Draft
+                const draft = getDraft(type, field.id);
+                if (draft) input.value = draft;
+
+                input.addEventListener('input', (e) => saveDraft(type, field.id, e.target.value));
+
+                group.appendChild(input);
+            }
+
+
+            if (field.required && field.type !== 'tags' && field.type !== 'file') {
+                if (input) input.required = true;
+            }
+
+            dynamicContainer.appendChild(group);
+        });
+    }
+
+    // Autosave Helpers
+    function saveDraft(type, fieldId, value) {
+        localStorage.setItem(`draft_${type}_${fieldId}`, value);
+    }
+
+    function getDraft(type, fieldId) {
+        return localStorage.getItem(`draft_${type}_${fieldId}`);
+    }
+
+    function clearDrafts(type) {
+        const fields = typeConfigs[type] || [];
+        fields.forEach(f => localStorage.removeItem(`draft_${type}_${f.id}`));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const typeSelect = document.getElementById('content_type');
+        if (typeSelect) {
+            typeSelect.addEventListener('change', (e) => renderFields(e.target.value));
+            renderFields('news'); // Initial render
+        }
+
+        document.getElementById('create-post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const msg = document.getElementById('form-message');
+            const loader = btn.querySelector('.loader');
+
+            btn.disabled = true;
+            loader.style.display = 'block';
+            msg.innerText = '';
+            msg.className = 'message';
+
+            const type = typeSelect.value;
+            const formData = new FormData(e.target);
+            // Token is now handled via HttpOnly Cookie automatically
+
+            try {
+                const response = await fetch(`${API_URL}/submit-form/${type}`, {
+                    method: 'POST',
+                    credentials: 'include', // Ensure cookies are sent
+                    body: formData
+                });
+
+                if (response.ok) {
+                    msg.innerText = 'Success! Post created.';
+                    msg.classList.add('success');
+                    e.target.reset();
+                    clearDrafts(type);
+                    renderFields(type);
+                } else {
+                    const errText = await response.text();
+                    throw new Error(errText || 'Submission failed');
+                }
+            } catch (error) {
+                msg.innerText = `Error: ${error.message}`;
+                msg.classList.add('error');
+            } finally {
+                btn.disabled = false;
+                loader.style.display = 'none';
+            }
+        });
+    });
+</script>
+{{ end }}

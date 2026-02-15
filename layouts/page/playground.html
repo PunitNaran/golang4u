@@ -1,0 +1,70 @@
+{{ define "content" }}
+<!-- added padding-top: 85px to clear the fixed header explicitly -->
+<div class="h-screen flex flex-col" style="height: 100vh; padding-top: 85px;">
+
+    <!-- Toolbar -->
+    <div
+        class="flex items-center justify-between px-4 py-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-4">
+            <h1 class="text-lg font-bold text-gray-700 dark:text-gray-200">Go Playground</h1>
+            <span class="text-xs text-gray-500">Have fun!</span>
+        </div>
+        <div class="flex gap-2">
+            <button id="run-btn"
+                class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded text-sm font-bold transition-colors">
+                <i class="fas fa-play"></i> Run
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content: Split View -->
+    <div class="flex-1 flex overflow-hidden">
+
+        <!-- Editor Panal -->
+        <div class="w-1/2 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+            <div id="monaco-editor" class="flex-1 w-full h-full"></div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="w-1/2 flex flex-col bg-gray-50 dark:bg-gray-900">
+            <div class="px-4 py-2 bg-gray-200 dark:bg-black text-xs font-bold uppercase tracking-wider text-gray-500">
+                Output</div>
+            <pre id="output-console"
+                class="flex-1 p-4 font-mono text-sm overflow-auto text-gray-800 dark:text-gray-300 whitespace-pre-wrap"></pre>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Async Monaco Loader: Delays loading until after footer scripts (KaTeX/TypeIt) have run. -->
+<!-- This prevents Monaco's AMD loader from breaking UMD scripts. -->
+<script>
+    window.addEventListener('load', function () {
+        console.log("[Playground] Window loaded. Injecting Monaco Loader...");
+
+        var loaderScript = document.createElement('script');
+        loaderScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js';
+        loaderScript.async = true;
+
+        loaderScript.onload = function () {
+            console.log("[Playground] Monaco Loader ready. Loading logic...");
+
+            // Monaco defines 'define' and 'require'.
+            // Now we load our playground.js which uses 'require'.
+            var ps = document.createElement('script');
+            ps.src = '/js/playground.js';
+            document.body.appendChild(ps);
+        };
+
+        loaderScript.onerror = function (e) {
+            console.error("[Playground] Failed to load Monaco loader", e);
+            var out = document.getElementById('output-console');
+            if (out) out.innerText = "Error: Failed to load Monaco Editor core.";
+        };
+
+        document.body.appendChild(loaderScript);
+    });
+</script>
+{{ end }}

@@ -1,0 +1,297 @@
+{{ define "content" }}
+<div class="auth-container">
+    <div class="glass-panel">
+        <h1 class="gradient-text">Activate Account</h1>
+        <p class="subtitle">Enter the code sent to your email.</p>
+
+        <form id="activate-form">
+            <input type="hidden" name="activation_type" value="email">
+
+            <div class="form-group">
+                <label for="user_key">Username (Avatar Name)</label>
+                <input type="text" id="user_key" name="user_key" required placeholder="CodeMaster99">
+            </div>
+
+            <div class="form-group">
+                <label for="activation_code">Activation Code</label>
+                <input type="text" id="activation_code" name="activation_code" required placeholder="123456"
+                    autocomplete="off">
+            </div>
+
+            <button type="submit" id="submit-btn" class="submit-btn">
+                <span class="btn-text">Verify & Activate</span>
+                <div class="loader" style="display:none;"></div>
+            </button>
+            <p id="form-message" class="message"></p>
+        </form>
+
+        <div class="auth-footer">
+            <p>Did not receive code? <a href="#" id="resend-link">Resend</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #6366f1;
+        --secondary-color: #a855f7;
+        --bg-color: #0f172a;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text-color: #f8fafc;
+        --input-bg: rgba(0, 0, 0, 0.2);
+    }
+
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 2rem;
+    }
+
+    .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 3rem;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #94a3b8;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #e2e8f0;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px 16px;
+        background: var(--input-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: var(--text-color);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s, opacity 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #94a3b8;
+    }
+
+    .auth-footer a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .message {
+        text-align: center;
+        margin-top: 1rem;
+        font-weight: 600;
+    }
+
+    .success {
+        color: #4ade80;
+    }
+
+    .error {
+        color: #f87171;
+    }
+
+    .loader {
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 3px solid #fff;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+        margin-left: 10px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+    const API_URL = window.GO4U_API_URL;
+
+    // Check query params for username pre-fill
+    const urlParams = new URLSearchParams(window.location.search);
+    const usernameParam = urlParams.get('username') || urlParams.get('user_key');
+    if (usernameParam) {
+        document.getElementById('user_key').value = usernameParam;
+    }
+
+    document.getElementById('activate-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        const msg = document.getElementById('form-message');
+        const loader = btn.querySelector('.loader');
+
+        btn.disabled = true;
+        loader.style.display = 'block';
+        msg.innerText = '';
+        msg.className = 'message';
+
+        const formData = new FormData(e.target);
+        const data = {
+            user_key: formData.get('user_key'),
+            activation_code: formData.get('activation_code'),
+            activation_type: 'email'
+        };
+
+        try {
+            const response = await fetch(`${API_URL}/activate_user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const qrBytes = await response.json();
+
+                if (qrBytes) {
+                    // Display 2FA QR Code
+                    msg.innerText = 'Activation Successful! Scan the QR Code below for 2FA.';
+                    msg.classList.add('success');
+
+                    // Create/Show Image
+                    let img = document.getElementById('qr-code-img');
+                    if (!img) {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.style.marginTop = '20px';
+                        imgContainer.style.textAlign = 'center';
+                        img = document.createElement('img');
+                        img.id = 'qr-code-img';
+                        img.style.borderRadius = '12px';
+                        img.style.border = '4px solid white';
+                        imgContainer.appendChild(img);
+                        document.querySelector('.auth-footer').before(imgContainer);
+                    }
+                    img.src = "data:image/png;base64," + qrBytes;
+
+                    // Change button to "Continue to Login"
+                    btn.querySelector('.btn-text').innerText = "Continue to Login";
+                    btn.disabled = false;
+                    loader.style.display = 'none';
+
+                    // Change form submission to just redirect
+                    const newForm = document.getElementById('activate-form');
+                    newForm.onsubmit = function (ev) {
+                        ev.preventDefault();
+                        window.location.href = '/login';
+                    };
+                    // Remove old listener effectively by cloning or flag
+                    // Simpler: Just rely on the button text or a flag? 
+                    // Let's just use a timeout redirect for simplicity unless they need time to scan
+                    // User needs time to scan.
+
+                    // Actually, let's keep it simple: Show QR, and redirect after 10-15 seconds?
+                    // Or let them click "Continue".
+                    // Remove old listener effectively by cloning
+                    const oldForm = document.getElementById('activate-form');
+                    const newFormClone = oldForm.cloneNode(true);
+                    oldForm.parentNode.replaceChild(newFormClone, oldForm);
+
+                    newFormClone.addEventListener('submit', (ev) => {
+                        ev.preventDefault();
+                        window.location.href = '/login';
+                    });
+
+                } else {
+                    msg.innerText = 'Account Activated! Redirecting to login...';
+                    msg.classList.add('success');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                }
+
+            } else {
+                const errText = await response.text();
+                let errMsg = errText;
+                try {
+                    errMsg = JSON.parse(errText).message || errText;
+                } catch (e) { }
+                throw new Error('Activation failed: ' + errMsg);
+            }
+        } catch (error) {
+            msg.innerText = error.message;
+            msg.classList.add('error');
+        } finally {
+            btn.disabled = false;
+            loader.style.display = 'none';
+        }
+    });
+
+    document.getElementById('resend-link').addEventListener('click', async (e) => {
+        e.preventDefault();
+        alert("Resend functionality coming soon!");
+        // Logic to call /resend_verification if needed
+    });
+</script>
+{{ end }}
