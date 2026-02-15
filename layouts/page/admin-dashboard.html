@@ -1,11 +1,9 @@
 {{ define "content" }}
 <script>
     (async function () {
-        // 1. Fast Client-Side Check
-        if (!document.cookie.split(';').some((c) => c.trim().startsWith('logged_in='))) {
-            window.location.href = "/login";
-            return;
-        }
+        // 1. Fast Client-Side Check - REMOVED for Cross-Domain Compatibility
+        // Cookies set by backend (Railway) are not visible to frontend (Netlify/Vercel) JS
+        // We rely on the API call below to verify auth.
 
         // 2. Show Loading Overlay
         const overlay = document.createElement('div');
