@@ -2,6 +2,7 @@
   .page {
     width: 56%;
   }
+
   #toc-auto {
     left: 78%;
     width: 22%;
@@ -14,8 +15,8 @@
   }
 
   #toc-auto {
-    left: 76%;    
-    width: 24%;    
+    left: 76%;
+    width: 24%;
   }
 
   #header-desktop .header-wrapper {
@@ -24,6 +25,17 @@
 
   .search-dropdown.desktop {
     right: 1rem;
+  }
+}
+
+// Tablet breakpoint - optimize for iPad and tablets in portrait
+@media only screen and (min-width: 681px) and (max-width: 1000px) {
+  #header-desktop .header-wrapper {
+    padding: 0 1.5rem 0 5%; // Tighter padding for tablets
+  }
+
+  #header-desktop.open .header-wrapper .menu .menu-item.search input {
+    width: clamp(10rem, 15vw, 14rem); // Smaller search on tablets
   }
 }
 
@@ -72,7 +84,9 @@
       padding-top: 0;
     }
 
-    .categories-card, .author-card, .series-card {
+    .categories-card,
+    .author-card,
+    .series-card {
       .card-item {
         width: 100%;
       }
@@ -84,6 +98,7 @@
       .icp-splitter {
         display: none;
       }
+
       .icp-br {
         display: block;
       }

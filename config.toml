@@ -91,7 +91,7 @@ theme = "DoIt"
     mobileMode = "auto"
     #  Theme change mode
     # theme change mode ("switch", "select")
-    themeChangeMode = "switch"
+    themeChangeMode = "select"
     #  Header title config
     [params.header.title]
       # URL of the LOGO
@@ -251,7 +251,7 @@ theme = "DoIt"
     ORCID = ""
     Liberapay = ""
     Ko-Fi = ""
-    BuyMeACoffee = ""
+    BuyMeACoffee = "punitn"
     Linktree = ""
     QQ = ""
     QQGroup = ""
@@ -555,7 +555,7 @@ theme = "DoIt"
 
   #  Sponsor config
   [params.sponsor]
-    enable = false
+    enable = true
     bio = "If you find this post helpful, please consider sponsoring."
     link = "https://www.buymeacoffee.com/punitn" # The link to your sponsor page
     custom = "" # Custom HTML button
@@ -584,9 +584,9 @@ theme = "DoIt"
   #  Site SEO config
   [params.seo]
     # image URL
-    image = ""
+    image = "/logo.png"
     # thumbnail URL
-    thumbnailUrl = ""
+    thumbnailUrl = "/logo.png"
 
   #  Analytics config
   [params.analytics]
@@ -676,7 +676,7 @@ theme = "DoIt"
 [params.author]
   name = "Punit Naran"
   email = ""
-  link = ""
+  link = "https://punitnaran.com"
   avatar = ""
   gravatarEmail = ""
 
