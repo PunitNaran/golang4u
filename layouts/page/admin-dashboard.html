@@ -32,7 +32,7 @@
             // We'll peek at the template var:
             const API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
 
-            const res = await fetch(`${API_URL}/profile`, { credentials: 'include' });
+            const res = await fetch(`${API_URL}/profile/me`, { credentials: 'include' });
             if (!res.ok) throw new Error('Auth failed');
 
             const user = await res.json();
