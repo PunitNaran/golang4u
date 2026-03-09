@@ -76,158 +76,7 @@
     </div>
 </div>
 
-<style>
-    :root {
-        --primary-color: #6366f1;
-        --secondary-color: #a855f7;
-        --bg-color: #0f172a;
-        --glass-bg: rgba(255, 255, 255, 0.05);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --text-color: #f8fafc;
-        --input-bg: rgba(0, 0, 0, 0.2);
-    }
-
-    .dashboard-container {
-        padding: 2rem;
-        min-height: calc(100vh - 80px);
-        margin-top: 100px;
-        box-sizing: border-box;
-    }
-
-    .glass-panel {
-        background: var(--glass-bg);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--glass-border);
-        border-radius: 24px;
-        padding: 2rem;
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-    }
-
-    .back-link {
-        color: #94a3b8;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .back-link:hover {
-        color: white;
-    }
-
-    .gradient-text {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 2rem;
-        font-weight: 800;
-        margin: 0;
-    }
-
-    .settings-section {
-        background: rgba(255, 255, 255, 0.03);
-        padding: 1.5rem;
-        border-radius: 16px;
-        margin-bottom: 2rem;
-    }
-
-    .settings-section h2 {
-        margin-top: 0;
-        color: #e2e8f0;
-        border-bottom: 1px solid var(--glass-border);
-        padding-bottom: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: #e2e8f0;
-    }
-
-    input,
-    textarea {
-        width: 100%;
-        padding: 12px 16px;
-        background: var(--input-bg);
-        border: 1px solid var(--glass-border);
-        border-radius: 12px;
-        color: var(--text-color);
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    input:focus,
-    textarea:focus {
-        outline: none;
-        border-color: var(--primary-color);
-    }
-
-    .submit-btn,
-    .action-btn {
-        padding: 12px 24px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        border: none;
-        border-radius: 12px;
-        color: white;
-        font-weight: 700;
-        cursor: pointer;
-    }
-
-    .logout-btn {
-        background: transparent;
-        border: 1px solid #f87171;
-        color: #f87171;
-        padding: 10px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-    }
-
-    .badge {
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-
-    .badge.on {
-        color: #4ade80;
-        border: 1px solid #4ade80;
-    }
-
-    .badge.off {
-        color: #94a3b8;
-        border: 1px solid #94a3b8;
-    }
-
-    .message {
-        margin-top: 1rem;
-        font-weight: 600;
-    }
-
-    .success {
-        color: #4ade80;
-    }
-
-    .error {
-        color: #f87171;
-    }
-</style>
+<!-- Styles moved to tailwind.css -->
 
 <script>
     const API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
@@ -263,146 +112,148 @@
         }
     }
 
-    // Profile Submit
-    document.getElementById('profile-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const msg = document.getElementById('profile-message');
-        msg.innerText = '';
+    document.addEventListener('DOMContentLoaded', () => {
+        // Profile Submit
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('profile-message');
+            msg.innerText = '';
 
-        try {
-            const response = await fetch(`${API_URL}/profile/update`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', // Important
-                body: JSON.stringify({
-                    bio: document.getElementById('bio').value,
-                    status: document.getElementById('status').value
-                })
-            });
+            try {
+                const response = await fetch(`${API_URL}/profile/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include', // Important
+                    body: JSON.stringify({
+                        bio: document.getElementById('bio').value,
+                        status: document.getElementById('status').value
+                    })
+                });
 
-            if (response.ok) {
-                msg.innerText = 'Profile updated!';
-                msg.className = 'message success';
-            } else {
-                throw new Error('Failed to update');
-            }
-        } catch (err) {
-            msg.innerText = err.message;
-            msg.className = 'message error';
-        }
-    });
-
-    // Enable 2FA Click
-    document.getElementById('enable-2fa-btn').addEventListener('click', async () => {
-        const msg = document.getElementById('security-message');
-        msg.innerText = '';
-        try {
-            const response = await fetch(`${API_URL}/2fa/setup`, {
-                method: 'POST',
-                credentials: 'include'
-            });
-            if (response.ok) {
-                const blob = await response.blob();
-                console.log("[2FA] QR Blob received:", blob.size, "bytes", "type:", blob.type);
-
-                const imgUrl = URL.createObjectURL(blob);
-                const qrImg = document.getElementById('qr-image');
-                qrImg.src = imgUrl;
-                qrImg.onload = () => {
-                    console.log("[2FA] QR Image loaded successfully in browser.");
-                    URL.revokeObjectURL(imgUrl); // Clean up
-                };
-                qrImg.onerror = (e) => console.error("[2FA] QR Image failed to render:", e);
-
-                document.getElementById('qr-setup-area').style.display = 'block';
-                document.getElementById('enable-2fa-btn').style.display = 'none';
-            } else {
-                msg.innerText = "Error generating QR code";
-                msg.className = 'message error';
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    });
-
-    // Verify 2FA Submit
-    document.getElementById('verify-2fa-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const msg = document.getElementById('security-message');
-        const pin = document.getElementById('verify-pin').value;
-
-        try {
-            const response = await fetch(`${API_URL}/2fa/activate`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ pin: pin })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-
-                if (data.recovery_codes && data.recovery_codes.length > 0) {
-                    // Hide Verify Form
-                    document.getElementById('qr-setup-area').style.display = 'none';
-
-                    // Populate Recovery Codes
-                    const list = document.getElementById('recovery-codes-list');
-                    list.innerHTML = '';
-                    data.recovery_codes.forEach(code => {
-                        const el = document.createElement('div');
-                        el.innerText = code;
-                        el.style.background = 'rgba(255, 255, 255, 0.1)';
-                        el.style.padding = '8px';
-                        el.style.borderRadius = '6px';
-                        el.style.textAlign = 'center';
-                        list.appendChild(el);
-                    });
-
-                    // Show Container
-                    document.getElementById('recovery-codes-container').style.display = 'block';
-
-                    // Setup Close Button
-                    document.getElementById('close-recovery-btn').onclick = () => {
-                        document.getElementById('recovery-codes-container').style.display = 'none';
-                        loadSettings();
-                    };
-
-                    msg.innerText = '2FA Activated! Save your codes below.';
+                if (response.ok) {
+                    msg.innerText = 'Profile updated!';
                     msg.className = 'message success';
                 } else {
-                    msg.innerText = '2FA Activated Successfully!';
-                    msg.className = 'message success';
-                    setTimeout(loadSettings, 1500);
+                    throw new Error('Failed to update');
                 }
-            } else {
-                msg.innerText = 'Invalid PIN. Try again.';
+            } catch (err) {
+                msg.innerText = err.message;
                 msg.className = 'message error';
             }
-        } catch (e) {
-            msg.innerText = 'Error activating.';
-            msg.className = 'message error';
-        }
-    });
+        });
 
-    // Disable 2FA Click
-    document.getElementById('disable-2fa-btn').addEventListener('click', async () => {
-        if (!confirm("Are you sure you want to disable 2FA? This makes your account less secure.")) return;
+        // Enable 2FA Click
+        document.getElementById('enable-2fa-btn').addEventListener('click', async () => {
+            const msg = document.getElementById('security-message');
+            msg.innerText = '';
+            try {
+                const response = await fetch(`${API_URL}/2fa/setup`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    const blob = await response.blob();
+                    console.log("[2FA] QR Blob received:", blob.size, "bytes", "type:", blob.type);
 
-        try {
-            const response = await fetch(`${API_URL}/2fa/disable`, {
-                method: 'POST',
-                credentials: 'include'
-            });
+                    const imgUrl = URL.createObjectURL(blob);
+                    const qrImg = document.getElementById('qr-image');
+                    qrImg.src = imgUrl;
+                    qrImg.onload = () => {
+                        console.log("[2FA] QR Image loaded successfully in browser.");
+                        URL.revokeObjectURL(imgUrl); // Clean up
+                    };
+                    qrImg.onerror = (e) => console.error("[2FA] QR Image failed to render:", e);
 
-            if (response.ok) {
-                loadSettings(); // Reload UI
+                    document.getElementById('qr-setup-area').style.display = 'block';
+                    document.getElementById('enable-2fa-btn').style.display = 'none';
+                } else {
+                    msg.innerText = "Error generating QR code";
+                    msg.className = 'message error';
+                }
+            } catch (e) {
+                console.error(e);
             }
-        } catch (e) {
-            console.error(e);
-        }
-    });
+        });
 
-    loadSettings();
+        // Verify 2FA Submit
+        document.getElementById('verify-2fa-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('security-message');
+            const pin = document.getElementById('verify-pin').value;
+
+            try {
+                const response = await fetch(`${API_URL}/2fa/activate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ pin: pin })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    if (data.recovery_codes && data.recovery_codes.length > 0) {
+                        // Hide Verify Form
+                        document.getElementById('qr-setup-area').style.display = 'none';
+
+                        // Populate Recovery Codes
+                        const list = document.getElementById('recovery-codes-list');
+                        list.innerHTML = '';
+                        data.recovery_codes.forEach(code => {
+                            const el = document.createElement('div');
+                            el.innerText = code;
+                            el.style.background = 'rgba(255, 255, 255, 0.1)';
+                            el.style.padding = '8px';
+                            el.style.borderRadius = '6px';
+                            el.style.textAlign = 'center';
+                            list.appendChild(el);
+                        });
+
+                        // Show Container
+                        document.getElementById('recovery-codes-container').style.display = 'block';
+
+                        // Setup Close Button
+                        document.getElementById('close-recovery-btn').onclick = () => {
+                            document.getElementById('recovery-codes-container').style.display = 'none';
+                            loadSettings();
+                        };
+
+                        msg.innerText = '2FA Activated! Save your codes below.';
+                        msg.className = 'message success';
+                    } else {
+                        msg.innerText = '2FA Activated Successfully!';
+                        msg.className = 'message success';
+                        setTimeout(loadSettings, 1500);
+                    }
+                } else {
+                    msg.innerText = 'Invalid PIN. Try again.';
+                    msg.className = 'message error';
+                }
+            } catch (e) {
+                msg.innerText = 'Error activating.';
+                msg.className = 'message error';
+            }
+        });
+
+        // Disable 2FA Click
+        document.getElementById('disable-2fa-btn').addEventListener('click', async () => {
+            if (!confirm("Are you sure you want to disable 2FA? This makes your account less secure.")) return;
+
+            try {
+                const response = await fetch(`${API_URL}/2fa/disable`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    loadSettings(); // Reload UI
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        });
+
+        loadSettings();
+    });
 </script>
 {{ end }}

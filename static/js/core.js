@@ -121,6 +121,7 @@ class BaseController {
 
         try {
             const res = await fetch(`${this.apiUrl}${endpoint}`, {
+                credentials: 'include', // Default to including cross-origin cookies
                 ...options,
                 signal: controller.signal
             });
