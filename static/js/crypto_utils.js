@@ -86,9 +86,6 @@ var CryptoUtils = (function () {
 
             // 7. Pack Payload: [EphemeralPubKey (65 bytes)] + [IV (12 bytes)] + [Ciphertext]
             const ephemeralPubRaw = await window.crypto.subtle.exportKey("raw", ephemeralKeyPair.publicKey);
-
-            console.log(`[CryptoDebug] Keysize: ${ephemeralPubRaw.byteLength}, IV: ${iv.byteLength}, Cipher: ${ciphertext.byteLength}`);
-
             // Backend expects: Base64(PubKey + IV + Ciphertext)
             const payloadLength = ephemeralPubRaw.byteLength + iv.byteLength + ciphertext.byteLength;
             const payload = new Uint8Array(payloadLength);
@@ -98,7 +95,6 @@ var CryptoUtils = (function () {
             payload.set(new Uint8Array(ciphertext), ephemeralPubRaw.byteLength + iv.byteLength);
 
             const b64 = arrayBufferToBase64(payload.buffer);
-            console.log(`[CryptoDebug] Payload Base64 Length: ${b64.length}`);
             return b64;
         } catch (e) {
             console.error("Encryption Failed:", e);

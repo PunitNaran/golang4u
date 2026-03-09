@@ -3,20 +3,225 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --primary-color: #6366f1;
+    --secondary-color: #a855f7;
+    --bg-color: #0f172a;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-color: #f8fafc;
+    --input-bg: rgba(0, 0, 0, 0.2);
+  }
+
   h1 {
     @apply text-3xl font-bold m-8;
   }
+
   h2 {
     @apply text-2xl font-bold m-6;
   }
+
   h3 {
     @apply text-xl font-bold m-4;
   }
+
   ol {
     @apply list-decimal list-outside;
   }
+
   ul {
     @apply list-disc list-outside;
   }
-  
+}
+
+@layer components {
+
+  /* Authentication / Form UI Components */
+  .auth-container {
+    @apply flex justify-center items-center min-h-[80vh] p-8 -mt-[-100px];
+  }
+
+  .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    @apply rounded-3xl p-12 w-full max-w-lg shadow-[0_4px_30px_rgba(0, 0, 0, 0.1)];
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    @apply text-4xl font-extrabold text-center mb-2;
+  }
+
+  .subtitle {
+    color: #94a3b8;
+    @apply text-center mb-8;
+  }
+
+  .form-group {
+    @apply mb-6;
+  }
+
+  .form-group label {
+    color: #e2e8f0;
+    @apply block mb-2 font-semibold;
+  }
+
+  .form-group input,
+  .form-group select {
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    @apply w-full py-3 px-4 rounded-xl text-base transition-all duration-300;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  }
+
+  .form-actions {
+    @apply flex justify-end mb-6;
+  }
+
+  .forgot-link {
+    color: #94a3b8;
+    @apply no-underline text-sm transition-colors;
+  }
+
+  .forgot-link:hover {
+    color: var(--primary-color);
+  }
+
+  .submit-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    @apply w-full p-4 border-none rounded-xl text-lg font-bold cursor-pointer transition-transform duration-200 flex justify-center items-center;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  .auth-footer {
+    color: #94a3b8;
+    @apply text-center mt-8;
+  }
+
+  .auth-footer a {
+    color: var(--primary-color);
+    @apply font-semibold no-underline;
+  }
+
+  .message {
+    @apply text-center mt-4 font-semibold;
+  }
+
+  .message.success {
+    color: #4ade80;
+  }
+
+  .message.error {
+    color: #f87171;
+  }
+
+  /* Settings / Dashboard Layouts */
+  .dashboard-container {
+    @apply p-8 min-h-[calc(100vh-80px)] mt-[100px] box-border;
+  }
+
+  .header-row {
+    @apply flex justify-between items-center mb-8;
+  }
+
+  .back-link {
+    color: #94a3b8;
+    @apply no-underline font-semibold transition-colors;
+  }
+
+  .back-link:hover {
+    @apply text-white;
+  }
+
+  .settings-section {
+    background: rgba(255, 255, 255, 0.03);
+    @apply p-6 rounded-2xl mb-8;
+  }
+
+  .settings-section h2 {
+    color: #e2e8f0;
+    border-bottom: 1px solid var(--glass-border);
+    @apply mt-0 pb-2 mb-4;
+  }
+
+  .form-group textarea {
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    @apply w-full py-3 px-4 rounded-xl text-base transition-all duration-300;
+  }
+
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+  }
+
+  .action-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    @apply py-3 px-6 border-none rounded-xl font-bold cursor-pointer transition-transform duration-200 inline-block;
+  }
+
+  .action-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  .logout-btn {
+    border: 1px solid #f87171;
+    color: #f87171;
+    @apply bg-transparent py-2.5 px-5 rounded-lg font-semibold cursor-pointer transition-colors;
+  }
+
+  .logout-btn:hover {
+    @apply bg-[#f87171] bg-opacity-10;
+  }
+
+  .badge {
+    @apply py-1 px-3 rounded-full text-xs font-bold uppercase;
+  }
+
+  .badge.on {
+    color: #4ade80;
+    border: 1px solid #4ade80;
+  }
+
+  .badge.off {
+    color: #94a3b8;
+    border: 1px solid #94a3b8;
+  }
+
+  .loader {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
+    animation: spin 1s linear infinite;
+    @apply rounded-full w-6 h-6 ml-2.5;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 }

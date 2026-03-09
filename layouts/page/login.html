@@ -38,168 +38,7 @@
     </div>
 </div>
 
-<style>
-    :root {
-        --primary-color: #6366f1;
-        --secondary-color: #a855f7;
-        --bg-color: #0f172a;
-        --glass-bg: rgba(255, 255, 255, 0.05);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --text-color: #f8fafc;
-        --input-bg: rgba(0, 0, 0, 0.2);
-    }
-
-    .auth-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: calc(100vh - 80px);
-        /* Adjust for fixed header */
-        padding: 2rem;
-        margin-top: 100px;
-        /* Ensure clearance for fixed header */
-    }
-
-    .glass-panel {
-        background: var(--glass-bg);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--glass-border);
-        border-radius: 24px;
-        padding: 3rem;
-        width: 100%;
-        max-width: 450px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .gradient-text {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 2.5rem;
-        font-weight: 800;
-        text-align: center;
-        margin-bottom: 0.5rem;
-    }
-
-    .subtitle {
-        text-align: center;
-        color: #94a3b8;
-        margin-bottom: 2rem;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: #e2e8f0;
-    }
-
-    input {
-        width: 100%;
-        padding: 12px 16px;
-        background: var(--input-bg);
-        border: 1px solid var(--glass-border);
-        border-radius: 12px;
-        color: var(--text-color);
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    input:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-    }
-
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 1.5rem;
-    }
-
-    .forgot-link {
-        color: #94a3b8;
-        text-decoration: none;
-        font-size: 0.9rem;
-    }
-
-    .forgot-link:hover {
-        color: var(--primary-color);
-    }
-
-    .submit-btn {
-        width: 100%;
-        padding: 16px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        border: none;
-        border-radius: 12px;
-        color: white;
-        font-size: 1.1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: transform 0.2s, opacity 0.2s;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .submit-btn:hover {
-        transform: translateY(-2px);
-        opacity: 0.9;
-    }
-
-    .auth-footer {
-        text-align: center;
-        margin-top: 2rem;
-        color: #94a3b8;
-    }
-
-    .auth-footer a {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .message {
-        text-align: center;
-        margin-top: 1rem;
-        font-weight: 600;
-    }
-
-    .success {
-        color: #4ade80;
-    }
-
-    .error {
-        color: #f87171;
-    }
-
-    .loader {
-        border: 3px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        border-top: 3px solid #fff;
-        width: 24px;
-        height: 24px;
-        animation: spin 1s linear infinite;
-        margin-left: 10px;
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-</style>
+<!-- Styles moved to tailwind.css -->
 
 <script>
     const API_URL = "{{ if hugo.IsServer }}http://localhost:8080{{ else }}{{ .Site.Params.apiUrl }}{{ end }}";
@@ -218,6 +57,10 @@
             const btn = document.getElementById('submit-btn');
             const msg = document.getElementById('form-message');
             const loader = btn.querySelector('.loader');
+            const inputs = this.form.querySelectorAll('input');
+
+            // Reset validation states
+            inputs.forEach(input => input.classList.remove('input-error'));
 
             btn.disabled = true;
             if (loader) loader.style.display = 'block';
@@ -267,6 +110,15 @@
                 }, 1000);
 
             } catch (error) {
+                // Apply visual shake animations on inputs
+                const inputs = this.form.querySelectorAll('input');
+                inputs.forEach(input => {
+                    // Force reflow to restart animation if classes re-applied rapidly
+                    input.classList.remove('input-error');
+                    void input.offsetWidth;
+                    input.classList.add('input-error');
+                });
+
                 msg.innerText = error.message;
                 msg.classList.add('error');
                 this.handleError(error, 'Login Failed');
@@ -277,6 +129,8 @@
         }
     }
 
-    const app = new AuthController(API_URL);
+    document.addEventListener('DOMContentLoaded', () => {
+        const app = new AuthController(API_URL);
+    });
 </script>
 {{ end }}
