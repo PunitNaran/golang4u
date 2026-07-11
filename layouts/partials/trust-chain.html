@@ -1,0 +1,71 @@
+{{- /* Trust Chain UI Component */ -}}
+{{- /* Shared component — include from any template via partial "trust-chain.html" . */ -}}
+{{- $params := .Scratch.Get "params" -}}
+
+<div class="trust-chain-container" role="region" aria-label="Trust information">
+
+    {{- /* Trust Score Badge */ -}}
+    <div class="trust-score-card">
+        <div class="trust-score-header">
+            <i class="fas fa-shield-alt trust-icon" aria-hidden="true"></i>
+            <h3 class="trust-score-title">Trust Score</h3>
+        </div>
+        <div class="trust-score-body">
+            <span class="trust-badge" id="trust-badge"
+                data-trust-level="{{ with .Scratch.Get "trustLevel" }}{{ . }}{{ else }}medium{{ end }}"
+                role="status"
+                aria-label="Trust level: {{ with .Scratch.Get "trustLevel" }}{{ . }}{{ else }}medium{{ end }}">
+                <i class="fas fa-circle" aria-hidden="true"></i>
+                <span class="trust-badge-text">{{ with .Scratch.Get "trustLevel" | default "medium" }}{{ . | title }}{{ else }}Medium{{ end }}</span>
+            </span>
+            <div class="trust-score-value" id="trust-score-value" aria-live="polite">
+                {{ with .Scratch.Get "trustScore" | default 50 }}{{ . }}{{ else }}50{{ end }}/100
+            </div>
+        </div>
+    </div>
+
+    {{- /* Referral Chain */ -}}
+    <div class="referral-chain-card">
+        <div class="trust-score-header">
+            <i class="fas fa-link trust-icon" aria-hidden="true"></i>
+            <h3 class="trust-score-title">Referral Chain</h3>
+        </div>
+        <div class="referral-chain" id="referral-chain" aria-label="Referral chain">
+            {{- $referrals := .Scratch.Get "referrals" | default slice }}
+            {{- range $i, $ref := $referrals }}
+            <span class="referral-chain-item" data-index="{{ $i }}">
+                {{- if gt $i 0 }}<i class="fas fa-chevron-right chain-arrow" aria-hidden="true"></i>{{ end }}
+                <span class="referral-name">{{ $ref | default (printf "User %d" (add $i 1)) }}</span>
+            </span>
+            {{- end }}
+            {{- if eq (len $referrals) 0 }}
+            <span class="referral-chain-item referral-empty">
+                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                <span>No referral data available</span>
+            </span>
+            {{- end }}
+        </div>
+    </div>
+
+    {{- /* Bad Actor Indicator */ -}}
+    <div class="bad-actor-card" id="bad-actor-card"
+        role="alert"
+        aria-live="polite"
+        aria-label="Account status">
+        <div class="trust-score-header">
+            <i class="fas fa-user-shield trust-icon" aria-hidden="true"></i>
+            <h3 class="trust-score-title">Account Status</h3>
+        </div>
+        <div class="bad-actor-body" id="bad-actor-body">
+            <span class="bad-actor-badge badge-clean" id="bad-actor-badge">
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                <span>No violations recorded</span>
+            </span>
+            <span class="bad-actor-flag" id="bad-actor-flag" style="display: none;">
+                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                <span>This account has been flagged for review</span>
+            </span>
+        </div>
+    </div>
+
+</div>
