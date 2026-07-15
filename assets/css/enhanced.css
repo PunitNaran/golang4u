@@ -246,3 +246,621 @@ button.active {
 .menu-item.search {
     margin-left: 0.5rem !important;
 }
+
+/* ============================================================
+   TRUST CHAIN UI - Badge & Score Styles
+   ============================================================ */
+
+.trust-chain-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0 2rem;
+    padding: 0;
+}
+
+.trust-score-card,
+.referral-chain-card,
+.bad-actor-card {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[theme='dark'] .trust-score-card,
+[theme='dark'] .referral-chain-card,
+[theme='dark'] .bad-actor-card {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.trust-score-card:hover,
+.referral-chain-card:hover,
+.bad-actor-card:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
+}
+
+.trust-score-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.trust-icon {
+    color: #6366f1;
+    font-size: 1.1rem;
+}
+
+.trust-score-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1f2937;
+    letter-spacing: 0.01em;
+}
+
+[theme='dark'] .trust-score-title {
+    color: #f3f4f6;
+}
+
+.trust-score-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    cursor: default;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.trust-badge:hover {
+    transform: scale(1.04);
+}
+
+.trust-badge .fas {
+    font-size: 0.6rem;
+}
+
+.trust-badge-text {
+    font-size: 0.75rem;
+}
+
+/* Color-coded trust levels */
+.trust-high {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1.5px solid rgba(34, 197, 94, 0.5);
+    color: #22c55e;
+}
+
+[theme='light'] .trust-high {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.4);
+    color: #16a34a;
+}
+
+.trust-medium {
+    background: rgba(234, 179, 8, 0.15);
+    border: 1.5px solid rgba(234, 179, 8, 0.5);
+    color: #eab308;
+}
+
+[theme='light'] .trust-medium {
+    background: rgba(234, 179, 8, 0.1);
+    border-color: rgba(234, 179, 8, 0.4);
+    color: #a16207;
+}
+
+.trust-low {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1.5px solid rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+}
+
+[theme='light'] .trust-low {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #dc2626;
+}
+
+.trust-score-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1f2937;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+[theme='dark'] .trust-score-value {
+    color: #f9fafb;
+}
+
+/* Bad Actor Badge */
+.bad-actor-badge,
+.bad-actor-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: default;
+}
+
+.bad-actor-badge {
+    background: rgba(34, 197, 94, 0.12);
+    border: 1.5px solid rgba(34, 197, 94, 0.4);
+    color: #22c55e;
+}
+
+[theme='light'] .badge-clean {
+    background: rgba(34, 197, 94, 0.08);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #16a34a;
+}
+
+.bad-actor-flag {
+    background: rgba(249, 115, 22, 0.15);
+    border: 1.5px solid rgba(249, 115, 22, 0.5);
+    color: #f97316;
+    animation: badActorPulse 2s ease-in-out infinite;
+}
+
+[theme='light'] .bad-actor-flag {
+    background: rgba(249, 115, 22, 0.1);
+    border-color: rgba(249, 115, 22, 0.4);
+    color: #c2410c;
+}
+
+@keyframes badActorPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(249, 115, 22, 0); }
+}
+
+/* ============================================================
+   REFERRAL CHAIN - Breadcrumb Style
+   ============================================================ */
+
+.referral-chain {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+    padding: 0.25rem 0;
+}
+
+.referral-chain-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.375rem;
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #374151;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+[theme='dark'] .referral-chain-item {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.25);
+    color: #e5e7eb;
+}
+
+.referral-chain-item:hover {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.referral-chain-item:first-child {
+    border-radius: 0.5rem 0.375rem 0.375rem 0.5rem;
+}
+
+.referral-chain-item:last-child {
+    border-radius: 0.375rem 0.5rem 0.5rem 0.375rem;
+}
+
+.chain-arrow {
+    color: #9ca3af;
+    font-size: 0.55rem;
+    margin: 0 0.15rem;
+}
+
+.referral-empty {
+    color: #9ca3af;
+    font-style: italic;
+    background: transparent;
+    border: none;
+}
+
+.referral-name {
+    font-weight: 600;
+}
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+   ============================================================ */
+
+.toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 380px;
+    width: calc(100vw - 3rem);
+    pointer-events: none;
+}
+
+.toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.85rem 1.1rem;
+    border-radius: 0.75rem;
+    background: #1f2937;
+    color: #f9fafb;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    pointer-events: all;
+    animation: toastSlideIn 0.3s ease-out;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.toast.toast-success {
+    border-left: 3px solid #22c55e;
+    background: linear-gradient(135deg, #1f2937 0%, #0f3a2a 100%);
+}
+
+.toast.toast-warning {
+    border-left: 3px solid #f97316;
+    background: linear-gradient(135deg, #1f2937 0%, #3a2a0f 100%);
+}
+
+.toast.toast-error {
+    border-left: 3px solid #ef4444;
+    background: linear-gradient(135deg, #1f2937 0%, #3a0f0f 100%);
+}
+
+[theme='light'] .toast {
+    background: #ffffff;
+    color: #1f2937;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.toast.toast-success {
+    border-left-color: #22c55e;
+}
+
+[theme='light'] .toast.toast-success {
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+    color: #166534;
+}
+
+.toast.toast-warning {
+    border-left-color: #f97316;
+}
+
+[theme='light'] .toast.toast-warning {
+    background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+    color: #92400e;
+}
+
+.toast.toast-error {
+    border-left-color: #ef4444;
+}
+
+[theme='light'] .toast.toast-error {
+    background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+    color: #991b1b;
+}
+
+.toast-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+.toast-success .toast-icon { color: #22c55e; }
+.toast-warning .toast-icon { color: #f97316; }
+.toast-error .toast-icon { color: #ef4444; }
+
+.toast-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.toast-title {
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    font-size: 0.85rem;
+}
+
+.toast-message {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1rem;
+    opacity: 0.6;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.toast-close:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.toast-exit {
+    animation: toastSlideOut 0.25s ease-in forwards;
+}
+
+@keyframes toastSlideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastSlideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* ============================================================
+   DARK MODE TOGGLE BUTTON STYLES
+   ============================================================ */
+
+.theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    background: rgba(99, 102, 241, 0.08);
+    color: #818cf8;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    font-size: 1rem;
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.4);
+    color: #a5b4fc;
+    transform: scale(1.05);
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.96);
+}
+
+.theme-toggle-btn .fa-moon,
+.theme-toggle-btn .fa-sun {
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:hover .fa-moon {
+    transform: rotate(-15deg);
+}
+
+.theme-toggle-btn:hover .fa-sun {
+    transform: rotate(15deg);
+}
+
+/* Mobile toggle */
+#mobile-theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    background: rgba(99, 102, 241, 0.06);
+    color: #818cf8;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    font-size: 0.9rem;
+    gap: 0.5rem;
+}
+
+#mobile-theme-toggle:hover {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.35);
+}
+
+/* ============================================================
+   MOBILE-FRIENDLY NAV IMPROVEMENTS
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .trust-chain-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin: 1rem 0 1.5rem;
+    }
+
+    .trust-score-card,
+    .referral-chain-card,
+    .bad-actor-card {
+        padding: 1rem 1.25rem;
+    }
+
+    .toast-container {
+        bottom: 1rem;
+        right: 1rem;
+        left: 1rem;
+        max-width: none;
+        width: auto;
+    }
+
+    .menu-toggle {
+        z-index: 100;
+    }
+
+    .menu-toggle span {
+        transition: transform 0.3s ease, opacity 0.2s ease;
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+
+    #menu-mobile {
+        transform: translateY(-10px);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.3s ease, opacity 0.25s ease;
+    }
+
+    #menu-mobile.open {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: all;
+    }
+}
+
+/* ============================================================
+   FOCUS-VISIBLE STYLES (Keyboard Navigation)
+   ============================================================ */
+
+*:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 3px;
+}
+
+.trust-badge:focus-visible,
+.referral-chain-item:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   REDUCED MOTION MEDIA QUERY
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .bad-actor-flag {
+        animation: none;
+    }
+
+    .trust-badge:hover,
+    .trust-score-card:hover,
+    .referral-chain-card:hover,
+    .bad-actor-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .toast {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .toast-exit {
+        opacity: 0;
+    }
+}
+
+/* ============================================================
+   COLOR CONTRAST (WCAG AA Minimum)
+   ============================================================ */
+
+/* Ensure minimum 4.5:1 contrast ratio on all interactive elements */
+.trust-badge,
+.bad-actor-badge,
+.bad-actor-flag,
+.referral-chain-item {
+    color-scheme: light dark;
+}
+
+/* Light theme specific contrast corrections */
+[theme='light'] .trust-badge {
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+[theme='light'] .trust-high { color: #15803d; }
+[theme='light'] .trust-medium { color: #a16207; }
+[theme='light'] .trust-low { color: #b91c1c; }
+[theme='light'] .trust-score-title { color: #111827; }
+[theme='light'] .trust-score-value { color: #111827; }
+[theme='light'] .referral-chain-item { color: #1f2937; }
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+    .trust-badge,
+    .bad-actor-badge,
+    .bad-actor-flag,
+    .referral-chain-item {
+        border: 1px solid CanvasText;
+    }
+
+    .trust-badge::before,
+    .bad-actor-badge::before {
+        content: '';
+        display: inline-block;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        background: CanvasText;
+    }
+}
