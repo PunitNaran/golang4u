@@ -95,4 +95,13 @@
             {{- . | safeHTML -}}
         </h3>
     {{- end -}}
+
+    {{- /* Trust Chain UI Component */ -}}
+    {{- $trustParams := .Site.Params.home.trustChain -}}
+    {{- if $trustParams -}}
+    {{- .Scratch.Set "trustLevel" $trustParams.level -}}
+    {{- .Scratch.Set "trustScore" $trustParams.score -}}
+    {{- .Scratch.Set "referrals" $trustParams.referrals -}}
+    {{- partial "trust-chain.html" . -}}
+    {{- end -}}
 </div>

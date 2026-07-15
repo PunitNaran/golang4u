@@ -22,6 +22,9 @@
 </head>
 
 <body header-desktop="{{ .Site.Params.header.desktopMode }}" header-mobile="{{ .Site.Params.header.mobileMode }}">
+    {{- /* Skip to content link for accessibility */ -}}
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to content</a>
+    
     {{- /* Check theme isDark before body rendering */ -}}
     {{- $theme := .Site.Params.defaulttheme -}}
     <script type="text/javascript">
@@ -40,13 +43,16 @@
     {{- /* Body wrapper */ -}}
     <div class="wrapper">
         {{- partial "header.html" . -}}
-        <main class="main">
+        <main class="main" id="main-content">
             <div class="container">
                 {{- block "content" . }}{{ end -}}
             </div>
         </main>
         {{- partial "footer.html" . -}}
     </div>
+
+    {{- /* Toast notification container */ -}}
+    <div id="toast-container" class="toast-container" role="alert" aria-live="polite"></div>
 
     <div id="fixed-buttons">
         {{- /* top button */ -}}

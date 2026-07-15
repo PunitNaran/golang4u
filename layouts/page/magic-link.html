@@ -1,0 +1,90 @@
+{{ define "content" }}
+<div class="auth-container">
+    <div class="glass-panel">
+        <h1 class="gradient-text">Passwordless Login</h1>
+        <p class="subtitle">Enter your email and we'll send you a magic link.</p>
+
+        <form id="magic-link-form">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="you@example.com">
+            </div>
+
+            <button type="submit" id="submit-btn" class="submit-btn">
+                <span class="btn-text">Send Magic Link</span>
+                <div class="loader" style="display:none;"></div>
+            </button>
+            <p id="form-message" class="message"></p>
+        </form>
+
+        <div class="auth-footer">
+            <p>Remembered your password? <a href="/login">Log in</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- Styles moved to tailwind.css -->
+
+<script>
+    const API_URL = window.GO4U_API_URL;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('magic-link-form');
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('submit-btn');
+                const msg = document.getElementById('form-message');
+                const loader = btn.querySelector('.loader');
+                const inputs = form.querySelectorAll('input');
+
+                // Reset validation states
+                inputs.forEach(input => input.classList.remove('input-error'));
+
+                btn.disabled = true;
+                loader.style.display = 'block';
+                msg.innerText = '';
+                msg.className = 'message';
+
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+
+                try {
+                    const response = await fetch(`${API_URL}/login/magic-link`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email: email })
+                    });
+
+                    if (response.ok) {
+                        msg.innerText = 'Magic link sent! Check your email and click the link to log in.';
+                        msg.classList.add('success');
+                        window.toaster.show('Magic link sent!', 'success');
+                    } else {
+                        const errText = await response.text();
+                        let errMsg = errText;
+                        try {
+                            errMsg = JSON.parse(errText).message || errText;
+                        } catch (e) { }
+                        throw new Error(errMsg || "Request processed");
+                    }
+                } catch (error) {
+                    inputs.forEach(input => {
+                        input.classList.remove('input-error');
+                        void input.offsetWidth;
+                        input.classList.add('input-error');
+                    });
+
+                    msg.innerText = error.message;
+                    msg.classList.add('error');
+                } finally {
+                    btn.disabled = false;
+                    loader.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+{{ end }}
