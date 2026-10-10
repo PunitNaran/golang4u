@@ -672,7 +672,10 @@ theme = "DoIt"
     startLevel = 2
     endLevel = 6
 
-# Author config
+# Author config (Hugo >= 0.156: .Site.Author lives under [site.author])
+[site.author]
+  name = "Punit Naran"
+
 [params.author]
   name = "Punit Naran"
   email = ""
