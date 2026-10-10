@@ -6,3 +6,6 @@ public/
 resources/_gen
 all_changes.txt
 changes.txt
+
+# Local Netlify folder
+.netlify

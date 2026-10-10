@@ -46,7 +46,7 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border);
-    @apply rounded-3xl p-12 w-full max-w-lg shadow-[0_4px_30px_rgba(0, 0, 0, 0.1)];
+    @apply rounded-3xl p-12 w-full max-w-lg shadow-[0_4px_30px_rgba(0,0,0,0.1)];
   }
 
   .gradient-text {
