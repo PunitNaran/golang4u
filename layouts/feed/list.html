@@ -255,7 +255,7 @@
             let imgUrl = post.cover || post.featuredImage;
             if (imgUrl) {
                 if (imgUrl.startsWith('/')) {
-                    imgUrl = 'http://localhost:8080' + imgUrl;
+                    imgUrl = (window.GO4U_API_URL || 'http://localhost:8080') + imgUrl;
                 }
                 imgUrl = imgUrl.replace(/\\/g, '/');
                 // Basic URL validation/sanitization could happen here
