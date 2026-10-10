@@ -198,7 +198,8 @@
         }
 
         try {
-            const url = `http://localhost:8080/posts?type=${type}&page=${page}&limit=${limit}`;
+            const base = window.GO4U_API_URL || 'http://localhost:8080';
+            const url = `${base}/posts?type=${type}&page=${page}&limit=${limit}`;
             const response = await fetch(url);
             if (!response.ok) throw new Error('Failed to fetch');
 

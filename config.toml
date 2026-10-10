@@ -1,4 +1,4 @@
-baseURL = "http://golang4u.com/"
+baseURL = "https://golang4u.com/"
 # [en, zh-cn, fr, ...] determines default content language
 defaultContentLanguage = "en"
 # language code
