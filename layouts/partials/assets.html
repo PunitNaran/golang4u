@@ -345,6 +345,10 @@ partial "scratch/style.html" -}}
 
 
 
+    {{/* Mobile + readability fixes; loaded last in the document so it
+        wins the cascade over the page-local <style> blocks */}}
+    <link rel="stylesheet" href="/css/mobile.css">
+
     {{- /* ECIES Encryption Logic */ -}}
     <script src="/js/crypto_utils.js"></script>
 

@@ -1,0 +1,258 @@
+/* ============================================================
+   golang4u mobile / readability fixes
+   Loaded last (head/link.html) so it wins over DoIt, Tailwind
+   and the page-local <style> blocks. Purely additive: no
+   existing rule is removed.
+   ============================================================ */
+
+/* ---- Base readability: 16px floor, 1.6 line-height, word wrap ---- */
+:root {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Long unbroken strings (URLs, tokens) must not force a
+   horizontal page scroll */
+a,
+h1, h2, h3, h4, h5, h6,
+p, li, td, th, pre, code,
+.form-group label, .form-group input, .form-group textarea, .form-group select {
+  overflow-wrap: break-word;
+}
+
+code {
+  white-space: pre-wrap;
+}
+
+/* ---- Code blocks + tables scroll inside the column; the page
+       never scrolls sideways ---- */
+.highlight, .gist {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+pre {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+table {
+  max-width: 100%;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* DoIt pins .page to 60%/80%/100% width with margins; cap it at
+   the viewport so nothing overflows */
+.page {
+  max-width: 100% !important;
+}
+
+/* ---- DoIt header: the open search input is 24rem (~384px),
+       which clipped the search/theme controls on large
+   tablets (the desktop header only shows above 680px) ---- */
+#header-desktop .menu .menu-item.search input {
+  max-width: 40vw;
+}
+
+/* ---- Touch targets: DoIt's 40px search hit-area and 24px
+       hamburger are under the 44px minimum ---- */
+#search-desktop .search-button,
+#search-mobile .search-button {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+#menu-toggle-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  line-height: normal;
+}
+
+#header-mobile .menu .menu-item {
+  line-height: 44px;
+  min-height: 44px;
+}
+
+/* ---- Glass panels (login/signup/activate/forgot/settings/
+       dashboard/addpost): 3rem padding + 800px fixed
+   max-width left only ~40px gutters at 390px ---- */
+.glass-panel {
+  padding: 1rem 1rem 2rem;
+}
+
+@media (max-width: 680px) {
+  .glass-panel {
+    width: calc(100% - 2rem);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Gradient page titles: 36-40px wraps mid-word at 390px */
+.gradient-text {
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+/* "Forgot password?" link: 14px text, right-aligned, ~24px tall.
+   Full-width 44px target on phones. */
+.form-actions {
+  justify-content: flex-start;
+}
+
+.forgot-link {
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
+  font-size: 1rem;
+}
+
+/* Helper text (badges/meta) at 12px is too small to read on
+   phones; lift to 14px there only. */
+@media (max-width: 680px) {
+  .badge,
+  .text-xs,
+  .post-meta {
+    font-size: 14px;
+  }
+}
+
+/* ============================================================
+   Playground
+   The template fixes the outer div to 100vh with a
+   50/50 side split (editor | output). On a 390px phone that
+   is a ~195px editor column and the console sits below the
+   fold. Stack it vertically: toolbar, editor, console —
+   scrolling the page, nothing clipped.
+   Selectors are keyed on the stable ids/classes in
+   layouts/page/playground.html; if that template changes,
+   update them here.
+   ponytail: 100dvh (Safari 15.4+); older mobile browsers
+   keep the fixed 100vh box, which is the pre-fix behavior.
+   ============================================================ */
+@media (max-width: 680px) {
+  main.main > .container > .h-screen {
+    /* Inline style fixes height to 100vh; both lines beat it:
+       old mobile browsers parse the first, modern ones the second */
+    height: auto !important;
+    height: 100dvh !important;
+    overflow: visible !important;
+  }
+
+  main.main > .container > .h-screen > .flex-1 {
+    flex-direction: column;
+    overflow: visible !important;
+  }
+
+  main.main > .container > .h-screen > .flex-1 > .w-1\/2 {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid #d1d5db;
+    min-height: auto;
+    flex: none;
+  }
+
+  body[theme] main.main > .container > .h-screen > .flex-1 > .w-1\/2 {
+    border-bottom-color: #374151;
+  }
+
+  /* Editor: real working height on top */
+  main.main > .container > .h-screen > .flex-1 > .w-1\/2:first-child {
+    min-height: 45dvh;
+  }
+
+  main.main > .container > .h-screen > .flex-1 > .w-1\/2:first-child #monaco-editor {
+    height: 45dvh;
+    min-height: 240px;
+  }
+
+  /* Console: grows with the remaining space */
+  main.main > .container > .h-screen > .flex-1 > .w-1\/2:last-child {
+    flex: 1 1 auto;
+    min-height: 200px;
+  }
+
+  /* Toolbar: one-line title, drop the "Have fun!" caption */
+  main.main > .container > .h-screen > .flex h1 {
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+
+  main.main > .container > .h-screen > .flex > div:first-child span {
+    display: none;
+  }
+
+  /* Run/Share: 6px vertical padding is a 31px target */
+  #run-btn,
+  #share-btn {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    min-height: 44px;
+  }
+
+  /* Toast was hardcoded top:6rem left:5rem and covered the
+     toolbar; pin it to the bottom instead */
+  #toast {
+    left: 0.75rem !important;
+    right: 0.75rem !important;
+    top: auto !important;
+    bottom: 0.75rem !important;
+  }
+}
+
+/* ============================================================
+   Settings / dashboard
+   ============================================================ */
+@media (max-width: 680px) {
+  /* Title + "back" row wraps at 390px */
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .action-grid {
+    gap: 0.75rem;
+  }
+
+  /* The 100px top margin was tuned for the 56px fixed header +
+     slack; on phones it leaves a large empty gap */
+  .dashboard-container {
+    margin-top: 64px;
+    padding: 1rem;
+  }
+}
+
+/* ============================================================
+   Home
+   ============================================================ */
+@media (max-width: 680px) {
+  .home h2,
+  .home h3 {
+    font-size: 1.25rem;
+  }
+}
