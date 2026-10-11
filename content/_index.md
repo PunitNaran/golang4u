@@ -1,6 +1,6 @@
 ---
-title: "Golang4U — Your Ultimate Go Developer Platform"
-description: "All-In-One Golang Tool Kit — Explore, Learn, Connect, and Thrive in the Golang Universe!"
+title: "Golang4U — Go Tools, Learning & Community"
+description: "A platform for Go developers: a browser playground, curated learning resources, community events, and a tool marketplace."
 keywords:
   - "Go"
   - "Golang"
