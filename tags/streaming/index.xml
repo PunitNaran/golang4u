@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Streaming on Golang4U</title><link>https://golang4u.com/tags/streaming/</link><description>Recent content in Streaming on Golang4U</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sat, 14 Feb 2026 09:00:00 +0800</lastBuildDate><atom:link href="https://golang4u.com/tags/streaming/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golang4U File Upload Bible: Streaming to ClamAV</title><link>https://golang4u.com/learn/secure-file-uploads/</link><pubDate>Sat, 14 Feb 2026 09:00:00 +0800</pubDate><guid>https://golang4u.com/learn/secure-file-uploads/</guid><description>&lt;h1 id="preface-the-upload-vulnerability" class="headerLink"&gt;
+ &lt;a href="#preface-the-upload-vulnerability" class="header-mark"&gt;&lt;/a&gt;Preface: The Upload Vulnerability&lt;/h1&gt;&lt;p&gt;Accepting user content is necessary but dangerous.
+A &amp;ldquo;Profile Picture&amp;rdquo; upload form is often a backdoor for:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Shell Uploads&lt;/strong&gt;: Uploading &lt;code&gt;shell.php&lt;/code&gt; to execute code.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Malware Distribution&lt;/strong&gt;: Hosting a standard Windows virus on your domain.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DoS Attacks&lt;/strong&gt;: Uploading a 50GB file to fill your disk.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In &lt;strong&gt;Golang4U&lt;/strong&gt;, we treat every file as a potential bomb.
+This guide explains how we defuse them using &lt;strong&gt;Streaming&lt;/strong&gt; and &lt;strong&gt;ClamAV&lt;/strong&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id="chapter-1-the-magic-bytes-trust-nothing" class="headerLink"&gt;
+ &lt;a href="#chapter-1-the-magic-bytes-trust-nothing" class="header-mark"&gt;&lt;/a&gt;Chapter 1: The Magic Bytes (Trust Nothing)&lt;/h1&gt;&lt;p&gt;First rule: &lt;strong&gt;Never trust the file extension.&lt;/strong&gt;
+A file named &lt;code&gt;cute_cat.jpg&lt;/code&gt; might actually be a &lt;code&gt;.exe&lt;/code&gt;.
+A file named &lt;code&gt;report.pdf&lt;/code&gt; might be a shell script.&lt;/p&gt;</description></item></channel></rss>

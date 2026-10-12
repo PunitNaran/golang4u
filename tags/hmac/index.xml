@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>HMAC on Golang4U</title><link>https://golang4u.com/tags/hmac/</link><description>Recent content in HMAC on Golang4U</description><generator>Hugo</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 16:00:00 +0800</lastBuildDate><atom:link href="https://golang4u.com/tags/hmac/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golang4U Cryptography Bible: E2EE, ECIES &amp; Blind Indexing</title><link>https://golang4u.com/learn/cryptography-in-depth/</link><pubDate>Tue, 10 Feb 2026 16:00:00 +0800</pubDate><guid>https://golang4u.com/learn/cryptography-in-depth/</guid><description>&lt;h1 id="preface-why-tls-is-not-enough" class="headerLink"&gt;
+ &lt;a href="#preface-why-tls-is-not-enough" class="header-mark"&gt;&lt;/a&gt;Preface: Why TLS is Not Enough&lt;/h1&gt;&lt;p&gt;HTTPS (TLS 1.3) protects data &amp;ldquo;In Transit.&amp;rdquo;
+It prevents the Hacker in the Coffee Shop from reading your password.
+But it does &lt;strong&gt;not&lt;/strong&gt; protect against:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Malicious Proxies&lt;/strong&gt;: A corporate proxy (MITM) that terminates TLS.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Server Itself&lt;/strong&gt;: If our logs accidentally print &lt;code&gt;req.Body&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Memory Dumps&lt;/strong&gt;: If the server crashes and dumps RAM.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To fix this, we implement &lt;strong&gt;End-to-End Encryption (E2EE)&lt;/strong&gt; at the Application Layer.
+The password is encrypted &lt;em&gt;in the browser&lt;/em&gt; and only decrypted &lt;em&gt;inside the Service function&lt;/em&gt;.&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>IPFilter on Golang4U</title><link>https://golang4u.com/tags/ipfilter/</link><description>Recent content in IPFilter on Golang4U</description><generator>Hugo</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 12:00:00 +0800</lastBuildDate><atom:link href="https://golang4u.com/tags/ipfilter/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golang4U Security Bible: A Defense-in-Depth Masterclass</title><link>https://golang4u.com/learn/advanced-security/</link><pubDate>Tue, 10 Feb 2026 12:00:00 +0800</pubDate><guid>https://golang4u.com/learn/advanced-security/</guid><description>&lt;h1 id="preface-the-zero-trust-mindset" class="headerLink"&gt;
+ &lt;a href="#preface-the-zero-trust-mindset" class="header-mark"&gt;&lt;/a&gt;Preface: The Zero Trust Mindset&lt;/h1&gt;&lt;p&gt;Security is often treated as a feature. &amp;ldquo;Add a login page, and we&amp;rsquo;re secure.&amp;rdquo;
+This is false.
+Security is a &lt;strong&gt;Process&lt;/strong&gt;. It is the sum of every line of code that handles input.&lt;/p&gt;
+&lt;p&gt;In &lt;strong&gt;Golang4U&lt;/strong&gt;, we adopt a &lt;strong&gt;Zero Trust&lt;/strong&gt; mindset.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Trust No IP&lt;/strong&gt;: Even if it didn&amp;rsquo;t attack us yesterday, it might attack us today.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Trust No User&lt;/strong&gt;: Even if they have a valid token, they might be spamming.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Trust No Browser&lt;/strong&gt;: Even if Chrome says it&amp;rsquo;s secure, we enforce it with headers.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This guide will walk you through the three rings of defense: &lt;strong&gt;Network&lt;/strong&gt;, &lt;strong&gt;Application&lt;/strong&gt;, and &lt;strong&gt;Presentation&lt;/strong&gt;.&lt;/p&gt;</description></item></channel></rss>

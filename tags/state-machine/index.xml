@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>State Machine on Golang4U</title><link>https://golang4u.com/tags/state-machine/</link><description>Recent content in State Machine on Golang4U</description><generator>Hugo</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 18:00:00 +0800</lastBuildDate><atom:link href="https://golang4u.com/tags/state-machine/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golang4U 2FA Bible: TOTP, QR Codes &amp; State Machines</title><link>https://golang4u.com/learn/implementing-2fa/</link><pubDate>Tue, 10 Feb 2026 18:00:00 +0800</pubDate><guid>https://golang4u.com/learn/implementing-2fa/</guid><description>&lt;h1 id="preface-the-3-factors-of-auth" class="headerLink"&gt;
+ &lt;a href="#preface-the-3-factors-of-auth" class="header-mark"&gt;&lt;/a&gt;Preface: The 3 Factors of Auth&lt;/h1&gt;&lt;p&gt;Authentication is proving you are who you say you are. There are 3 ways to do this:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Something you Know (Knowledge)&lt;/strong&gt;: Password, PIN, Mother&amp;rsquo;s Maiden Name.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Something you Have (Possession)&lt;/strong&gt;: Phone, YubiKey, RSA Token.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Something you Are (Inherence)&lt;/strong&gt;: Fingerprint, FaceID, Retina.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;A Password alone is weak because it can be phished.
+&lt;strong&gt;2FA (Two-Factor)&lt;/strong&gt; combines #1 and #2. Even if a hacker phishes your password, they cannot physically steal your phone over the internet.&lt;/p&gt;</description></item></channel></rss>

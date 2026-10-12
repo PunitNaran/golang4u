@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Echo on Golang4U</title><link>https://golang4u.com/tags/echo/</link><description>Recent content in Echo on Golang4U</description><generator>Hugo</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://golang4u.com/tags/echo/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golang4U Architecture: A Service-Oriented Masterclass</title><link>https://golang4u.com/learn/architecture-deep-dive/</link><pubDate>Tue, 10 Feb 2026 10:00:00 +0800</pubDate><guid>https://golang4u.com/learn/architecture-deep-dive/</guid><description>&lt;h1 id="preface-why-read-this" class="headerLink"&gt;
+ &lt;a href="#preface-why-read-this" class="header-mark"&gt;&lt;/a&gt;Preface: Why Read This?&lt;/h1&gt;&lt;p&gt;If you are just starting with Go, you might write everything in &lt;code&gt;main.go&lt;/code&gt;. It works for a &amp;ldquo;Hello World,&amp;rdquo; but it fails for a production system.
+If you are an expert, you might argue about &amp;ldquo;Clean Architecture&amp;rdquo; vs &amp;ldquo;Hexagonal&amp;rdquo; vs &amp;ldquo;Onion.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Golang4U&lt;/strong&gt; adopts a pragmatic, production-ready &lt;strong&gt;Service-Oriented Architecture (SOA)&lt;/strong&gt; structure. It is designed to be:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Testable&lt;/strong&gt;: Every layer can be mocked.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scalable&lt;/strong&gt;: New features (like a &amp;ldquo;Video&amp;rdquo; post type) don&amp;rsquo;t break old ones.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Readable&lt;/strong&gt;: A new developer knows exactly where to put code.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This guide is not a summary. It is a &lt;strong&gt;Masterclass&lt;/strong&gt;. We will read the code together, line by line, layer by layer. By the end, you will understand not just &lt;em&gt;how&lt;/em&gt; it works, but &lt;em&gt;why&lt;/em&gt; it was built this way.&lt;/p&gt;</description></item></channel></rss>

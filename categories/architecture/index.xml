@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Architecture on Golang4U</title><link>https://golang4u.com/categories/architecture/</link><description>Recent content in Architecture on Golang4U</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sat, 14 Feb 2026 13:00:00 +0800</lastBuildDate><atom:link href="https://golang4u.com/categories/architecture/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golang4U Domain Bible: Structs, Validation &amp; Rich Models</title><link>https://golang4u.com/learn/domain-driven-design/</link><pubDate>Sat, 14 Feb 2026 13:00:00 +0800</pubDate><guid>https://golang4u.com/learn/domain-driven-design/</guid><description>&lt;h1 id="preface-where-does-logic-belong" class="headerLink"&gt;
+ &lt;a href="#preface-where-does-logic-belong" class="header-mark"&gt;&lt;/a&gt;Preface: Where does logic belong?&lt;/h1&gt;&lt;p&gt;In architecture, there is a concept called &amp;ldquo;Anemic Domain Model&amp;rdquo;.
+This is when your structs are just data bags:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;User&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;struct&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;Name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;And all your logic is in &lt;code&gt;Service&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;func&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;s&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nx"&gt;Service&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;IsAdult&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;u&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nx"&gt;User&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;u&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Age&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Golang4U&lt;/strong&gt; prefers a &lt;strong&gt;Rich Domain Model&lt;/strong&gt;.
+We put logic &lt;em&gt;on the struct itself&lt;/em&gt; when it applies to the entity.&lt;/p&gt;</description></item><item><title>The Golang4U Email Bible: Native SMTP &amp; Transactional Systems</title><link>https://golang4u.com/learn/transactional-email/</link><pubDate>Sat, 14 Feb 2026 11:00:00 +0800</pubDate><guid>https://golang4u.com/learn/transactional-email/</guid><description>&lt;h1 id="preface-the-vendor-trap" class="headerLink"&gt;
+ &lt;a href="#preface-the-vendor-trap" class="header-mark"&gt;&lt;/a&gt;Preface: The Vendor Trap&lt;/h1&gt;&lt;p&gt;Every startup guide tells you: &amp;ldquo;Sign up for SendGrid/Mailgun/AWS SES.&amp;rdquo;
+Result involved?&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Complexity&lt;/strong&gt;: You need to manage API keys, webhooks, and SDKs.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cost&lt;/strong&gt;: They get expensive fast.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Lock-in&lt;/strong&gt;: Switching from SendGrid to Mailgun requires rewriting code.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In &lt;strong&gt;Golang4U&lt;/strong&gt;, we choose the &lt;strong&gt;Standard Library&lt;/strong&gt;.
+Go&amp;rsquo;s &lt;code&gt;net/smtp&lt;/code&gt; is battle-hardened. It speaks the raw protocol of the internet.
+This guide shows how we built a Vendor-Agnostic emailer.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id="chapter-1-the-smtp-protocol-raw--real" class="headerLink"&gt;
+ &lt;a href="#chapter-1-the-smtp-protocol-raw--real" class="header-mark"&gt;&lt;/a&gt;Chapter 1: The SMTP Protocol (Raw &amp;amp; Real)&lt;/h1&gt;&lt;p&gt;Sending an email is just a TCP handshake.&lt;/p&gt;</description></item><item><title>The Golang4U Architecture: A Service-Oriented Masterclass</title><link>https://golang4u.com/learn/architecture-deep-dive/</link><pubDate>Tue, 10 Feb 2026 10:00:00 +0800</pubDate><guid>https://golang4u.com/learn/architecture-deep-dive/</guid><description>&lt;h1 id="preface-why-read-this" class="headerLink"&gt;
+ &lt;a href="#preface-why-read-this" class="header-mark"&gt;&lt;/a&gt;Preface: Why Read This?&lt;/h1&gt;&lt;p&gt;If you are just starting with Go, you might write everything in &lt;code&gt;main.go&lt;/code&gt;. It works for a &amp;ldquo;Hello World,&amp;rdquo; but it fails for a production system.
+If you are an expert, you might argue about &amp;ldquo;Clean Architecture&amp;rdquo; vs &amp;ldquo;Hexagonal&amp;rdquo; vs &amp;ldquo;Onion.&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Golang4U&lt;/strong&gt; adopts a pragmatic, production-ready &lt;strong&gt;Service-Oriented Architecture (SOA)&lt;/strong&gt; structure. It is designed to be:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Testable&lt;/strong&gt;: Every layer can be mocked.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scalable&lt;/strong&gt;: New features (like a &amp;ldquo;Video&amp;rdquo; post type) don&amp;rsquo;t break old ones.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Readable&lt;/strong&gt;: A new developer knows exactly where to put code.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This guide is not a summary. It is a &lt;strong&gt;Masterclass&lt;/strong&gt;. We will read the code together, line by line, layer by layer. By the end, you will understand not just &lt;em&gt;how&lt;/em&gt; it works, but &lt;em&gt;why&lt;/em&gt; it was built this way.&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,248 @@
+/* ============================================================================
+   Golang4U — SOTA Design Token Layer
+   ----------------------------------------------------------------------------
+   An additive, last-in-cascade layer that upgrades the DoIt theme's defaults
+   to a Stripe/Linear/Vercel-grade visual language. It only overrides
+   presentation (fonts, colors, spacing, shadows, borders, radius, type scale).
+   It does NOT touch layout, breakpoints, nav behaviour, or the JS hooks that
+   mobile.css / golang4u-ui.js depend on — so those keep working.
+
+   Design language (from the popular-web-designs skill):
+     * Typography — Inter (Source Sans 3 fallback) with tight display tracking
+     * Accent   — Go brand blue #00ADD8, deep navy #02121F text, warm white
+     * Shadows  — multi-layer, blue-tinted (Stripe signature) for premium depth
+     * Spacing  — a real 8px scale; 48–96px section rhythm; 1.6 body line-height
+     * Borders  — hairline rgba borders + 1px shadow-as-border technique
+   Load AFTER the theme's main.css so these tokens win the cascade.
+   ========================================================================== */
+
+:root {
+  /* ---- Color: brand ---- */
+  --g4u-accent: #00add8;            /* Go brand blue */
+  --g4u-accent-strong: #008ab2;
+  --g4u-accent-soft: #4fd4ee;
+  --g4u-accent-tint: #e6f7fb;       /* light wash for chips/hovers */
+
+  /* ---- Color: surfaces (light) ---- */
+  --g4u-bg: #ffffff;
+  --g4u-surface: #ffffff;
+  --g4u-surface-2: #f8fafc;
+  --g4u-elevated: #ffffff;
+
+  /* ---- Color: text (cool near-black, never pure #000) ---- */
+  --g4u-ink: #02121f;               /* headings, primary text */
+  --g4u-ink-2: #334155;            /* body */
+  --g4u-ink-3: #5b6b7f;            /* muted / meta */
+  --g4u-ink-4: #8a97a6;            /* faint / captions */
+  --g4u-border: #e2e8f0;          /* hairline */
+  --g4u-border-strong: #cbd5e1;
+
+  /* ---- Spacing: 8px scale ---- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+
+  /* ---- Type scale (Inter) ---- */
+  --font-sans: "Inter", "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --fs-display: clamp(2.25rem, 1.2rem + 3.4vw, 3.5rem);
+  --fs-h1: clamp(1.875rem, 1.1rem + 2.4vw, 2.75rem);
+  --fs-h2: 1.5rem;
+  --fs-h3: 1.25rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-caption: 0.8125rem;
+  --lh-tight: 1.05;
+  --lh-snug: 1.25;
+  --lh-body: 1.6;
+  --track-display: -0.03em;
+  --track-h: -0.02em;
+  --track-body: -0.005em;
+
+  /* ---- Radius scale ---- */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --r-full: 9999px;
+
+  /* ---- Shadows: multi-layer, blue-tinted (Stripe signature) ---- */
+  --sh-sm: 0 1px 2px rgba(2,18,31,.06), 0 1px 3px rgba(2,18,31,.08);
+  --sh-md: 0 2px 6px rgba(2,18,31,.08), 0 12px 24px -8px rgba(50,50,93,.18);
+  --sh-lg: 0 4px 12px rgba(2,18,31,.08), 0 24px 48px -12px rgba(50,50,93,.28);
+  --sh-ring: 0 0 0 1px rgba(2,18,31,.08);
+
+  /* ---- Misc ---- */
+  --g4u-container: 72rem;
+  --focus-ring: 0 0 0 3px rgba(0,173,216,.35);
+}
+
+/* Dark theme: keep DoIt's dark surfaces, just re-tint the accent + text so
+   the same token names resolve correctly in dark mode. */
+body[theme='dark'], .dark, [data-theme='dark'] {
+  --g4u-bg: #0b1220;
+  --g4u-surface: #0e1626;
+  --g4u-surface-2: #111b2e;
+  --g4u-ink: #eef4fb;
+  --g4u-ink-2: #b8c6d8;
+  --g4u-ink-3: #8496ab;
+  --g4u-ink-4: #64748b;
+  --g4u-border: #1e2a3e;
+  --g4u-border-strong: #2b3a52;
+  --g4u-accent-tint: #0f2a33;
+  --sh-sm: 0 1px 2px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.4);
+  --sh-md: 0 2px 6px rgba(0,0,0,.5), 0 12px 24px -8px rgba(0,0,0,.6);
+  --sh-lg: 0 4px 12px rgba(0,0,0,.5), 0 24px 48px -12px rgba(0,0,0,.7);
+}
+
+/* ---------- Typography ---------- */
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "cv05", "cv06";
+  letter-spacing: var(--track-body);
+  color: var(--g4u-ink-2);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: var(--g4u-bg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  color: var(--g4u-ink);
+  letter-spacing: var(--track-h);
+  line-height: var(--lh-snug);
+  font-weight: 600;
+  text-wrap: balance;
+}
+h1 { font-size: var(--fs-h1); letter-spacing: var(--track-display); font-weight: 600; }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); font-weight: 600; }
+
+p { max-width: 68ch; }
+a { color: var(--g4u-accent); text-decoration-color: rgba(0,173,216,.4); }
+a:hover { color: var(--g4u-accent-strong); }
+
+::selection { background: rgba(0,173,216,.22); color: var(--g4u-ink); }
+
+/* Code + pre inherit the mono stack, comfortable padding */
+code, pre, kbd, samp { font-family: var(--font-mono); }
+
+/* ---- Monaco playground editor ----
+   The phone showed invisible code: editor was in `vs-dark` (bg #1e1e1e)
+   while the page's light-mode `pre, code { color: #… }` rule painted the
+   token text near-black → black-on-dark. Pin the editor surface to its
+   theme default and force the token *text* color to the theme foreground,
+   leaving Monaco's syntax classes intact (they set color on inner spans,
+   which we only override for the base token color). */
+.monaco-editor { background: #1e1e1e !important; }
+.monaco-editor.vs:not(.vs-dark) { background: #fff !important; }
+/* base token text: ensure contrast; syntax-highlight spans keep their own
+   (more specific) color from Monaco's .mtk*/
+.monaco-editor .view-lines, .monaco-editor .view-line { color: #d4d4d4 !important; }
+.monaco-editor.vs:not(.vs-dark) .view-lines,
+.monaco-editor.vs:not(.vs-dark) .view-line { color: #000 !important; }
+
+/* ---------- Layout: container + section rhythm ---------- */
+.container, .main-content, .content, article {
+  max-width: var(--g4u-container);
+  margin-inline: auto;
+  padding-inline: var(--sp-6);
+}
+section { padding-block: var(--sp-16); }
+
+/* ---------- Cards: the workhorse component ---------- */
+.card, .post, .article, .premium-canvas,
+[class*="card"], .md-bookmark, .md-note, .md-tip, .md-warning, .md-question {
+  background: var(--g4u-surface);
+  border: 1px solid var(--g4u-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-ring), var(--sh-sm);
+}
+.card:hover, .post:hover, .article:hover {
+  border-color: var(--g4u-accent);
+  box-shadow: var(--sh-ring), var(--sh-md);
+  transform: translateY(-2px);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+/* ---------- Buttons: two clear tiers (primary accent + ghost) ---------- */
+.btn, button, .btn-primary, .btn-secondary,
+[class*="btn"]:not(.nav-link) {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: var(--track-body);
+  border-radius: var(--r-md);
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.btn-primary, .btn:hover, a.btn-primary {
+  background: var(--g4u-accent);
+  color: #fff;
+  border: 1px solid var(--g4u-accent);
+  box-shadow: var(--sh-sm);
+}
+.btn-primary:hover, a.btn-primary:hover {
+  background: var(--g4u-accent-strong);
+  box-shadow: var(--sh-md);
+}
+.btn-ghost, .btn-secondary {
+  background: transparent;
+  color: var(--g4u-ink);
+  border: 1px solid var(--g4u-border-strong);
+}
+.btn-ghost:hover, .btn-secondary:hover {
+  border-color: var(--g4u-accent);
+  color: var(--g4u-accent);
+  background: var(--g4u-accent-tint);
+}
+
+/* ---------- Chips / badges / tags ---------- */
+.tag, .badge, .chip, .post-tag, .label, .pill {
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  color: var(--g4u-ink-3);
+  background: var(--g4u-surface-2);
+  border: 1px solid var(--g4u-border);
+  border-radius: var(--r-full);
+  padding: 0.25rem 0.75rem;
+}
+.tag:hover, .badge:hover { color: var(--g4u-accent); border-color: var(--g4u-accent); }
+
+/* ---------- Nav / header polish (presentation only) ---------- */
+nav.sticky, .navbar, header {
+  border-bottom: 1px solid var(--g4u-border);
+  background: rgba(255,255,255,.85);
+  backdrop-filter: saturate(180%) blur(12px);
+}
+body[theme='dark'] nav.sticky, body[theme='dark'] .navbar, body[theme='dark'] header {
+  background: rgba(11,18,32,.85);
+}
+.navbar .nav-link, .menu-item, .navbar .link {
+  color: var(--g4u-ink-2);
+  font-weight: 500;
+  border-radius: var(--r-sm);
+  padding: .375rem .625rem;
+  transition: color .15s ease, background .15s ease;
+}
+.navbar .nav-link:hover, .menu-item:hover {
+  color: var(--g4u-accent);
+  background: var(--g4u-accent-tint);
+}
+
+/* ---------- Focus visibility (a11y) ---------- */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--r-sm);
+}
+
+/* ---------- Scrollbars (subtle) ---------- */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--g4u-border-strong); border-radius: var(--r-full); }
+::-webkit-scrollbar-track { background: transparent; }

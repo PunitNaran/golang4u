@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ed25519 on Golang4U</title><link>https://golang4u.com/tags/ed25519/</link><description>Recent content in Ed25519 on Golang4U</description><generator>Hugo</generator><language>en</language><lastBuildDate>Tue, 10 Feb 2026 14:00:00 +0800</lastBuildDate><atom:link href="https://golang4u.com/tags/ed25519/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golang4U Authentication Bible: PASETO, Usage &amp; Design</title><link>https://golang4u.com/learn/modern-authentication/</link><pubDate>Tue, 10 Feb 2026 14:00:00 +0800</pubDate><guid>https://golang4u.com/learn/modern-authentication/</guid><description>&lt;h1 id="preface-authentication-vs-authorization" class="headerLink"&gt;
+ &lt;a href="#preface-authentication-vs-authorization" class="header-mark"&gt;&lt;/a&gt;Preface: Authentication vs Authorization&lt;/h1&gt;&lt;p&gt;First, a distinction.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Authentication (AuthN)&lt;/strong&gt;: &amp;ldquo;Who are you?&amp;rdquo; (I am User 123).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Authorization (AuthZ)&lt;/strong&gt;: &amp;ldquo;What can you do?&amp;rdquo; (I can delete posts).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This, guide focuses on &lt;strong&gt;AuthN&lt;/strong&gt;. specifically, how we securely identify a user across stateless HTTP requests.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id="chapter-1-the-fall-of-jwt-json-web-tokens" class="headerLink"&gt;
+ &lt;a href="#chapter-1-the-fall-of-jwt-json-web-tokens" class="header-mark"&gt;&lt;/a&gt;Chapter 1: The Fall of JWT (JSON Web Tokens)&lt;/h1&gt;&lt;p&gt;For a decade, JWT (RFC 7519) was the king. But heavy lies the crown.
+A JWT is a string: &lt;code&gt;header.payload.signature&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id="the-design-flaw-cipher-agility" class="headerLink"&gt;
+ &lt;a href="#the-design-flaw-cipher-agility" class="header-mark"&gt;&lt;/a&gt;The Design Flaw: Cipher Agility&lt;/h3&gt;&lt;p&gt;The header tells the server how to verify the token.&lt;/p&gt;</description></item></channel></rss>

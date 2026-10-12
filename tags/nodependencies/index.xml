@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NoDependencies on Golang4U</title><link>https://golang4u.com/tags/nodependencies/</link><description>Recent content in NoDependencies on Golang4U</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sat, 14 Feb 2026 11:00:00 +0800</lastBuildDate><atom:link href="https://golang4u.com/tags/nodependencies/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golang4U Email Bible: Native SMTP &amp; Transactional Systems</title><link>https://golang4u.com/learn/transactional-email/</link><pubDate>Sat, 14 Feb 2026 11:00:00 +0800</pubDate><guid>https://golang4u.com/learn/transactional-email/</guid><description>&lt;h1 id="preface-the-vendor-trap" class="headerLink"&gt;
+ &lt;a href="#preface-the-vendor-trap" class="header-mark"&gt;&lt;/a&gt;Preface: The Vendor Trap&lt;/h1&gt;&lt;p&gt;Every startup guide tells you: &amp;ldquo;Sign up for SendGrid/Mailgun/AWS SES.&amp;rdquo;
+Result involved?&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Complexity&lt;/strong&gt;: You need to manage API keys, webhooks, and SDKs.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cost&lt;/strong&gt;: They get expensive fast.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Lock-in&lt;/strong&gt;: Switching from SendGrid to Mailgun requires rewriting code.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In &lt;strong&gt;Golang4U&lt;/strong&gt;, we choose the &lt;strong&gt;Standard Library&lt;/strong&gt;.
+Go&amp;rsquo;s &lt;code&gt;net/smtp&lt;/code&gt; is battle-hardened. It speaks the raw protocol of the internet.
+This guide shows how we built a Vendor-Agnostic emailer.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id="chapter-1-the-smtp-protocol-raw--real" class="headerLink"&gt;
+ &lt;a href="#chapter-1-the-smtp-protocol-raw--real" class="header-mark"&gt;&lt;/a&gt;Chapter 1: The SMTP Protocol (Raw &amp;amp; Real)&lt;/h1&gt;&lt;p&gt;Sending an email is just a TCP handshake.&lt;/p&gt;</description></item></channel></rss>

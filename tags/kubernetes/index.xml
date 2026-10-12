@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Kubernetes on Golang4U</title><link>https://golang4u.com/tags/kubernetes/</link><description>Recent content in Kubernetes on Golang4U</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sat, 14 Feb 2026 15:00:00 +0800</lastBuildDate><atom:link href="https://golang4u.com/tags/kubernetes/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golang4U Hardening Bible: DDoS-Proofing &amp; OOM Prevention</title><link>https://golang4u.com/learn/production-hardening/</link><pubDate>Sat, 14 Feb 2026 15:00:00 +0800</pubDate><guid>https://golang4u.com/learn/production-hardening/</guid><description>&lt;h1 id="preface-the-correct-code-that-crashes" class="headerLink"&gt;
+ &lt;a href="#preface-the-correct-code-that-crashes" class="header-mark"&gt;&lt;/a&gt;Preface: The &amp;ldquo;Correct&amp;rdquo; Code that Crashes&lt;/h1&gt;&lt;p&gt;You can write perfect algorithms, but if you deploy them with default settings, you will crash.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Default HTTP Server&lt;/strong&gt;: Vulnerable to Slowloris.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Default GC&lt;/strong&gt;: Vulnerable to OOM Killers.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Default DB Driver&lt;/strong&gt;: Vulnerable to Connection Storms.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This guide is about &lt;strong&gt;Runtime Hardening&lt;/strong&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id="chapter-1-the-slowloris-attack-timeouts" class="headerLink"&gt;
+ &lt;a href="#chapter-1-the-slowloris-attack-timeouts" class="header-mark"&gt;&lt;/a&gt;Chapter 1: The Slowloris Attack (Timeouts)&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;The Attack&lt;/strong&gt;:
+A hacker opens 1,000 connections to your server.
+They send: &lt;code&gt;G&lt;/code&gt;&amp;hellip; wait 10s &amp;hellip; &lt;code&gt;E&lt;/code&gt; &amp;hellip; wait 10s &amp;hellip; &lt;code&gt;T&lt;/code&gt; &amp;hellip;
+The default Go &lt;code&gt;http.Server&lt;/code&gt; has &lt;strong&gt;NO Timeout&lt;/strong&gt;. It will wait forever.
+Your RAM fills up with open connections. The server hangs.&lt;/p&gt;</description></item></channel></rss>
