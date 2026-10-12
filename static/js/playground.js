@@ -26,9 +26,11 @@ if (editorContainer) {
             req.config({ paths: { 'vs': vsPath } });
 
             req(['vs/editor/editor.main'], function () {
-                // Dark Mode detection (Enhanced for body attribute)
+                // Dark Mode detection: DoIt's setTheme() writes the `theme`
+                // attribute to <body> (baseof.html). Read body, fall back to
+                // <html> for old builds.
                 const getTheme = () => {
-                    const t = document.body.getAttribute('theme');
+                    const t = document.body.getAttribute('theme') || document.documentElement.getAttribute('theme');
                     return (t === 'dark' || t === 'black') ? 'vs-dark' : 'vs';
                 };
 
@@ -43,7 +45,8 @@ if (editorContainer) {
                         scrollBeyondLastLine: false,
                     });
 
-                    // Listen for theme attribute changes on body
+                    // Listen for theme attribute changes on <body> — that's
+                    // where DoIt's setTheme() writes them (baseof.html).
                     const observer = new MutationObserver((mutations) => {
                         mutations.forEach((mutation) => {
                             if (mutation.type === "attributes" && mutation.attributeName === "theme") {

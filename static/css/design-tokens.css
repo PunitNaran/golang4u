@@ -134,6 +134,21 @@ a:hover { color: var(--g4u-accent-strong); }
 /* Code + pre inherit the mono stack, comfortable padding */
 code, pre, kbd, samp { font-family: var(--font-mono); }
 
+/* ---- Monaco playground editor ----
+   The phone showed invisible code: editor was in `vs-dark` (bg #1e1e1e)
+   while the page's light-mode `pre, code { color: #… }` rule painted the
+   token text near-black → black-on-dark. Pin the editor surface to its
+   theme default and force the token *text* color to the theme foreground,
+   leaving Monaco's syntax classes intact (they set color on inner spans,
+   which we only override for the base token color). */
+.monaco-editor { background: #1e1e1e !important; }
+.monaco-editor.vs:not(.vs-dark) { background: #fff !important; }
+/* base token text: ensure contrast; syntax-highlight spans keep their own
+   (more specific) color from Monaco's .mtk*/
+.monaco-editor .view-lines, .monaco-editor .view-line { color: #d4d4d4 !important; }
+.monaco-editor.vs:not(.vs-dark) .view-lines,
+.monaco-editor.vs:not(.vs-dark) .view-line { color: #000 !important; }
+
 /* ---------- Layout: container + section rhythm ---------- */
 .container, .main-content, .content, article {
   max-width: var(--g4u-container);
