@@ -27,20 +27,20 @@
         <span id="toast-message"></span>
     </div>
 
-    <!-- Main Content: Split View -->
-    <div class="flex-1 flex overflow-hidden">
+    <!-- Main Content: stacked on mobile, side-by-side at md+ -->
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
 
-        <!-- Editor Panal -->
-        <div class="w-1/2 border-r border-gray-200 dark:border-gray-700 flex flex-col">
-            <div id="monaco-editor" class="flex-1 w-full h-full"></div>
+        <!-- Editor Panel: full width on mobile -->
+        <div class="flex-1 w-full md:w-1/2 md:border-r border-gray-200 dark:border-gray-700 flex flex-col min-h-0">
+            <div id="monaco-editor" class="flex-1 w-full h-full min-h-0"></div>
         </div>
 
-        <!-- Output Panel -->
-        <div class="w-1/2 flex flex-col bg-gray-50 dark:bg-gray-900">
+        <!-- Output Panel: full width on mobile -->
+        <div class="flex-1 w-full md:w-1/2 flex flex-col bg-gray-50 dark:bg-gray-900 min-h-0">
             <div class="px-4 py-2 bg-gray-200 dark:bg-black text-xs font-bold uppercase tracking-wider text-gray-500">
                 Output</div>
             <pre id="output-console"
-                class="flex-1 p-4 font-mono text-sm overflow-auto text-gray-800 dark:text-gray-300 whitespace-pre-wrap"></pre>
+                class="flex-1 p-4 font-mono text-sm overflow-auto text-gray-800 dark:text-gray-300 whitespace-pre-wrap min-h-0"></pre>
         </div>
 
     </div>
