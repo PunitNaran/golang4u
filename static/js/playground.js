@@ -56,6 +56,15 @@ if (editorContainer) {
                     });
                     observer.observe(document.body, { attributes: true });
 
+                    // Force a layout whenever the container's size changes.
+                    // Monaco's automaticLayout can miss the container's first
+                    // size (race), leaving .view-lines at 0x0 and the code
+                    // invisible. A ResizeObserver is the reliable fix.
+                    const ro = new ResizeObserver(() => {
+                        if (window.editor) window.editor.layout();
+                    });
+                    ro.observe(editorContainer);
+
                 } catch (createErr) {
                     logToUI(`Failed to create editor: ${createErr.message}`, true);
                 }
