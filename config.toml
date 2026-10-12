@@ -33,7 +33,7 @@ theme = "DoIt"
   #  date format
   dateFormat = "2006-01-02"
   # website images for Open Graph and Twitter Cards
-  images = ["/logo.png"]
+  images = ["/android-chrome-512x512.png"]
   #  enable PWA support
   enablePWA = false
   # [Experimental] cache remote images, more info: https://github.com/HEIGE-PCloud/DoIt/pull/860#issue-1574342372
@@ -586,9 +586,9 @@ theme = "DoIt"
   #  Site SEO config
   [params.seo]
     # image URL
-    image = "/logo.png"
+    image = "/android-chrome-512x512.png"
     # thumbnail URL
-    thumbnailUrl = "/logo.png"
+    thumbnailUrl = "/android-chrome-512x512.png"
 
   #  Analytics config
   [params.analytics]
