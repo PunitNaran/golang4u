@@ -11,7 +11,9 @@ theme = "DoIt"
 [params]
   # API URL Configuration
   # Production URL (default)
-  apiUrl = "https://golang4u.com"
+  # api.golang4u.com is the Go/Echo server (tunnel -> OCI). The apex
+  # golang4u.com is a CNAME to the static Netlify site (no API routes).
+  apiUrl = "https://api.golang4u.com"
 
   # DoIt theme version
   version = "0.4.0"
