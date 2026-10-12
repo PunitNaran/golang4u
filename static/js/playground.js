@@ -45,6 +45,14 @@ if (editorContainer) {
                         scrollBeyondLastLine: false,
                     });
 
+                    // WebKit (iPhone) can leave .view-lines parked off-screen
+                    // (translate(-99999px)) until a layout() fires; automaticLayout's
+                    // rAF hook misses the first paint there. Force a layout now and
+                    // once after first paint. ponytail: one extra layout() is a
+                    // no-op if already sized — keep it, don't add a retry timer.
+                    window.editor.layout();
+                    requestAnimationFrame(() => window.editor.layout());
+
                     // Listen for theme attribute changes on <body> — that's
                     // where DoIt's setTheme() writes them (baseof.html).
                     const observer = new MutationObserver((mutations) => {
