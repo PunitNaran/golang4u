@@ -1,0 +1,138 @@
+/* ============================================================================
+   Golang4U — SOTA Component Polish (applied on top of design-tokens.css)
+   ----------------------------------------------------------------------------
+   Closes the specific gaps the vision audit found on the live home + nav:
+     1. Cookie banner  — was a loud solid Go-blue; now a quiet neutral surface
+     2. Skip-to-content — near-invisible low-contrast link; now clearly readable
+     3. Gopher hero     — now sits on a soft ring + whisper shadow so it reads
+                          as a deliberate brand mark, not a dropped asset
+     4. "What's Here?"  — heading + list get a real hierarchy (size, weight,
+                          8px rhythm) instead of flat body text
+     5. Nav             — 12 cramped links get clearer spacing + weight steps
+     6. Got it! button  — default browser button; now a styled accent button
+   All presentation-only; no layout/JS changes.
+   ========================================================================== */
+
+:root {
+  --g4u-banner-bg: #0f1a2b;        /* deep navy, NOT bright blue */
+  --g4u-banner-bg-soft: #132134;
+  --g4u-ink-on-banner: #dfe8f2;
+  --g4u-ink-on-banner-muted: #9fb0c4;
+}
+body[theme='dark'] {
+  --g4u-banner-bg: #0b1626;
+  --g4u-banner-bg-soft: #0f1c30;
+}
+
+/* ---- 1. Cookie consent banner: quiet navy surface, not a loud brand wall ---- */
+#cookieBanner, .cookie-banner, [id*="cookie" i], [class*="cookie" i] {
+  background: var(--g4u-banner-bg) !important;
+  color: var(--g4u-ink-on-banner) !important;
+  border-top: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 -2px 12px rgba(2,18,31,.18);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--track-body);
+}
+#cookieBanner a, .cookie-banner a, [id*="cookie" i] a, [class*="cookie" i] a {
+  color: #7fd4ea !important;   /* lighter blue on dark = legible */
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+#cookieBanner .btn, .cookie-banner .btn, [id*="cookie" i] button, [class*="cookie" i] button {
+  background: var(--g4u-accent) !important;
+  color: #fff !important;
+  border: 1px solid var(--g4u-accent) !important;
+  border-radius: var(--r-md) !important;
+  font-weight: 600 !important;
+  padding: 0.4rem 0.9rem !important;
+  box-shadow: var(--sh-sm);
+}
+#cookieBanner .btn:hover, .cookie-banner .btn:hover,
+[id*="cookie" i] button:hover, [class*="cookie" i] button:hover {
+  background: var(--g4u-accent-strong) !important;
+}
+
+/* ---- 2. Skip-to-content: clearly visible (a11y) ---- */
+.skip-link, .a11y-skip, #nav .skip-link, a[aria-label*="skip" i] {
+  color: var(--g4u-ink) !important;
+  background: var(--g4u-accent-tint) !important;
+  border: 1px solid var(--g4u-border) !important;
+  border-radius: var(--r-sm);
+  padding: 0.3rem 0.6rem;
+  font-weight: 500;
+}
+.skip-link:focus {
+  color: var(--g4u-ink) !important;
+  box-shadow: var(--focus-ring);
+}
+
+/* ---- 3. Gopher hero: ring + whisper shadow so it's a deliberate mark ---- */
+#profile .avatar, .avatar, #gopher, .logo-img,
+[class*="avatar" i] img, [class*="logo" i] img {
+  border-radius: 50%;
+  box-shadow: var(--sh-ring), var(--sh-lift),
+              0 0 0 6px rgba(0,173,216,.06);
+  transition: box-shadow .25s ease;
+}
+#profile .avatar:hover, .avatar:hover, [class*="avatar" i] img:hover {
+  box-shadow: var(--sh-ring), var(--sh-lg),
+              0 0 0 8px rgba(0,173,216,.1);
+}
+
+/* ---- 4. "What's Here?" section: real hierarchy ---- */
+.main-content h2, .main-content h3 {
+  color: var(--g4u-ink);
+}
+.main-content h2 {
+  font-size: var(--fs-h2);
+  letter-spacing: var(--track-display);
+  font-weight: 700;
+  margin-bottom: var(--sp-6);
+  padding-top: var(--sp-2);
+}
+/* The feature list (Learning / Playground / Community / Marketplace):
+   turn the bolded labels into accent chips and space the rows on the grid. */
+.main-content ul li {
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--g4u-border);
+  line-height: var(--lh-body);
+}
+.main-content ul li:last-child { border-bottom: 0; }
+.main-content ul li::marker { color: var(--g4u-accent); }
+.main-content ul li strong, .main-content ul li b {
+  color: var(--g4u-ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ---- 5. Nav: clear weight steps + comfortable spacing for 12 links ---- */
+.navbar .nav-link, .navbar .link {
+  font-size: var(--fs-small);
+  font-weight: 500;
+  padding: 0.4rem 0.55rem;
+  margin: 0 0.1rem;
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+}
+.navbar .nav-link:hover, .navbar .link:hover {
+  font-weight: 600;
+}
+/* Primary CTAs (Log In / Sign Up) stand out from informational links. */
+.navbar .nav-link[aria-label="Sign Up"], .navbar .nav-link[aria-label="Log In"],
+.navbar .btn-signup, .navbar .btn-login {
+  background: var(--g4u-accent);
+  color: #fff !important;
+  border-radius: var(--r-md);
+  font-weight: 600;
+  box-shadow: var(--sh-sm);
+}
+.navbar .nav-link[aria-label="Sign Up"]:hover,
+.navbar .btn-signup:hover { background: var(--g4u-accent-strong); }
+
+/* ---- 6. Type scale punch: give h1/h2 more presence (display tracking) ---- */
+.main-content h1 {
+  font-size: var(--fs-display);
+  letter-spacing: var(--track-display);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+}
