@@ -256,3 +256,16 @@ img {
     font-size: 1.25rem;
   }
 }
+
+/* ---- Mobile menu open: DoIt blurs the whole body
+   (body.blur → filter:blur(8px)). A filter creates a stacking
+   context, so it breaks the fixed #mask (its height:100%
+   resolved to 5531px, not the viewport) and turns the open menu
+   into a hazy "blind" screen. Kill the blur on phones: the menu
+   panel stays crisp, the dim mask keeps its job, and everything
+   below the panel is visible. No JS changes. */
+@media (max-width: 680px) {
+  body.blur {
+    filter: none;
+  }
+}
