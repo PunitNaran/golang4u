@@ -4,8 +4,8 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {{ range .Pages }}
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-            {{ if .Params.amazonLink }}
-            <a href="{{ .Params.amazonLink }}" target="_blank" rel="nofollow noopener noreferrer">
+            {{ if and (or .Params.affiliateLink .Params.amazonLink) }}
+            <a href="{{ .Params.affiliateLink | default .Params.amazonLink }}" target="_blank" rel="nofollow noopener noreferrer">
             {{ else }}
             <a href="{{ .Permalink }}">
             {{ end }}
@@ -18,10 +18,10 @@
                     <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{{ .Title }}</h2>
                     <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">{{ .Content | truncate 150 }}</p>
                     
-                    {{ if .Params.amazonLink }}
-                    <a href="{{ .Params.amazonLink }}" target="_blank" rel="nofollow noopener noreferrer" 
+                    {{ if and (or .Params.affiliateLink .Params.amazonLink) }}
+                    <a href="{{ .Params.affiliateLink | default .Params.amazonLink }}" target="_blank" rel="nofollow noopener noreferrer" 
                        class="block w-full text-center bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded transition-colors duration-200">
-                        Buy on Amazon
+                        {{ if findRE "amazon\\." (.Params.affiliateLink | default .Params.amazonLink | urlize | string) }}Amazon{{ else }}Store{{ end }}
                     </a>
                     {{ end }}
                 </div>
