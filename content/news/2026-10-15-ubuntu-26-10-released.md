@@ -1,9 +1,10 @@
 ---
 
+
 title: "Ubuntu 26.10 released"
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
-description: "Canonical has announced the release of Ubuntu 26.10 ("Stonking Stingray"): Ubuntu 26.10 advances enterprise security features, completes the rollout of the Rust-based uutils coreut"
+description: "Canonical has announced the release of Ubuntu 26.10 ('Stonking Stingray'): Ubuntu 26.10 advances enterprise security features, completes the rollout of the Rust-based uutils coreut"
 tags: ["Go", "Community"]
 draft: true
 ---
