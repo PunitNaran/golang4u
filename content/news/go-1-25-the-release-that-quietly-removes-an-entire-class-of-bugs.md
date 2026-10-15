@@ -1,4 +1,5 @@
 ---
+
 title: "Go 1.25: The Release That Quietly Removes an Entire Class of Bugs"
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"

@@ -1,4 +1,5 @@
 ---
+
 title: "Latest Posts"
 type: "feed"
 layout: "list"

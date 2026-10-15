@@ -1,4 +1,5 @@
 ---
+
 title: "Design Patterns in Go: The Once-per-Lifetime Patterns That Actually Pay Off"
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"

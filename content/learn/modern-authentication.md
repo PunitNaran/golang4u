@@ -1,4 +1,5 @@
 ---
+
 title: "The Golang4U Authentication Bible: PASETO, Usage & Design"
 date: 2026-02-10T14:00:00+08:00
 lastmod: 2026-02-10T14:00:00+08:00

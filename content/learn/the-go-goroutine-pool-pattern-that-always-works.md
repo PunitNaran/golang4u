@@ -1,4 +1,5 @@
 ---
+
 title: "The Go Goroutine Pool Pattern That Always Works"
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"

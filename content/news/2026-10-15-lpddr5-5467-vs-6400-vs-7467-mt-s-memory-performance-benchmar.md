@@ -1,4 +1,5 @@
 ---
+
 title: "LPDDR5 5467 vs. 6400 vs. 7467 MT/s Memory Performance Benchmarks For Laptops"
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"

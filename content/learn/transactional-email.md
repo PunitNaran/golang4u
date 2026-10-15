@@ -1,4 +1,5 @@
 ---
+
 title: "The Golang4U Email Bible: Native SMTP & Transactional Systems"
 date: 2026-02-14T11:00:00+08:00
 lastmod: 2026-02-14T11:00:00+08:00

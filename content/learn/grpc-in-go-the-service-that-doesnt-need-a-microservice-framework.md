@@ -1,4 +1,5 @@
 ---
+
 title: "gRPC in Go: The Service That Doesn't Need a Microservice Framework"
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"

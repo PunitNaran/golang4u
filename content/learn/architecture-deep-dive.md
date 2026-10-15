@@ -1,4 +1,5 @@
 ---
+
 title: "The Golang4U Architecture: A Service-Oriented Masterclass"
 date: 2026-02-10T10:00:00+08:00
 lastmod: 2026-02-10T10:00:00+08:00

@@ -1,4 +1,5 @@
 ---
+
 title: "The Golang4U 2FA Bible: TOTP, QR Codes & State Machines"
 date: 2026-02-10T18:00:00+08:00
 lastmod: 2026-02-10T18:00:00+08:00
