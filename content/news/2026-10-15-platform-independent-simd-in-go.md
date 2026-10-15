@@ -1,0 +1,12 @@
+---
+title: "Platform-independent SIMD in Go"
+date: 2026-10-15T09:00:00+00:00
+author: "Punit Naran"
+description: "Go 1.27 adds an experimental platform-agnostic SIMD API"
+tags: ["Go", "Community"]
+draft: true
+---
+
+Go 1.27 adds an experimental platform-agnostic SIMD API
+
+[Read on the source site](https://go.dev/blog/simd-experiment)
