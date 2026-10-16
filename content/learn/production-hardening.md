@@ -5,151 +5,217 @@ date: 2026-02-14T15:00:00+08:00
 lastmod: 2026-02-14T15:00:00+08:00
 author: "Punit Naran"
 authorLink: ""
-description: "Your code is correct, but your server is vulnerable. We explore the critical runtime tunings: GOMEMLIMIT, Slowloris Timeouts, and Database Connection Pooling to prevent OOM kills and DDoS attacks."
+description: "Your code is correct, but your server is vulnerable. The Golang4U hardening playbook: Slowloris timeouts, GOMEMLIMIT OOM prevention, and bounded database pooling - the runtime knobs that stop the 3 a.m. page."
 tags: ["Go", "DevOps", "DDoS", "OOM", "GOMEMLIMIT", "Production", "Docker", "Kubernetes"]
 categories: ["DevOps", "Engineering Handbook"]
 featuredImage: ""
----
-
-# Preface: The "Correct" Code that Crashes
-
-You can write perfect algorithms, but if you deploy them with default settings, you will crash.
-*   **Default HTTP Server**: Vulnerable to Slowloris.
-*   **Default GC**: Vulnerable to OOM Killers.
-*   **Default DB Driver**: Vulnerable to Connection Storms.
-
-This guide is about **Runtime Hardening**.
 
 ---
 
-# Chapter 1: The Slowloris Attack (Timeouts)
+Your code is correct. It passed every test. Then the 3 a.m. page: OOM kill, a hung pool of connections, a Slowloris-shaped incident. The difference is that **default settings are tuned for a laptop demo, not a production box**. This post is the Golang4U hardening playbook, told through the runtime's own knobs: `GOMEMLIMIT`, the HTTP server timeout ladder, and database pooling.
 
-**The Attack**:
-A hacker opens 1,000 connections to your server.
-They send: `G`... wait 10s ... `E` ... wait 10s ... `T` ...
-The default Go `http.Server` has **NO Timeout**. It will wait forever.
-Your RAM fills up with open connections. The server hangs.
+## The three defaults that get you paged
 
-**The Fix**: Explicit Timeouts in `internal/server/server.go`.
+1. **Default `http.Server`** — no timeouts at all. An attacker (or a slow client) can hold a connection open forever, one byte at a time.
+2. **Default GC (`GOGC=100`)** — the heap is allowed to double between collections. In a 1 GB container, "allowed to double" is "OOM killed."
+3. **Default driver pooling** — a connection storm under load takes your database down with your app.
+
+Each is a one-line or one-env-var fix. The rest of this post is the exact code.
+
+## Chapter 1: the Slowloris ladder (timeouts)
+
+Slowloris: open 1,000 connections, send `G`… wait 10 s … `E`… wait 10 s… The request line never finishes, so the handler never runs — but the connection (and its buffers) live on. A default `http.Server` has **no** read timeout, so it waits forever.
+
+```mermaid
+sequenceDiagram
+    participant A as Attacker (1000 conns)
+    participant S as http.Server
+    A->>S: "G" (partial request line)
+    Note over S: ReadHeaderTimeout = 2s
+    A->>S: "E" after 10s
+    S--xA: connection torn down at 2s (no handler ever ran)
+```
+
+The fix is the explicit timeout ladder in `internal/server/server.go`:
 
 ```go
-func (s *Server) BeginServer() {
-    srv := &http.Server{
-        Addr:         ":8080",
-        Handler:      s.e, // Echo instance
-        // 1. ReadTimeout: How long to wait for the Request Body
-        ReadTimeout:  5 * time.Second,
-        // 2. WriteTimeout: How long to write the Response
-        WriteTimeout: 10 * time.Second,
-        // 3. IdleTimeout: How long to keep Keep-Alive connections open
-        IdleTimeout:  120 * time.Second,
-    }
-    
-    // 4. HeaderTimeout (Go 1.18+): Prevent Slowloris on Headers
-    srv.ReadHeaderTimeout = 2 * time.Second
+// server.go — the Slowloris-proof server.
+package main
 
-    srv.ListenAndServe()
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"time"
+)
+
+func main() {
+	// GOMEMLIMIT is read by the runtime at process start. It cannot be
+	// changed later (no runtime.GC* API for it), so set it in the
+	// environment before the binary runs — and fail loudly if you forgot.
+	if os.Getenv("GOMEMLIMIT") == "" {
+		log.Fatal("GOMEMLIMIT is not set; refusing to run with unlimited heap")
+	}
+
+	srv := &http.Server{
+		Addr: ":8080",
+		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, "ok\n")
+		}),
+		// How long to wait for the request *headers*. This is the
+		// Slowloris answer: a client that dribbles the request line for
+		// more than 2 seconds is cut, on every open connection.
+		ReadHeaderTimeout: 2 * time.Second,
+		// How long to read the whole request body.
+		ReadTimeout: 5 * time.Second,
+		// How long the handler gets to write the response.
+		WriteTimeout: 10 * time.Second,
+		// How long to keep an idle (keep-alive) connection open before
+		// reaping it.
+		IdleTimeout: 120 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
 ```
 
-Now, if a hacker pauses for more than 2 seconds while typing `GET /`, we cut the connection.
-**Golang4U is now Slowloris-proof.**
+With `ReadHeaderTimeout = 2s`, a client that pauses more than 2 seconds while "typing" `GET /` is cut. The server is now Slowloris-proof: no number of slow connections can pile up unbounded, because each one is guaranteed to die.
 
----
+## Chapter 2: the OOM math (GOMEMLIMIT)
 
-# Chapter 2: The memory Killer (OOM)
+Go's GC triggers when the heap **doubles** (`GOGC=100` means "collect when live heap has grown 100% since the last collection"). Now put that in a 1 GB container:
 
-Go is a Garbage Collected language.
-By default, the GC triggers when the heap doubles in size (`GOGC=100`).
+1. App settles at 600 MB live.
+2. GC's next trigger point is 600 × 2 = **1.2 GB**.
+3. The runtime happily allocates toward 1.2 GB.
+4. The kernel sees 1 GB used. **OOM killer: `KILL -9`.**
 
-**The Scenario**:
-1.  Your container has **1GB RAM**.
-2.  Your app uses **600MB**.
-3.  A request comes in.
-4.  Heap grows to **700MB**.
-5.  GC Target is $600MB \times 2 = 1.2GB$.
-6.  The App tries to allocate up to 1.2GB.
-7.  **Linux OOM Killer** sees usage > 1GB.
-8.  `KILL -9`. App crashes.
+The code was "correct"; the runtime was allowed to outgrow the box. The fix is `GOMEMLIMIT` (Go 1.19+), an absolute ceiling on heap growth:
 
-**The Fix**: `GOMEMLIMIT` (Go 1.19+).
-We tell the Go runtime exactly how much RAM it has.
+```mermaid
+flowchart TD
+    A["container: 1 GB cgroup limit"] --> B["GOMEMLIMIT=900MiB (10-15% headroom)"]
+    B --> C["below limit: normal GOGC=100 doubling behavior"]
+    C --> D{"approaching 900MiB?"}
+    D -->|yes| E["GC switches to a busy loop: continuous collections, CPU traded for RAM"]
+    E --> F["app gets slower, does NOT die"]
+    D -->|no| G["idle: no GC work"]
+```
 
-In `cmd/server/main.go` (or Docker env):
+In `cmd/server/main.go` (or the Docker env):
+
 ```sh
-export GOMEMLIMIT=450MiB
+export GOMEMLIMIT=900MiB   # ~90% of the 1 GB cgroup limit
 ```
 
-Now, if usage hits 450MB, the GC becomes **aggressive**. It runs continuously to stay under 450MB. It sacrifices CPU to save RAM.
-**The App slows down, but it does NOT crash.**
-
----
-
-# Chapter 3: The Connection Storm (DB Pooling)
-
-By default, the Mongo driver might open 100+ connections if load spikes.
-If you have 10 instances of your app, that's 1,000 connections to Mongo.
-Mongo crashes.
-
-**The Fix**: Explicit Pooling in `internal/database/mongo_database.go` (Configurable).
+Cross-check it at startup, right alongside the timeout ladder:
 
 ```go
-func NewMongoDatabase(..., maxPoolSize uint64, maxConnIdleTime string) {
-    opts := options.Client().ApplyURI(uri)
-    
-    // 1. MaxPoolSize: Hard limit on active connections
-    opts.SetMaxPoolSize(maxPoolSize)
-    
-    // 2. MaxConnIdleTime: Close unused connections
-    dur, _ := time.ParseDuration(maxConnIdleTime)
-    opts.SetMaxConnIdleTime(dur)
-    
-    client, _ := mongo.Connect(opts)
+// memlimit.go — pair with server.go; refuses to boot without a ceiling.
+package main
+
+import (
+	"fmt"
+	"os"
+	"runtime"
+)
+
+func main() {
+	// runtime.GOMAXPROCS(-1) prints the current setting; GOMEMLIMIT has
+	// no runtime getter — the env var is the source of truth, so we check it.
+	ml := os.Getenv("GOMEMLIMIT")
+	if ml == "" {
+		fmt.Fprintln(os.Stderr, "FATAL: set GOMEMLIMIT (e.g. 900MiB) before starting")
+		os.Exit(1)
+	}
+	fmt.Printf("GOMEMLIMIT=%s, GOMAXPROCS=%d, GOGC=%s\n",
+		ml, runtime.GOMAXPROCS(0), os.Getenv("GOGC"))
 }
 ```
 
-**Configuration (`config.yaml` or ENV):**
-```yaml
-db_max_pool_size: 50
-db_max_conn_idle_time: "5m"
+Why 90%, not 100%? Go's memory is not all heap: goroutine stacks, mmaps, the runtime itself, and C-heap (cgo) allocations all sit *outside* `GOMEMLIMIT`. A 10–15% headroom for non-heap memory is the working rule of thumb.
+
+> **Note:** `GOMEMLIMIT` and `GOGC` are complementary, not alternatives. `GOGC=100` alone: "double between collections" (relative). `GOMEMLIMIT` alone: "never exceed X" (absolute). In a container you want **both** set: `GOGC` for normal pacing, `GOMEMLIMIT` as the hard wall.
+
+> **Warning:** `GOMEMLIMIT` is read **once, at process start**. There is no `runtime.SetGOMEMLIMIT`. A changed value in your config file does nothing until the process restarts — a release, not a hotfix.
+
+## Chapter 3: the connection storm (DB pooling)
+
+Under a load spike, a Go app opens one database connection per in-flight query. Ten app instances × 100 connections = a 1,000-connection storm into your database, which now crashes *with* your app. The fix is a bounded pool, set explicitly and configured, not left to driver defaults:
+
+```go
+// pool.go — bounded, idle-pruning pool via database/sql.
+package main
+
+import (
+	"database/sql"
+	"fmt"
+	"time"
+
+	_ "github.com/lib/pq" // real, pure-Go PostgreSQL driver
+)
+
+func newPool(dsn string, maxOpen, maxIdle int, idleTTL time.Duration) (*sql.DB, error) {
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		return nil, err
+	}
+	// Hard ceiling on simultaneously open connections per app instance.
+	db.SetMaxOpenConns(maxOpen)
+	// Keep a warm set of idle connections, but prune ones unused for idleTTL
+	// so the steady-state connection count matches real load, not peak load.
+	db.SetMaxIdleConns(maxIdle)
+	db.SetConnMaxIdleTime(idleTTL)
+	db.SetConnMaxLifetime(30 * time.Minute) // recycle: fight stale-state bugs
+	return db, nil
+}
+
+func main() {
+	db, err := newPool("dsn=host=db", 50, 10, 5*time.Minute)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	fmt.Println("pool ready: 50 open / 10 idle / 5m idle-TTL")
+}
 ```
 
-This acts as a "Circuit Breaker". It adapts to your infrastructure size.
+| Knob | What it caps | The failure it prevents |
+|---|---|---|
+| `SetMaxOpenConns(50)` | concurrent open connections | DB fd exhaustion under a load spike |
+| `SetMaxIdleConns(10)` | warm idle connections | steady-state connection bloat after a spike |
+| `SetConnMaxIdleTime(5m)` | idle connection lifetime | half-dead connections after a network blip |
+| `SetConnMaxLifetime(30m)` | max connection age | stale-transaction / DNS-rotation bugs |
 
----
+The same discipline applies to the *HTTP client* side: `http.Transport` has `MaxIdleConns` / `MaxIdleConnsPerHost` / `IdleConnTimeout` for exactly the mirror-image problem (your app hoarding connections to *downstream* services).
 
-# Chapter 4: Docker Resource Limits
+## The whole hardening, as config
 
-Finally, we enforce these limits at the Kernel level.
-
-`docker-compose.yml`:
 ```yaml
+# docker-compose.yml — the kernel-level backstop.
 services:
   app:
-    # 1. CPU Quota: Prevents one container from eating the whole server
     cpus: "1.0"
-    
-    # 2. Hard Memory Limit: The wall (OOM Killer triggers here)
     mem_limit: 1024m
-    
-    # 3. Soft Memory Limit: Warns the OS
     mem_reservation: 512m
-    
     environment:
-      - GOMEMLIMIT=900MiB # 90% of Hard Limit
+      - GOMEMLIMIT=900MiB        # ~90% of mem_limit: headroom for non-heap
+      - GOGC=100
+      - db_max_pool_size=50
+      - db_max_conn_idle_time=5m
 ```
 
-**Why 90%?**
-Go runtime needs RAM. But the OS also needs RAM (stacks, pointers, file descriptors).
-Allow 10-15% headroom for "Non-Heap" memory.
+## Takeaways
 
----
+- **Impatient**: every timeout on the server is set (`ReadHeaderTimeout` is the Slowloris answer).
+- **Self-aware**: the runtime knows its memory wall (`GOMEMLIMIT`, set at start, checked at boot).
+- **Polite**: the pool is bounded and idle-pruned, so a load spike can't take the database down.
 
-# Conclusion
+A production-ready Go service is the one where *none* of these is left at the default.
 
-A Production-Ready service is:
-1.  **Impatient**: It drops slow connections (`ReadTimeout`).
-2.  **Self-Aware**: It knows its memory limits (`GOMEMLIMIT`).
-3.  **Polite**: It doesn't overwhelm the DB (`MaxPoolSize`).
+## Next steps
 
-These "Expert Control Measures" are the difference between a 3AM page and a good night's sleep.
+- Add `GOMEMLIMIT` (90% of the cgroup limit) and `ReadHeaderTimeout` to your service template *before* the first production deploy, not after the first OOM.
+- Graph `/proc/<pid>/status` `VmRSS` against `GOMEMLIMIT` in staging to watch the GC busy-loop engage.
+- Re-run this post's three knobs after any kernel or distro upgrade — they are the only ones that move.

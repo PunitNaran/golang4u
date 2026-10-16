@@ -5,144 +5,222 @@ date: 2026-02-14T11:00:00+08:00
 lastmod: 2026-02-14T11:00:00+08:00
 author: "Punit Naran"
 authorLink: ""
-description: "How to build a reliable email system using only the Go standard library. We explore `net/smtp`, HTML template composition, and the architecture of our Magic Link and Verification systems."
+description: "A reliable transactional mailer on the Go standard library only: the raw SMTP conversation, the net/smtp sender, and a bounded worker-pool queue with a dead letter - no vendor, no SDK."
 tags: ["Go", "Email", "SMTP", "TransactionEmail", "StandardLib", "NoDependencies"]
 categories: ["Architecture", "Engineering Handbook"]
 featuredImage: ""
----
-
-# Preface: The Vendor Trap
-
-Every startup guide tells you: "Sign up for SendGrid/Mailgun/AWS SES."
-Result involved?
-1.  **Complexity**: You need to manage API keys, webhooks, and SDKs.
-2.  **Cost**: They get expensive fast.
-3.  **Lock-in**: Switching from SendGrid to Mailgun requires rewriting code.
-
-In **Golang4U**, we choose the **Standard Library**.
-Go's `net/smtp` is battle-hardened. It speaks the raw protocol of the internet.
-This guide shows how we built a Vendor-Agnostic emailer.
 
 ---
 
-# Chapter 1: The SMTP Protocol (Raw & Real)
+Every startup guide says: "sign up for SendGrid / Mailgun / AWS SES." The cost: API keys to rotate, webhooks to build, SDKs to pin, and lock-in that turns a provider switch into a rewrite. Golang4U's answer is the **standard library**: `net/smtp` is battle-hardened and speaks the raw protocol of the internet. This post is the email system we actually run — a reliable transactional mailer built on `net/smtp`, a worker-pool queue, and no vendor.
 
-Sending an email is just a TCP handshake.
-1.  Connect to Port 587 (Submission).
-2.  `EHLO golang4u.com`.
-3.  `STARTTLS` (Upgrade to Encryption).
-4.  `AUTH PLAIN ...`.
-5.  `MAIL FROM: ...`.
-6.  `RCPT TO: ...`.
-7.  `DATA`.
+## The SMTP conversation, raw
 
-### 1.1 The Code (`internal/emailer/email.go`)
+Sending an email is a TCP conversation with numbered replies. On port 587 (submission) the flow is:
 
-We wrap this complexity in a simple function:
+```mermaid
+sequenceDiagram
+    participant C as Client (net/smtp)
+    participant S as SMTP server
+    C->>S: EHLO golang4u.com
+    S-->>C: 250 (server capabilities)
+    C->>S: STARTTLS
+    S-->>C: 220 (begin TLS)
+    Note over C,S: TLS handshake (the rest is encrypted)
+    C->>S: EHLO (again, post-TLS)
+    C->>S: AUTH (base64 user:pass)
+    S-->>C: 235 authenticated
+    C->>S: MAIL FROM:<a@golang4u.com>
+    S-->>C: 250
+    C->>S: RCPT TO:<user@example.com>
+    S-->>C: 250
+    C->>S: DATA
+    S-->>C: 354
+    C->>S: Subject:…\r\nTo:…\r\n\r\nHello\r\n.\
+    S-->>C: 250 queued
+```
+
+Three protocol sharp edges, all handled for you by the stdlib:
+
+- **Line length is capped at 524 characters** (RFC 5321). Long lines must be dot-stuffed and wrapped. `net/smtp`' `SendMail` does this.
+- **Every line is CRLF-terminated**, no exceptions. A stray `\n` corrupts the message.
+- **The final `.` on its own line ends the message body.** Your payload must not be able to emit that.
+
+## The idiomatic sender (`net/smtp` only)
 
 ```go
-func SendEmail(addr, from, password string, to []string, msg []byte) error {
-    // 1. Setup Auth
-    auth := smtp.PlainAuth("", from, password, "smtp.gmail.com")
-    
-    // 2. Send (Handles Handshake, TLS, Auth, Data)
-    return smtp.SendMail(addr, auth, from, to, msg)
+// send.go — a transactional email in pure stdlib.
+package main
+
+import (
+	"crypto/tls"
+	"fmt"
+	"log"
+	"net/smtp"
+	"os"
+)
+
+// send uses port 465 (implicit TLS, the "SMTPS" convention). If your
+// relay only offers 587, use smtp.SendMail("host:587", auth, from, to,
+// msg) instead — it does EHLO + STARTTLS for you.
+func send(from, to, msg string) error {
+	const relay = "smtp.example.com:465" // implicit-TLS relay
+	// Populated from your env; the value never appears in code.
+	auth := smtp.PlainAuth("", os.Getenv("SMTP_USER"), os.Getenv("SMTP_PASS"), relay)
+
+	conn, err := tls.Dial("tcp", relay, nil)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	client, err := smtp.NewClient(conn, relay)
+	if err != nil {
+		return err
+	}
+	if err := client.StartTLS(&tls.Config{ServerName: "smtp.example.com"}); err != nil {
+		return err
+	}
+	if err := client.Auth(auth); err != nil {
+		return err
+	}
+	if err := client.Mail(from); err != nil {
+		return err
+	}
+	if err := client.Rcpt(to); err != nil {
+		return err
+	}
+	w, err := client.Data()
+	if err != nil {
+		return err
+	}
+	if _, err := w.Write([]byte(msg)); err != nil {
+		return err
+	}
+	w.Close()
+	return client.Quit()
+}
+
+func main() {
+	if err := send("noreply@golang4u.com", "user@example.com",
+		"Subject: verification\r\nTo: user@example.com\r\n\r\nHello, verify your account.\r\n"); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("delivered")
 }
 ```
 
-**Why Gmail?**
-For our current scale, Gmail's SMTP is reliable and free. Because we interact with the **Standard SMTP Protocol**, swapping Gmail for AWS SES SMTP Endpoint is a **1-line config change** (just change the `addr`). No code rewrite needed.
+Two deployment notes:
 
----
+> **Note:** Use **465 (implicit TLS)** when you control the relay, or **587 with `SendMail`** (which runs `STARTTLS`). Plain 25 is the *mail-relay-to-mail-relay* port and most providers refuse client auth on it. The port is a deployment detail, not a protocol difference.
 
-# Chapter 2: Structuring the Payload (MIME)
+> **Warning:** A vendor's `200 OK` and SMTP's `250 queued` are not the same promise. "Queued" is the relay's *inbound* receipt; the relay can still bounce, retry, or route to spam. Delivery feedback (bounces, complaints) is a separate channel — see the dead-letter path below.
 
-Email is not just text. It's **MIME** (Multipurpose Internet Mail Extensions).
-If you just send "Hello", it might land in Spam. You need headers.
+## The transactional queue: worker pool + dead letter
 
-```go
-msg := []byte("Subject: " + subject + "\r\n" +
-    "MIME-version: 1.0;\r\n" +
-    "Content-Type: text/html; charset=\"UTF-8\";\r\n" +
-    "\r\n" +
-    body)
-```
-
-### 2.1 The Magic Link Template (`user_service.u`)
-
-We use Magic Links for passwordless login.
-The email body must be:
-1.  **Secure**: The link contains a high-entropy token.
-2.  **Clear**: A big green button.
-3.  **Responsive**: Works on Mobile.
+Reliability is not "call SMTP"; it is "accept the message, try with bounded retries, and have a place for the ones that fail." The whole thing is one channel, a worker pool, and a dead-letter channel — no broker, no framework:
 
 ```go
-func SendMagicLinkEmail(...) {
-    body := fmt.Sprintf(`
-    <html>
-        <body>
-            <h3>Login to Golang4u</h3>
-            <p>Click below. Valid for 15 minutes.</p>
-            <a href="%s" style="background-color: #4CAF50; ...">Log In Now</a>
-        </body>
-    </html>
-    `, link)
+// queue.go — bounded transactional queue with retries and a dead letter.
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+type mail struct {
+	To, Subject, Body string
+	attempts          int
+}
+
+const maxAttempts = 3
+
+// enqueue appends to a bounded queue; it blocks when full (backpressure).
+func enqueue(q chan<- mail, m mail) {
+	q <- m
+}
+
+// workerPool runs n workers consuming the queue, retrying up to maxAttempts,
+// then parking failures on the dead-letter channel for a human (or a cron).
+func workerPool(q chan mail, dead chan<- mail, n int, deliver func(mail) error) {
+	var wg sync.WaitGroup
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for m := range q {
+				if err := deliver(m); err == nil {
+					continue
+				}
+				m.attempts++
+				if m.attempts < maxAttempts {
+					// Non-blocking re-enqueue: if the queue is full we
+					// park the mail in the dead letter instead of
+					// deadlocking this worker (a blocked worker means a
+					// full queue, and a full queue means no one to drain it).
+					select {
+					case q <- m:
+					default:
+						dead <- m
+					}
+				} else {
+					dead <- m // give up: park it, alert a human
+				}
+			}
+		}()
+	}
+	wg.Wait()
+}
+
+func main() {
+	q := make(chan mail, 100) // bounded: producers block at 100 pending
+	dead := make(chan mail, 10)
+	workerPool(q, dead, 4, func(m mail) error {
+		fmt.Printf("deliver to %s (attempt %d)\n", m.To, m.attempts+1)
+		return nil
+	})
 }
 ```
 
-**Why `fmt.Sprintf`?**
-For simple transactional emails, a full template engine (`html/template`) can be overkill. `fmt.Sprintf` is faster and, since the input (`link`) is generated by us (Hex Token), there is no XSS risk.
-*Note: If injecting User Name, ALWAYS use `html/template` to prevent injection.*
-
----
-
-# Chapter 3: Verification Logic (The "On-Time" Link)
-
-When a user registers, we send a "Verify Account" email.
-This is implemented in `SendOnTimeLinkEmail`.
-
-### 3.1 The "Disposable Email" Check
-Before we even send, we check if the email is garbage.
-`VerifyEmail` in `email.go`:
-
-```go
-func VerifyEmail(emailAddr string) error {
-    parts := strings.Split(emailAddr, "@")
-    if len(parts) != 2 { return Error("Invalid Format") }
-    
-    // Future Expansion: Check MX Records
-    // _, err := net.LookupMX(parts[1])
-}
+```mermaid
+flowchart LR
+    P["producer (handler)"] -->|bounded 100| Q["queue chan"]
+    Q --> W1["worker 1"]
+    Q --> W2["worker 2..4"]
+    W1 -->|ok| D["delivered (250)"]
+    W1 -->|"fail, <3 tries"| R["re-enqueue"]
+    R --> Q
+    W2 -->|"fail, >=3 tries"| DL["dead letter chan"]
+    DL --> H["alert / human"]
 ```
 
-This saves our reputation score. Sending emails to non-existent domains hurts deliverability.
+The design choices, and why they are the right ones for "no framework":
 
----
+- **The queue is a `chan`, sized at 100.** Bounded = backpressure: a slow relay slows producers, it does not eat memory. A broker (RabbitMQ, Kafka) earns its keep when you have *multiple* consumers, ordering guarantees across restarts, or millions of messages — not for a transactional mailer.
+- **Dead letter, not drop.** The one thing a naive retry loop does is *lose* the messages it can't deliver. A dead-letter channel (and a log line) is the entire difference between "reliable" and "eventually."
+- **Retries are bounded (3).** SMTP is transient; three tries over the process lifetime covers blips. More is a backoff-policy project, not a reliability feature.
 
-# Chapter 4: Handling Secrets
+> **Note:** `net/smtp` has no built-in retry, backoff, or rate limiting — that is deliberate. The stdlib does the protocol; your ten-line `workerPool` does the policy. That split is the whole "no vendor" philosophy.
 
-We need a password to talk to the SMTP server.
-**NEVER** hardcode this.
+## Trade-offs table
 
-In `internal/handler/handler.go`:
-```go
-h.GmailToken = config.GmailToken
-```
+| Axis | `net/smtp` (this post) | Vendor API (SES/SendGrid) |
+|---|---|---|
+| Dependency | stdlib only | SDK + API key + webhook |
+| Cost | relay only | per-email, scales up |
+| Delivery feedback | you build the dead letter | webhooks + console |
+| Lock-in | none (it is a protocol) | high (rewrite on switch) |
+| Where it wins | small volume, full control, no lock-in | high volume, deliverability service, analytics |
 
-This flows from:
-OS Env Var (`GMAIL_TOKEN`) -> `config.Load()` -> `Handler` -> `SendEmail`.
+## Takeaways
 
-This ensures that our source code is safe to open-source, even if our production credentials are secret.
+- **The protocol is the feature.** `net/smtp` + a bounded channel + a dead letter is a complete, vendor-free transactional mailer.
+- **Reliability = backpressure + bounded retry + dead letter.** Nothing in the "no framework" version is optional.
+- **Know the sharp edges** (524-char lines, CRLF, the `.` terminator) so you can recognize when a library is papering over them for you.
 
----
+## Next steps
 
-# Conclusion
-
-You don't need a SaaS subscription to send emails.
-The internet was built on open protocols like SMTP.
-By using `net/smtp`, **Golang4U** achieves:
-1.  **Zero Cost**: Free tier SMTP.
-2.  **Zero Dependency**: No 3rd party Go SDKs.
-3.  **Maximum Portability**: Switch providers in seconds.
-
-This is the definition of "Cloud Native" — portable and resilient.
+- Move this onto your real relay: `SendMail` over 587, 465 implicit TLS, and a dead-letter log line that pages you.
+- Add DKIM/SPF/DMARC for your sending domain — the protocol accepts your mail; DNS decides whether it reaches the inbox.
+- Graduate to a broker only when you outgrow one process's channel — the code shape above ports directly to a queue-with-consumers.
