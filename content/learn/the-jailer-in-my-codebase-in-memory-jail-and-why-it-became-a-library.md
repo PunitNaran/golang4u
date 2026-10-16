@@ -8,97 +8,370 @@ tags: ["Go", "Security", "Jail"]
 draft: true
 ---
 
+Every login system grows a jail. Mine started as a `map[string]int` of failed logins and a comment saying "5 and they're out". Six sprints later it was a 300-line blob with three kinds of counters, two kinds of windows, and a backoff that someone hand-tuned in production at 3am. The *data* never changed; the **rules** did — what counts as a try, what "exceeding" a budget means, who gets jailed and for how long.
 
-The *jailer* in a Go service is the part that takes a *user* (or *API
-client*, or *K8s pod*) and *imprisons* them: rate limits, IP
-blocklists, action budgets, "you have N tries per minute". In my codebase
-it started as a `map[string]*User` and a `map[string]int` (count of
-failed logins) and *grew* into a small library because the **rules** of
-the jail (what counts as a "try", what "exceeding" a budget means, who
-gets *jailed* and *when*) kept *changing* every sprint. The *data*
-stayed the same; the *rules* were the whole thing.
+That's when I split the thing in two and it stopped being a blob and became a library: a *store* (where the counts live) and a *policy* (the rules). The interface between them is four lines; the policy is a value type a test can build in one literal; the backoff is a *function of the streak*, not a property of the principal.
 
-This post is the **design** of that library: the one `Jailer` interface,
-the two *rules* (a *try* and a *budget*), and the *exact* code for the
-three things that matter in production: (1) the *atomic* increment,
-(2) the *sliding* window, (3) the *exponential* backoff on a *jailed*
-principal. All of it is *stdlib + one small in-memory store*; no Redis,
-no Kafka, no "jailer service". The *library* pattern is the
-`type Jailer interface` + a `type MemoryJailer` impl + the *rules* as
-*separate* functions, so a test can swap the *rules* without touching the
-*store*.
+This post is the full design: the `Jailer` interface, the in-memory store with TTL eviction, the tumbling window, the exponential backoff — and the test that rewinds the clock to prove all three. By the end you will have a jailer with no Redis, no Kafka, no "jailer service": stdlib and one small map.
 
-## The 40-line `Jailer` (the entire library)
+## Architecture: one store, one policy
+
+The split in one sentence: **the store answers *how many*; the policy decides *what happens*.**
+
+- **`Jailer`** — a 3-method interface (`Try`, `Clear`, `IsJailed`). This is the only thing any caller sees. Every caller compiles against the interface, never the store.
+- **`Policy`** — a value struct: `MaxTries`, `Window`, `BaseDelay`, `MaxDelay`, and an injectable `Now` clock. One literal in a test replaces a configuration file.
+- **`MemoryJailer`** — `map[string]*entry` behind a `sync.Mutex`, plus one background goroutine that evicts entries whose window *and* jail have both expired.
+
+The lifecycle of a jailed principal is a state machine, which is the right lens for a jail:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Active
+    Active --> Active: tries within MaxTries (window counts)
+    Active --> Jailed: count exceeds MaxTries
+    Jailed --> Jailed: every Try reports jailed
+    Jailed --> Active: jailUntil elapses (TTL)
+    Active --> Active: Clear() after a success
+```
+
+```mermaid
+sequenceDiagram
+    participant C as Caller (login handler)
+    participant J as MemoryJailer
+    C->>J: Try("alice")
+    J->>J: count++ (atomic, under the lock)
+    J-->>C: (1, false)
+    C->>J: Try("alice") x4 more
+    J->>J: 5th count > MaxTries=4: jail, streak=1
+    J->>J: jailUntil = now + BaseDelay
+    J-->>C: (0, true)
+    C->>J: Try("alice") before expiry
+    J-->>C: (0, true) — the jail is state, it sticks
+    Note over J: sweeper: entry deleted when the window<br/>and the jail have both expired
+    C->>J: Try("alice") after BaseDelay
+    J-->>C: (1, false) — principal is free again
+```
+
+---
+
+## The code: the jailer (the whole library)
 
 ```go
-// Jailer: the *interface* every caller talks to.
-// The *rules* (what counts as a try, when a principal is jailed)
-// are *separate* from the *store* (where the counts live), so a
-// test can swap either independently.
+package main
+
+import (
+	"sync"
+	"time"
+)
+
+// Jailer is the only interface any caller talks to.
+// The rules (what counts as a try, how long a principal stays
+// jailed) live in Policy, not here, so a test swaps the rules
+// without touching the store.
 type Jailer interface {
-    // Record a *try* for `principal` on `action`.
-    // Returns the *current* count and a *jailed* flag.
-    Try(principal, action string) (count int, jailed bool)
-    // Clear a principal (e.g. after a successful login).
-    Clear(principal string)
-    // Is this principal currently jailed?
-    IsJailed(principal string) bool
+	// Try records one try. Returns the principal's current
+	// in-window count and a jailed flag. A jailed principal
+	// reports jailed on every call until the jail expires.
+	Try(principal string) (count int, jailed bool)
+	// Clear releases a principal (e.g. after a successful
+	// login): the counter resets and any active jail lifts.
+	Clear(principal string)
+	// IsJailed reports whether the principal is jailed right now.
+	IsJailed(principal string) bool
 }
 
-// MemoryJailer: the *store*. A plain `map` with a `sync.Mutex`.
-// ponytail: in-memory, single-process. Swap for a Redis impl when
-// you go multi-replica; the *interface* doesn't change.
+// Policy is the rulebook: how many tries per window, how big
+// the window is, how long the jail lasts, and how it escalates.
+// It is a value type: a test builds a custom one in one literal.
+type Policy struct {
+	MaxTries  int
+	Window    time.Duration
+	BaseDelay time.Duration
+	MaxDelay  time.Duration
+	Now       func() time.Time // injectable clock; tests rewind it
+}
+
+func DefaultPolicy() Policy {
+	return Policy{
+		MaxTries:  5,
+		Window:    time.Minute,
+		BaseDelay: 30 * time.Second,
+		MaxDelay:  time.Hour,
+		Now:       time.Now,
+	}
+}
+
+// entry is per-principal state: one counter, one window start,
+// one jail timestamp, one escalation streak.
+type entry struct {
+	count       int
+	windowStart time.Time
+	jailUntil   time.Time
+	streak      int
+}
+
+// MemoryJailer is the in-memory store.
+// ponytail: single-process only — state is lost on restart, and a
+// multi-replica deploy jails each replica independently. Swap in a
+// Redis impl behind the same interface when you need a shared jail;
+// the interface does not change.
 type MemoryJailer struct {
-    mu     sync.Mutex
-    counts map[string]int
-    jailed map[string]time.Time
+	mu      sync.Mutex
+	p       Policy
+	entries map[string]*entry
+	stop    chan struct{}
 }
 
-func (j *MemoryJailer) Try(p, a string) (int, bool) {
-    j.mu.Lock()
-    defer j.mu.Unlock()
-    j.counts[p]++
-    if j.counts[p] > 5 {   // ponytail: hard cap 5, tune per action
-        j.jailed[p] = time.Now().Add(5 * time.Minute)
-    }
-    return j.counts[p], j.isJailedLocked(p)
+// New builds a jailer and starts the background sweeper.
+func New(p Policy) *MemoryJailer {
+	if p.Now == nil {
+		p.Now = time.Now
+	}
+	j := &MemoryJailer{
+		p:       p,
+		entries: make(map[string]*entry),
+		stop:    make(chan struct{}),
+	}
+	go j.sweep()
+	return j
 }
 
-func (j *MemoryJailer) isJailedLocked(p string) bool {
-    until, ok := j.jailed[p]
-    return ok && time.Now().Before(until)
+// Stop shuts the sweeper down. Call it on process shutdown;
+// without it the sweeper leaks a goroutine per jailer.
+func (j *MemoryJailer) Stop() { close(j.stop) }
+
+// Try implements Jailer. One try = one locked, atomic increment —
+// never a read-modify-write across two calls.
+func (j *MemoryJailer) Try(principal string) (int, bool) {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	now := j.p.Now()
+	e := j.entry(principal, now)
+
+	// A jailed principal *stays* jailed: the jail is state,
+	// not a return value of this call. A failed try does not
+	// reset the counter.
+	if now.Before(e.jailUntil) {
+		return e.count, true
+	}
+
+	e.count++
+	if e.count > j.p.MaxTries {
+		e.streak++
+		e.jailUntil = now.Add(j.delay(e.streak))
+		e.count = 0 // next window starts clean
+		return e.count, true
+	}
+	return e.count, false
+}
+
+// delay is the exponential backoff: base * 2^(streak-1), capped.
+// The escalation is a policy — a function of the streak — not a
+// property of the principal.
+func (j *MemoryJailer) delay(streak int) time.Duration {
+	d := j.p.BaseDelay
+	for i := 1; i < streak && d < j.p.MaxDelay; i++ {
+		d *= 2
+	}
+	if d > j.p.MaxDelay {
+		d = j.p.MaxDelay
+	}
+	return d
+}
+
+// entry returns the principal's entry, resetting the counter when
+// the window has elapsed.
+func (j *MemoryJailer) entry(principal string, now time.Time) *entry {
+	e, ok := j.entries[principal]
+	if !ok {
+		e = &entry{windowStart: now}
+		j.entries[principal] = e
+		return e
+	}
+	// Tumbling window: when it elapses, the counter restarts.
+	// ponytail: tumbling, not sliding — a sliding window needs a
+	// timestamp per try, which buys nothing for login attempts.
+	if now.Sub(e.windowStart) > j.p.Window {
+		e.count = 0
+		e.windowStart = now
+	}
+	return e
+}
+
+// Clear implements Jailer.
+func (j *MemoryJailer) Clear(principal string) {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	delete(j.entries, principal)
+}
+
+// IsJailed implements Jailer.
+func (j *MemoryJailer) IsJailed(principal string) bool {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	e, ok := j.entries[principal]
+	return ok && j.p.Now().Before(e.jailUntil)
+}
+
+// sweep evicts entries whose window and jail have both expired.
+// Without it the map grows one entry per principal that ever tried
+// (and failed) and never came back.
+func (j *MemoryJailer) sweep() {
+	t := time.NewTicker(j.p.Window)
+	defer t.Stop()
+	for {
+		select {
+		case <-j.stop:
+			return
+		case <-t.C:
+			j.mu.Lock()
+			now := j.p.Now()
+			for p, e := range j.entries {
+				if now.Sub(e.windowStart) > j.p.Window && now.After(e.jailUntil) {
+					delete(j.entries, p)
+				}
+			}
+			j.mu.Unlock()
+		}
+	}
 }
 ```
 
-That's the *entire* jail. The *rules* (5 tries, 5-minute jail) are *in*
-the impl, *not* in the interface. A test that wants to check "what
-happens at 6 tries" just calls `Try` 6 times; a test that wants to
-check "the jail *expires*" just calls `Try` once, sleeps 6 min (or
-*rewinds the clock* via an injected `now func()`), and calls `Try` again.
+## The code: the test (clock rewound)
 
-## The 3 rules that make it *boring*
+```go
+package main
 
-1. **One *try* = one *atomic* increment.** No `read-modify-write` across
-   two calls; the `sync.Mutex` (or a Redis `INCR`) *is* the atomicity.
-   If you find yourself doing `if j.counts[p] < 5 { j.counts[p]++ }`,
-   you've *lost* the atomicity and the jail is *racy* under concurrency.
-2. **The *jailed* flag is a *state*, not a *return value*.** A jailed
-   principal *stays* jailed for the duration; the *count* is *not* reset
-   by a failed *verify*. This is the difference between a *counter*
-   (resets on success) and a *jail* (persists across the *window*).
-   The *counter* is the *try* count; the *jail* is the *consequence*.
-   Keeping them separate is what makes the *rules* *composable*.
-3. **The *exponential* backoff is a *policy*, not a *property*.** The
-   *backoff* (5 min, then 30 min, then 6 hours) is a *policy* you apply
-   to the *jailed* flag; it's *not* a property of the *principal*. A
-   *principal* is *jailed*; a *policy* decides *how long*. This is
-   the same *rules-vs-state* split as the *try/budget* above: the
-   *policy* is a *function*, the *jail* is a *state*.
+import (
+	"testing"
+	"time"
+)
 
-## The one-line summary
+// testPolicy builds a jail policy against a fake clock the tests
+// move by hand: 3 tries per 1ms window, 10ms base jail, 100ms cap.
+func testPolicy(now *time.Time) Policy {
+	return Policy{
+		MaxTries:  3,
+		Window:    1 * time.Millisecond,
+		BaseDelay: 10 * time.Millisecond,
+		MaxDelay:  100 * time.Millisecond,
+		Now:       func() time.Time { return *now },
+	}
+}
 
-A *jailer* in a Go service is a *40-line* `interface` + an *in-memory*
-`map` + a *policy* function. The *interface* is the *only* thing your
-callers see; the *rules* are *in* the *impl* and *swappable* for tests.
-That's the *entire* library. Everything else (Redis, Kafka, a *jailer
-service*) is *scale*, not *design*.
+// The 4th try (after 3) jails the principal, and the jail sticks
+// until the delay elapses.
+func TestJailAfterMaxTries(t *testing.T) {
+	now := time.Unix(1_700_000_000, 0)
+	j := New(testPolicy(&now))
+	defer j.Stop()
+
+	for i := 0; i < 3; i++ {
+		if _, jailed := j.Try("alice"); jailed {
+			t.Fatalf("try %d: jailed before exceeding MaxTries", i+1)
+		}
+	}
+	if _, jailed := j.Try("alice"); !jailed {
+		t.Fatal("4th try: expected jailed, got clean")
+	}
+	if !j.IsJailed("alice") {
+		t.Fatal("IsJailed: expected true immediately after jail")
+	}
+
+	now = now.Add(10 * time.Millisecond) // exactly one BaseDelay
+	if j.IsJailed("alice") {
+		t.Fatal("IsJailed: expected free after BaseDelay")
+	}
+}
+
+// The second jail runs for 2x the first (exponential backoff),
+// and the streak cap holds at MaxDelay.
+func TestExponentialBackoff(t *testing.T) {
+	now := time.Unix(1_700_000_000, 0)
+	j := New(testPolicy(&now))
+	defer j.Stop()
+
+	for i := 0; i < 3; i++ {
+		j.Try("bob")
+	}
+	j.Try("bob") // first jail: 10ms
+	if !j.IsJailed("bob") {
+		t.Fatal("first jail: expected jailed")
+	}
+	now = now.Add(10 * time.Millisecond) // first jail expires
+
+	for i := 0; i < 3; i++ {
+		j.Try("bob")
+	}
+	j.Try("bob") // second jail: 20ms
+	now = now.Add(10 * time.Millisecond)
+	if !j.IsJailed("bob") {
+		t.Fatal("second jail: still jailed at 1x base")
+	}
+	now = now.Add(10 * time.Millisecond) // 2x base elapsed
+	if j.IsJailed("bob") {
+		t.Fatal("second jail: free at 2x base")
+	}
+}
+
+// Clear is a hard release: counter and jail both die.
+func TestClear(t *testing.T) {
+	now := time.Unix(1_700_000_000, 0)
+	j := New(testPolicy(&now))
+	defer j.Stop()
+
+	for i := 0; i < 4; i++ {
+		j.Try("carol")
+	}
+	if !j.IsJailed("carol") {
+		t.Fatal("expected jailed after 4 tries")
+	}
+	j.Clear("carol")
+	if j.IsJailed("carol") {
+		t.Fatal("Clear: expected not jailed")
+	}
+}
+```
+
+---
+
+## The three rules that make it boring
+
+1. **One try = one atomic increment.** No `read-modify-write` across two calls. The `sync.Mutex` (or a Redis `INCR`) *is* the atomicity. If you write `if j.counts[p] < 5 { j.counts[p]++ }` outside the lock, the jail is racy under concurrency.
+2. **The jail is a state, not a return value.** A jailed principal *stays* jailed for the duration; a failed try does not reset the counter. This is the difference between a *counter* (resets on success) and a *jail* (persists across the window). Keeping the two apart is what makes the rules composable.
+3. **The backoff is a policy, not a property.** 10s, then 20s, then 40s — that escalation is a *function of the streak*, applied to the `jailed` state. The principal is jailed; the policy decides *how long*. Same rules-versus-state split as the store/policy split above.
+
+## Edge cases and the multi-replica trap
+
+- **The sweeper is load-bearing.** Without TTL eviction the map grows one entry per principal that ever tried and failed. The sweep only deletes entries whose window *and* jail have both expired, so an active jail is never evicted mid-sentence.
+- **`Stop()` on shutdown.** The sweeper is a goroutine; a service that creates a jailer per request and never stops it leaks one goroutine per request.
+
+> **Note**: an in-memory jail is a *soft* lockout — a process restart drops it. That is the right trade for login throttling (the attacker just retries), but pair it with a persistent audit log so the *evidence* of the jail survives the *memory* of it.
+
+> **Warning**: with N replicas behind a round-robin load balancer, each replica jails independently — an attacker gets N times the attempts before any replica jails them. If the jail must be global, use a shared store (Redis) behind the same interface, or sticky sessions. The interface never changes; only the store does.
+
+## In-memory vs Redis vs a jailer service
+
+| | In-memory `map` (this post) | Redis behind the same interface | Dedicated "jailer service" |
+|---|---|---|---|
+| Multi-replica jail | No — each replica jails independently | Yes — one shared jail | Yes, at a network hop per try |
+| Crash behavior | Jail resets (soft lockout) | Jail resets; timestamps survive with `EX` | Per your chosen store |
+| TTL eviction | Built-in sweeper goroutine | Key TTL does it | The service's job |
+| Added dependencies | None | A Redis instance | A service to run, monitor, scale |
+
+**Rule of thumb:** in-memory until you have more than one replica *and* the jail must be global. Everything beyond that is scale, not design.
+
+## Takeaways
+
+- The jail is a **store plus a policy**; the only contract between them is a 3-method interface.
+- **One try = one atomic increment**, under the lock — a read-modify-write across two calls is a racy jail.
+- **The jail is state**; the counter resets on the window, the jail only expires on its TTL.
+- **Backoff is a function of the streak** (base × 2ⁿ, capped) — a policy, not a property of the principal.
+- **TTL eviction is load-bearing**: the sweeper keeps the map bounded without ever evicting a live jail.
+- **Tests inject the clock**: `Now func() time.Time` turns "jail expires in 10 minutes" into a two-line test.
+
+## Next steps
+
+- **Go multi-replica?** Implement the same interface over Redis (`INCR` + `SET key EX` for the jail timestamp). The callers do not change.
+- **Add a metrics hook** that exports the jail *rate* (jailed principals per minute) — a sudden jump is your brute-force canary.
+- **Add per-action budgets** when one principal needs different limits for login vs OTP: the policy is already a value type, make it a `map[string]Policy` keyed by action.

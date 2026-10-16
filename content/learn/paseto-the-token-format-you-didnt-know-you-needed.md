@@ -8,86 +8,228 @@ tags: ["Go", "Auth", "Cryptography"]
 draft: true
 ---
 
+JWT has been the default for a decade, and the default is the problem. Every
+JWT deployment is *its own* crypto stack: pick an `alg`, pick a `kid`, stand up
+a JWKS endpoint, wire up an `aud` check, and get any of the four wrong and you
+have the **`alg: "none"`** bug, the **`kid` confusion** bug, or the
+**"token signed for service A used against service B"** bug. Paragonie's "JWT
+is a Bad Standard" is the canonical indictment, and PASETO (Platform-Agnostic
+SEcurity TOkens) is the fix that ships. The whole idea is to *remove the
+rope*: one token format, no `alg` field, no `kid`, no header/body ambiguity —
+the version **is** the algorithm, and the library decides the rest.
 
-JWT has been the default for 10 years, and the default is the problem:
-every JWT deployment is *its own* crypto stack, and 80% of them get at
-least one of `alg`, `aud`, `kid`, or the signature **wrong**. PASETO
-(Pawn's Authenticated Secure Token Encoding, v2) is the "boring"
-alternative: one format, no `alg` field, no `kid`, no header/body
-confusion, and the *entire* crypto story is a single call to
-`paseto.Create(v2.Public, payload, key)`. This post is the Go story:
-why PASETO is the right default for a Go service that does its own
-tokens, and the *exact* 30-line wrapper you'd write.
+This post is the Go story, and it is concrete because it is the library our
+own server runs: [`aidanwoods.dev/go-paseto`](https://github.com/aidantwoods/go-paseto)
+v1.6. By the end you will be able to **issue and verify a signed `v4.public`
+access token**, **encrypt and decrypt a `v4.local` refresh token**, and
+**explain — with the exact Go calls — why PASETO removes three whole classes of
+JWT bug**. The code below is run-tested against v1.6.0.
 
-## The four types, and why you only need two
+## The two purposes, the three versions
 
-| Type | Purpose | Go call |
-|------|---------|---------|
-| v1 public | symmetric (HMAC-SHA256) | `paseto.CreateV1Public(payload, key)` |
-| v1 private | symmetric (AES-256-CTR + HMAC-SHA256) | `paseto.CreateV1Private(payload, key)` |
-| v2 public | asymmetric (X25519 + ChaCha20Poly1305) | `paseto.CreateV2Public(payload, privKey)` |
-| v2 private | asymmetric (ECDSA-P256 + Ed25519) | `paseto.CreateV2Private(payload, privKey)` |
+PASETO has exactly two *purposes*, and the rest is version:
 
-For a service that issues *short-lived* tokens (15 min) and *long-lived*
-refresh tokens (30 days), the right split is:
+| Purpose | What it does | Key model | Go (sign) | Go (verify) |
+|---------|--------------|-----------|-----------|-------------|
+| **`public`** | *signs* the token (integrity, no secrecy) | asymmetric — 1 private, N public | `tok.V4Sign(priv, nil)` | `parser.ParseV4Public(pub, s, nil)` |
+| **`local`** | *encrypts* the token (confidentiality) | symmetric — one shared key | `tok.V4Encrypt(key, nil)` | `parser.ParseV4Local(key, s, nil)` |
 
-- **v2 public (X25519)** for the access token: *public* means the
-  recipient (any node) can verify with just the *public* key; the
-  *issuer* (only one machine) signs with the *private* key. No shared
-  secret, no HSM, no "who has the key" class of bug.
-- **v1 private (AES-256)** for the refresh token: symmetric, one key
-  shared between the two ends, and the *recipient* can revoke by just
-  deleting the token (a JWT can't be revoked without a blacklist).
+The three **versions** fix the crypto so you never choose it:
 
-## The 30-line wrapper (the whole service)
+| Version | `public` (sign) | `local` (encrypt) |
+|---------|-----------------|-------------------|
+| **v2** | Ed25519 | X25519 KEM + XChaCha20-Poly1305 AEAD |
+| **v3** | Ed25519 | X25519 KEM + XChaCha20-Poly1305 AEAD |
+| **v4** | Ed25519 | X25519 KEM + XChaCha20 + GenericHash MAC |
+
+> **Note**: in this library `v2` and `v3` take *no* `implicit` argument;
+> `v3`/`v4` do. `NewParser()` preloads the `NotExpired()` rule for you, so an
+> expired token is rejected before you write a single check.
+
+## Why `v4.public` for access, `v4.local` for refresh
+
+The split that matches a real Go service:
+
+- **Access token = `v4.public` (Ed25519-signed).** The issuer signs with a
+  32-byte private key; *every* verifier node needs only the 32-byte public
+  key. No shared secret, no HSM round-trip, no "who is holding the signing key"
+  class of bug — a public key is *safe to broadcast*, which is the whole point
+  of the split.
+- **Refresh token = `v4.local` (X25519 + XChaCha20).** Symmetric: one 256-bit
+  key, and the payload is *encrypted*, not just signed, so a stolen refresh
+  token is unreadable off the wire and unforgeable without the key.
+
+```mermaid
+sequenceDiagram
+    participant C as client
+    participant I as issuer (holds 32B private key)
+    participant V as any verifier (holds 32B public key)
+    C->>I: POST /login
+    I->>I: NewV4AsymmetricSecretKey().Public()
+    I->>I: NewToken() + V4Sign(priv, nil)
+    I-->>C: v4.public.<base64>  (the access token)
+    C->>V: GET /api  (Authorization: Bearer ***
+    V->>V: NewParser() + AddRule(ForAudience, IssuedBy)
+    V->>V: ParseV4Public(pub, token, nil)  -> crypto + rules
+    alt signature ok, not expired, aud+iss match
+        V-->>C: 200 OK
+    else tampered / expired / wrong audience
+        V-->>C: 401 (one error, no ambiguity)
+    end
+```
+
+The sequence is the entire access-token lifecycle. The *entire* cryptographic
+surface is the two library calls; everything else — the `Ed25519` sign, the
+`X25519` key schedule, the `Pae` (Pre-Auth Encode) binding of header + payload
++ footer + implicit — is hidden inside them.
+
+### The access token: issue + verify
 
 ```go
-type PasetoMaker struct {
-    v2Priv *ed25519.PrivateKey  // sign: v2 public (access tokens)
-    v1Key  [32]byte              // encrypt: v1 private (refresh tokens)
+// pasetoAccess.go — the signed "public" token layer.
+//
+// "public" is asymmetric: ONE private key signs, N public keys verify.
+// The 32-byte private key is the only secret; the 32-byte public key is
+// safe to ship to every node. v4's public-purpose crypto is Ed25519, fixed
+// by the spec — there is no `alg` to pick and no `none` to fall into.
+package main
+
+import (
+	"time"
+
+	"aidanwoods.dev/go-paseto"
+)
+
+// issueAccessToken mints a 15-minute signed access token.
+func issueAccessToken(sub, aud, jti, issuer string) string {
+	// In production priv persists (HSM/KMS, or a boot-time env var). Here it
+	// is freshly generated so the example is self-contained.
+	priv := paseto.NewV4AsymmetricSecretKey()
+
+	tok := paseto.NewToken()
+	tok.SetSubject(sub)          // "sub"  — the principal
+	tok.SetAudience(aud)         // "aud"  — the one service that accepts it
+	tok.SetIssuer(issuer)        // "iss"  — who signed
+	tok.SetJti(jti)              // "jti"  — unique id, revocable by id
+	tok.SetIssuedAt(time.Now())
+	tok.SetExpiration(time.Now().Add(15 * time.Minute))
+	tok.SetString("role", "reader")
+
+	return tok.V4Sign(priv, nil)
 }
 
-func (m *PasetoMaker) Access(p Payload) (string, error) {
-    tok, err := paseto.CreateV2Public(p.JWTClaims, m.v2Priv)
-    return string(tok), err
-}
-
-func (m *PasetoMaker) Refresh(p Payload) (string, error) {
-    tok, err := paseto.CreateV1Private(p.JWTClaims, m.v1Key)
-    return string(tok), err
-}
-
-func (m *PasetoMaker) Verify(s string) (Payload, bool) {
-    t, err := paseto.ParseV2Public(s, m.v2Pub)
-    if err != nil {
-        return Payload{}, false
-    }
-    return t.Claims(), true
+// verifyAccessToken checks the signature AND a set of claim rules. Any
+// failure — bad signature, expired, wrong audience, wrong issuer — is a
+// single error. There is no second, subtler failure mode to discover in prod.
+func verifyAccessToken(pub paseto.V4AsymmetricPublicKey, signed string) (*paseto.Token, error) {
+	p := paseto.NewParser() // NotExpired() rule preloaded
+	p.AddRule(paseto.ForAudience("golang4u-api"))
+	p.AddRule(paseto.IssuedBy("golang4u"))
+	return p.ParseV4Public(pub, signed, nil)
 }
 ```
 
-That's the entire *token* layer of a Go service. The `paseto` package
-([github.com/davidgfhe/paseto-go](https://github.com/davidgfhe/paseto-go))
-is a single import, zero config, no `alg`/`kid` fields to get wrong. The
-*only* thing you manage is the 32-byte private key (in an HSM / env /
-env-var, *not* in code) and the 256-bit symmetric key (in the same place).
+### The refresh token: `v4.local`
 
-## The 3 mistakes JWT makes that PASETO doesn't
+```go
+// pasetoRefresh.go — the encrypted "local" token layer.
+//
+// "local" is symmetric: one 256-bit key known only to the two ends. The
+// payload is ENCRYPTED (X25519 key exchange + XChaCha20 stream) and then
+// MAC'd, so a refresh token is unreadable off the wire and unforgeable
+// without the key — a property a signed JWT does not give you.
+package main
 
-1. **No `alg: "none"`**: a JWT with `alg: "none"` is a *bug*; a PASETO
-   with no public key is *impossible*. The `alg` field doesn't exist.
-2. **No `kid`/`jku`/`jwks`**: a PASETO is *self-contained*; the verifier
-   needs exactly one public key. A JWT with `kid: "k1"` and a JWKS URL
-   is a *network round-trip* on every verify; a PASETO is a *function
-   call*.
-3. **No `aud` mismatch class of bug**: a PASETO has *one* audience, the
-   one that *issued* it. There's no "the token was issued for service A
-   but is being used for service B" class of bug, because there's no
-   *separate* audience field to set.
+import (
+	"time"
 
-## The one-line summary
+	"aidanwoods.dev/go-paseto"
+)
 
-If your Go service issues tokens and you haven't picked a format yet,
-**pick PASETO**. The 30-line wrapper above is the *entire* token layer;
-the `paseto` package does the crypto; your job is just to *not* store
-the private key in a `.env` file that gets committed.
+// issueRefreshToken mints a 30-day encrypted refresh token.
+func issueRefreshToken() string {
+	key := paseto.NewV4SymmetricKey() // the shared 256-bit secret
+
+	tok := paseto.NewToken()
+	tok.SetJti("refresh-a1b2c3d4")
+	tok.SetIssuedAt(time.Now())
+	tok.SetExpiration(time.Now().Add(30 * 24 * time.Hour))
+	tok.SetString("session", "s-42")
+
+	return tok.V4Encrypt(key, nil)
+}
+
+// verifyRefreshToken decrypts + checks the MAC. A wrong key is a "bad message
+// authentication code" error — it fails closed, it never decrypts garbage.
+func verifyRefreshToken(key paseto.V4SymmetricKey, encrypted string) (*paseto.Token, error) {
+	return paseto.NewParser().ParseV4Local(key, encrypted, nil)
+}
+```
+
+## The three JWT bugs PASETO deletes
+
+| | JWT | PASETO |
+|---|-----|--------|
+| **`alg` field** | present — `none` / `HS256`↔`RS256` confusion is a live CVE class | **absent** — the version string pins the algorithm |
+| **key id (`kid` / JWKS)** | present — needs a JWKS endpoint, a round-trip per verify | **absent** — the verifier holds one public key in memory |
+| **`aud` enforcement** | a field *you* must check yourself (and often don't) | a `ForAudience` **rule**, applied inside `ParseV4Public` — can't be skipped |
+| **replay** | a valid token is valid anywhere, any time | `jti` id + `exp`/`nbf` rules; `local` tokens are encrypted |
+
+```mermaid
+flowchart TD
+    A["inbound token string"] --> B{"starts with<br/>v4.public ?"}
+    B -- yes --> C["ParseV4Public(pub, s, nil)"]
+    B -- no --> D{"starts with<br/>v4.local ?"}
+    D -- yes --> E["ParseV4Local(key, s, nil)"]
+    D -- no --> X["reject: unknown protocol"]
+    C --> F["1. crypto: Ed25519 signature"]
+    E --> G["1. crypto: X25519 KEM + XChaCha20 MAC"]
+    F --> H["2. rules: NotExpired + ForAudience + IssuedBy"]
+    G --> H
+    H --> I["OK: return verified Token"]
+    H -- any rule fails --> J["401, single error"]
+    F -- sig mismatch --> J
+```
+
+The flowchart is the verifier in one picture: **one entry per purpose, one
+crypto step, then a rule pass** — and any failure is a single `401`. There is
+no branch where you "forgot to check `alg`", because the version string *is*
+the check.
+
+> **Warning**: PASETO `local` is **not** a substitute for a session store. A
+> `v4.local` refresh token is tamper-proof and unforgeable, but it is
+> *stateless* — it does not by itself stop replay. If you need server-side
+> revocation, pair it with a short-lived `jti` you track in Redis, or a
+> `nbf`/rotation window. "Signed" also means the *payload is public* — put
+> only what you intend to expose in a `public` token.
+
+---
+
+## Takeaways
+
+- **PASETO trades algorithm agility for versioned protocols.** The `alg` field
+  — and the `none` / `kid` / JWKS confusion that field creates — simply does
+  not exist. The version string picks the crypto; the library does it.
+- **`v4.public` = sign (Ed25519), `v4.local` = encrypt (X25519 + XChaCha20).**
+  Access tokens are signed and broadcast; refresh tokens are encrypted and
+  secret. One 32-byte private key, one 256-bit symmetric key, that is the
+  whole secret surface.
+- **Verification is one call with built-in rules.** `NewParser()` preloads
+  `NotExpired()`; `AddRule(ForAudience, IssuedBy)` makes the `aud` / `iss`
+  checks you usually forget into part of `ParseV4Public` itself. A bad token
+  is *one* error, not four.
+- **The Go library is a thin wrapper over `crypto/ed25519` +
+  `golang.org/x/crypto`.** No config, no `alg` table, no JWKS fetch — the
+  whole token layer is two functions.
+
+## Next steps
+
+- **Wire it into your server:** `golang4u_server` already depends on
+  `aidanwoods.dev/go-paseto v1.6.0` in `internal/paseto_middleware/` — read
+  that package to see the real middleware shape (it is exactly this API).
+- **Rotate the `v4.local` key on a schedule** and carry both old and new
+  during the overlap window; a 256-bit key you never rotate is a single point
+  of failure.
+- **Add a `jti` revocation list** (a `SET` in Redis keyed by `jti`) if you
+  need to kill a token before it expires — the crypto is tamper-proof, but
+  revocation is a policy decision the token cannot make for you.
