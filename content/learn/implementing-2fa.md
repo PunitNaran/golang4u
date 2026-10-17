@@ -1,5 +1,7 @@
 ---
 
+---
+
 
 title: "Implementing 2FA in Go: TOTP from RFC 6238, the 3-phase enrollment state machine, and recovery codes — stdlib only"
 image: /images/covers/implementing-2fa.svg

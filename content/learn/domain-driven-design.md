@@ -1,5 +1,7 @@
 ---
 
+---
+
 
 title: "Domain-Driven Design in Go: the Rich Model, the User/Store split, and the referral-code algorithm"
 image: /images/covers/domain-driven-design.svg

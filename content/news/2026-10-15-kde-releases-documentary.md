@@ -1,5 +1,7 @@
 ---
 
+---
+
 
 title: "KDE Releases Its 30th Anniversary Documentary: A Story of Free-Software Underdogs"
 image: /images/covers/2026-10-15-kde-releases-documentary.svg

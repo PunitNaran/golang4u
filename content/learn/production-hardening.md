@@ -1,5 +1,7 @@
 ---
 
+---
+
 
 title: "The Golang4U Hardening Bible: DDoS-Proofing & OOM Prevention"
 image: /images/covers/production-hardening.svg

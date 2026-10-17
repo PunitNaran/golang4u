@@ -1,5 +1,7 @@
 ---
 
+---
+
 
 title: "The Golang4U Email Bible: Native SMTP & Transactional Systems"
 image: /images/covers/transactional-email.svg
