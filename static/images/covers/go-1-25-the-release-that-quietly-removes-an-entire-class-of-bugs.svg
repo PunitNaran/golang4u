@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(185, 45%, 16%)"/><stop offset="1" stop-color="hsl(225, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<line x1="0" y1="0" x2="0" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="90" y1="0" x2="90" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="180" y1="0" x2="180" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="270" y1="0" x2="270" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="360" y1="0" x2="360" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="450" y1="0" x2="450" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="540" y1="0" x2="540" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="630" y1="0" x2="630" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="720" y1="0" x2="720" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="810" y1="0" x2="810" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="900" y1="0" x2="900" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="990" y1="0" x2="990" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="1080" y1="0" x2="1080" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="1170" y1="0" x2="1170" y2="630" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="0" x2="1200" y2="0" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="90" x2="1200" y2="90" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="180" x2="1200" y2="180" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="270" x2="1200" y2="270" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="360" x2="1200" y2="360" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="450" x2="1200" y2="450" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="540" x2="1200" y2="540" stroke="hsl(185, 85%, 55%)" stroke-opacity="0.10"/>
+<circle cx="140" cy="499" r="6" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="232" cy="314" r="12" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="1034" cy="229" r="14" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="819" cy="462" r="18" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="887" cy="199" r="8" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="381" cy="449" r="15" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="645" cy="52" r="10" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="598" cy="398" r="13" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="715" cy="352" r="15" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="580" cy="539" r="13" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="202" cy="564" r="17" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="257" cy="166" r="6" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="739" cy="390" r="9" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="800" cy="400" r="9" fill="hsl(5, 70%, 60%)" fill-opacity="0.8"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Go 1.25: The Release That Quietly Removes</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">an Entire Class of Bugs</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(5, 70%, 60%)">golang4u.com</text>
+</svg>

@@ -1,6 +1,7 @@
 ---
 
 title: "Kafka in Go: The Consumer Group That Actually Works"
+image: /images/covers/kafka-in-go-the-consumer-group-that-actually-works.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Kafka in Go: The Consumer Group That Actually Works"

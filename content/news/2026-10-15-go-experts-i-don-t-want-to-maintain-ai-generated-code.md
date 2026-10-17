@@ -1,6 +1,7 @@
 ---
 
 title: "Go Experts: 'I Don't Want to Maintain AI-Generated Code'"
+image: /images/covers/2026-10-15-go-experts-i-don-t-want-to-maintain-ai-generated-code.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Two long-time Go programmers on the future of the language in the age of AI agents. The generation cost of AI code is the cheap half; the maintenance cost is the expensive half. Go is the 'boringest' major language — and boring is exactly what a non-author needs to read it. The test suite is the floor; the reading cost is the ceiling."

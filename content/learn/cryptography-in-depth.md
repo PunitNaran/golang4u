@@ -1,6 +1,7 @@
 ---
 
 title: "The Golang4U Cryptography Bible: E2EE, ECIES & Blind Indexing"
+image: /images/covers/cryptography-in-depth.svg
 date: 2026-02-10T16:00:00+08:00
 lastmod: 2026-02-10T16:00:00+08:00
 author: "Punit Naran"

@@ -1,6 +1,7 @@
 ---
 
 title: "Ubuntu 26.10 released"
+image: /images/covers/2026-10-15-ubuntu-26-10-released.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Canonical's 26.10 'Stonking Stingray': a Go shop's view of the release - Linux 7.3, Rust uutils coreutils complete, RISC-V and amd64v3 images, and what they mean for the Go toolchain matrix."

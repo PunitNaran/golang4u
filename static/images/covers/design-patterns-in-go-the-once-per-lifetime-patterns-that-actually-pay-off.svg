@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(128, 45%, 16%)"/><stop offset="1" stop-color="hsl(168, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<line x1="249" y1="509" x2="119" y2="472" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="249" y1="509" x2="395" y2="465" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1117" y1="346" x2="1008" y2="447" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1117" y1="346" x2="1000" y2="449" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="350" y1="344" x2="349" y2="213" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="350" y1="344" x2="411" y2="306" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="350" y1="344" x2="502" y2="309" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="350" y1="344" x2="395" y2="465" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="850" y1="465" x2="1008" y2="447" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="850" y1="465" x2="782" y2="513" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="850" y1="465" x2="759" y2="518" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="850" y1="465" x2="1000" y2="449" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="358" y1="110" x2="349" y2="213" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="719" y1="291" x2="671" y2="160" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="349" y1="213" x2="411" y2="306" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="562" y1="455" x2="502" y2="309" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1008" y1="447" x2="1034" y2="515" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1008" y1="447" x2="1091" y2="509" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1008" y1="447" x2="1000" y2="449" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1040" y1="85" x2="979" y2="186" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1040" y1="85" x2="1040" y2="173" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1034" y1="515" x2="1091" y2="509" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1034" y1="515" x2="1000" y2="449" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="782" y1="513" x2="759" y2="518" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="979" y1="186" x2="1040" y2="173" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1091" y1="509" x2="1000" y2="449" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="411" y1="306" x2="502" y2="309" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="411" y1="306" x2="395" y2="465" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="560" y1="173" x2="671" y2="160" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="560" y1="173" x2="502" y2="309" stroke="hsl(128, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<circle cx="249" cy="509" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="1117" cy="346" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="350" cy="344" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="850" cy="465" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="358" cy="110" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="719" cy="291" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="349" cy="213" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="562" cy="455" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="119" cy="472" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="70" cy="232" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="1008" cy="447" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="1040" cy="85" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="1034" cy="515" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="782" cy="513" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="979" cy="186" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="1091" cy="509" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="411" cy="306" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="560" cy="173" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="671" cy="160" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="502" cy="309" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="759" cy="518" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="1000" cy="449" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="1040" cy="173" r="7" fill="hsl(308, 70%, 60%)"/>
+<circle cx="395" cy="465" r="7" fill="hsl(308, 70%, 60%)"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="488" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Design Patterns in Go: The</text>
+<text x="60" y="540" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Once-per-Lifetime Patterns That Actually</text>
+<text x="60" y="592" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Pay Off</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(308, 70%, 60%)">golang4u.com</text>
+</svg>

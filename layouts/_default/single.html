@@ -8,6 +8,11 @@
             {{- .Title -}}
         </h1>
 
+        {{- /* Cover image */ -}}
+        {{- with .Params.image -}}
+        <div class="single-cover"><img src="{{ . | relURL }}" alt="{{ $.Title }} cover" loading="lazy" /></div>
+        {{- end -}}
+
         {{- /* Subtitle */ -}}
         {{- with $params.subtitle -}}
             <h2 class="single-subtitle">{{ . }}</h2>

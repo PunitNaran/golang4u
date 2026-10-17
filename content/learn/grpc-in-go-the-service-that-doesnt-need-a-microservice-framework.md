@@ -1,6 +1,7 @@
 ---
 
 title: "gRPC in Go: The Service That Doesn't Need a Microservice Framework"
+image: /images/covers/grpc-in-go-the-service-that-doesnt-need-a-microservice-framework.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "gRPC in Go: The Service That Doesn't Need a Microservice Framework"

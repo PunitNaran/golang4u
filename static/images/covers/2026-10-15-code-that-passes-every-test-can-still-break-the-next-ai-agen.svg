@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(339, 45%, 16%)"/><stop offset="1" stop-color="hsl(19, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<line x1="828" y1="218" x2="888" y2="172" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="828" y1="218" x2="847" y2="193" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="126" y1="81" x2="107" y2="171" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="999" y1="152" x2="1093" y2="207" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="999" y1="152" x2="1121" y2="81" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="999" y1="152" x2="1107" y2="75" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="999" y1="152" x2="888" y2="172" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="999" y1="152" x2="847" y2="193" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1093" y1="207" x2="1121" y2="81" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1093" y1="207" x2="1107" y2="75" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1121" y1="81" x2="1107" y2="75" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="824" y1="465" x2="877" y2="411" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="350" y1="239" x2="463" y2="227" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="350" y1="239" x2="405" y2="354" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="350" y1="239" x2="311" y2="124" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="463" y1="227" x2="481" y2="146" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="463" y1="227" x2="405" y2="354" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="463" y1="227" x2="470" y2="90" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="463" y1="227" x2="513" y2="238" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="163" y1="450" x2="233" y2="490" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="481" y1="146" x2="470" y2="90" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="481" y1="146" x2="513" y2="238" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="405" y1="354" x2="513" y2="238" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="470" y1="90" x2="513" y2="238" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1056" y1="375" x2="1093" y2="418" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="888" y1="172" x2="847" y2="193" stroke="hsl(339, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<circle cx="828" cy="218" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="563" cy="459" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="126" cy="81" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="999" cy="152" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="1093" cy="207" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="1121" cy="81" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="824" cy="465" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="717" cy="81" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="107" cy="171" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="350" cy="239" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="463" cy="227" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="163" cy="450" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="1107" cy="75" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="481" cy="146" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="405" cy="354" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="470" cy="90" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="513" cy="238" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="1056" cy="375" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="888" cy="172" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="847" cy="193" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="1093" cy="418" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="877" cy="411" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="233" cy="490" r="7" fill="hsl(159, 70%, 60%)"/>
+<circle cx="311" cy="124" r="7" fill="hsl(159, 70%, 60%)"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Code That Passes Every Test Can Still</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Break the Next AI Agent That Touches It</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(159, 70%, 60%)">golang4u.com</text>
+</svg>

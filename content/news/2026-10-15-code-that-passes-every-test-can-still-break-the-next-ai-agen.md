@@ -1,6 +1,7 @@
 ---
 
 title: "Code That Passes Every Test Can Still Break the Next AI Agent That Touches It"
+image: /images/covers/2026-10-15-code-that-passes-every-test-can-still-break-the-next-ai-agen.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "The New Stack's reframe of Go in the agent era: the language that wins is the one a non-author can read, fix, and maintain at the lowest cost. The test suite is the floor; the reading cost is the ceiling. The two failure modes a green CI cannot catch, and the rule that makes AI code safe to merge."

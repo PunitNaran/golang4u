@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(155, 45%, 16%)"/><stop offset="1" stop-color="hsl(195, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="181" y="293" width="44" height="287" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="523" y="339" width="44" height="241" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="625" y="352" width="44" height="228" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="292" y="285" width="44" height="295" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="721" y="394" width="44" height="186" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="966" y="283" width="44" height="297" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="729" y="371" width="44" height="209" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="907" y="451" width="44" height="129" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="141" y="505" width="44" height="75" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="724" y="390" width="44" height="190" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="548" y="495" width="44" height="85" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="386" y="189" width="44" height="391" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="760" y="211" width="44" height="369" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="644" y="507" width="44" height="73" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="645" y="168" width="44" height="412" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="815" y="298" width="44" height="282" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="537" y="215" width="44" height="365" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="83" y="164" width="44" height="416" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="888" y="408" width="44" height="172" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="102" y="351" width="44" height="229" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="546" y="342" width="44" height="238" rx="6" fill="hsl(335, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="577" y="238" width="44" height="342" rx="6" fill="hsl(155, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="488" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Domain-Driven Design in Go: the Rich</text>
+<text x="60" y="540" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Model, the User/Store split, and the</text>
+<text x="60" y="592" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">referral-code algorithm</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(335, 70%, 60%)">golang4u.com</text>
+</svg>

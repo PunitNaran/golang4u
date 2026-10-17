@@ -1,6 +1,7 @@
 ---
 
 title: "The Golang4U LLM Bible: Internals of the Intelligent Llama Manager"
+image: /images/covers/llama_manager_blog.svg
 date: 2026-03-10T00:00:00+08:00
 lastmod: 2026-03-10T00:00:00+08:00
 author: "Punit Naran"

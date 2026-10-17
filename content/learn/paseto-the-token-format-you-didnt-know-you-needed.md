@@ -1,6 +1,7 @@
 ---
 
 title: "PASETO: The Token Format You Didn't Know You Needed"
+image: /images/covers/paseto-the-token-format-you-didnt-know-you-needed.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "PASETO: The Token Format You Didn't Know You Needed"

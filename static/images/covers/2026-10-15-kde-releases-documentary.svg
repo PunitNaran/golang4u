@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(238, 45%, 16%)"/><stop offset="1" stop-color="hsl(278, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<line x1="235" y1="386" x2="160" y2="356" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="235" y1="386" x2="99" y2="339" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="235" y1="386" x2="235" y2="496" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="235" y1="386" x2="146" y2="292" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="105" y1="233" x2="160" y2="356" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="105" y1="233" x2="99" y2="339" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="105" y1="233" x2="146" y2="292" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1059" y1="83" x2="968" y2="106" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1059" y1="83" x2="1023" y2="230" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="110" y1="537" x2="235" y2="496" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="110" y1="537" x2="92" y2="494" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="968" y1="106" x2="1023" y2="230" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="968" y1="106" x2="959" y2="234" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="968" y1="106" x2="856" y2="201" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="484" y1="434" x2="560" y2="531" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="560" y1="531" x2="657" y2="478" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="559" y1="140" x2="564" y2="147" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="559" y1="140" x2="450" y2="180" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="559" y1="140" x2="666" y2="163" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="160" y1="356" x2="99" y2="339" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="160" y1="356" x2="235" y2="496" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="160" y1="356" x2="92" y2="494" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="160" y1="356" x2="146" y2="292" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="99" y1="339" x2="92" y2="494" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="99" y1="339" x2="146" y2="292" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="624" y1="306" x2="647" y2="391" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="624" y1="306" x2="666" y2="163" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="793" y1="554" x2="759" y2="408" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="793" y1="554" x2="657" y2="478" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="235" y1="496" x2="92" y2="494" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="564" y1="147" x2="450" y2="180" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="564" y1="147" x2="666" y2="163" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="647" y1="391" x2="759" y2="408" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="647" y1="391" x2="657" y2="478" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="759" y1="408" x2="657" y2="478" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1023" y1="230" x2="959" y2="234" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="959" y1="234" x2="856" y2="201" stroke="hsl(238, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<circle cx="235" cy="386" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="105" cy="233" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="1059" cy="83" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="110" cy="537" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="968" cy="106" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="484" cy="434" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="560" cy="531" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="559" cy="140" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="160" cy="356" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="99" cy="339" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="624" cy="306" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="793" cy="554" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="235" cy="496" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="564" cy="147" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="647" cy="391" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="759" cy="408" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="92" cy="494" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="450" cy="180" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="657" cy="478" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="1023" cy="230" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="666" cy="163" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="959" cy="234" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="146" cy="292" r="7" fill="hsl(58, 70%, 60%)"/>
+<circle cx="856" cy="201" r="7" fill="hsl(58, 70%, 60%)"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="488" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">KDE Releases Its 30th Anniversary</text>
+<text x="60" y="540" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Documentary: A Story of Free-Software</text>
+<text x="60" y="592" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Underdogs</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(58, 70%, 60%)">golang4u.com</text>
+</svg>

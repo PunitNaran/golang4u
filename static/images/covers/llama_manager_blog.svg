@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(257, 45%, 16%)"/><stop offset="1" stop-color="hsl(297, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="451" y="163" width="44" height="417" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="295" y="163" width="44" height="417" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="74" y="160" width="44" height="420" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="530" y="306" width="44" height="274" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="110" y="263" width="44" height="317" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="743" y="344" width="44" height="236" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="260" y="435" width="44" height="145" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="478" y="198" width="44" height="382" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="953" y="288" width="44" height="292" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1043" y="448" width="44" height="132" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="56" y="388" width="44" height="192" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="692" y="335" width="44" height="245" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="608" y="178" width="44" height="402" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="704" y="213" width="44" height="367" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="186" y="247" width="44" height="333" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="549" y="225" width="44" height="355" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1015" y="470" width="44" height="110" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="583" y="229" width="44" height="351" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="59" y="468" width="44" height="112" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="891" y="461" width="44" height="119" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="80" y="303" width="44" height="277" rx="6" fill="hsl(77, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="61" y="210" width="44" height="370" rx="6" fill="hsl(257, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">The Golang4U LLM Bible: Internals of the</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Intelligent Llama Manager</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(77, 70%, 60%)">golang4u.com</text>
+</svg>

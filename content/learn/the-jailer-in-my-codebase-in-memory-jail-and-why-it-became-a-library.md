@@ -1,6 +1,7 @@
 ---
 
 title: "The Jailer in My Codebase: In-Memory Jail and Why It Became a Library"
+image: /images/covers/the-jailer-in-my-codebase-in-memory-jail-and-why-it-became-a-library.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "The Jailer in My Codebase: In-Memory Jail and Why It Became a Library"

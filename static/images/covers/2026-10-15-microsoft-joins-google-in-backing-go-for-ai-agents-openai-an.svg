@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(337, 45%, 16%)"/><stop offset="1" stop-color="hsl(17, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<line x1="199" y1="83" x2="242" y2="174" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="199" y1="83" x2="237" y2="204" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="199" y1="83" x2="304" y2="122" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="680" y1="198" x2="642" y2="80" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="680" y1="198" x2="721" y2="271" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="242" y1="174" x2="237" y2="204" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="242" y1="174" x2="304" y2="122" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="242" y1="174" x2="103" y2="219" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="237" y1="204" x2="304" y2="122" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="237" y1="204" x2="103" y2="219" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="834" y1="334" x2="908" y2="389" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="834" y1="334" x2="777" y2="348" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="834" y1="334" x2="829" y2="350" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="834" y1="334" x2="721" y2="271" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1096" y1="570" x2="1022" y2="492" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1096" y1="570" x2="1047" y2="541" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="530" y1="456" x2="647" y2="431" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="530" y1="456" x2="434" y2="379" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="908" y1="389" x2="777" y2="348" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="908" y1="389" x2="1022" y2="492" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="908" y1="389" x2="829" y2="350" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="777" y1="348" x2="647" y2="431" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="777" y1="348" x2="829" y2="350" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="777" y1="348" x2="721" y2="271" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="1022" y1="492" x2="1047" y2="541" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="151" y1="381" x2="178" y2="442" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="178" y1="442" x2="216" y2="549" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="353" y1="431" x2="434" y2="379" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<line x1="829" y1="350" x2="721" y2="271" stroke="hsl(337, 85%, 55%)" stroke-opacity="0.35" stroke-width="2"/>
+<circle cx="199" cy="83" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="680" cy="198" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="1029" cy="175" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="807" cy="525" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="242" cy="174" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="642" cy="80" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="237" cy="204" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="304" cy="122" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="834" cy="334" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="103" cy="219" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="1096" cy="570" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="530" cy="456" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="908" cy="389" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="777" cy="348" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="1022" cy="492" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="151" cy="381" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="178" cy="442" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="647" cy="431" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="353" cy="431" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="829" cy="350" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="434" cy="379" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="721" cy="271" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="1047" cy="541" r="7" fill="hsl(157, 70%, 60%)"/>
+<circle cx="216" cy="549" r="7" fill="hsl(157, 70%, 60%)"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Microsoft Joins Google in Backing Go for</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">AI Agents — OpenAI and Anthropic Lag</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(157, 70%, 60%)">golang4u.com</text>
+</svg>

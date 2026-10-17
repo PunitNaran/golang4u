@@ -1,6 +1,7 @@
 ---
 
 title: "Docker, K8s, and Terraform: The Go Ops Triad That Actually Ships"
+image: /images/covers/docker-k8s-terraform-the-go-ops-triad-that-actually-ships.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Docker, K8s, and Terraform: The Go Ops Triad That Actually Ships"

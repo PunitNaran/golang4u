@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(308, 45%, 16%)"/><stop offset="1" stop-color="hsl(348, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="586" y="269" width="44" height="311" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="759" y="488" width="44" height="92" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="522" y="247" width="44" height="333" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="214" y="407" width="44" height="173" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="130" y="314" width="44" height="266" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="744" y="244" width="44" height="336" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="46" y="397" width="44" height="183" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="378" y="416" width="44" height="164" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="437" y="429" width="44" height="151" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="436" y="244" width="44" height="336" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="972" y="288" width="44" height="292" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="801" y="328" width="44" height="252" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="659" y="371" width="44" height="209" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1083" y="398" width="44" height="182" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="921" y="201" width="44" height="379" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="680" y="341" width="44" height="239" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="969" y="362" width="44" height="218" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1011" y="328" width="44" height="252" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="404" y="400" width="44" height="180" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="319" y="167" width="44" height="413" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="590" y="359" width="44" height="221" rx="6" fill="hsl(128, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="164" y="435" width="44" height="145" rx="6" fill="hsl(308, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="480" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Learning Resources</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(128, 70%, 60%)">golang4u.com</text>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(36, 45%, 16%)"/><stop offset="1" stop-color="hsl(76, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="92" y="353" width="44" height="227" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="870" y="462" width="44" height="118" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="234" y="469" width="44" height="111" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="66" y="281" width="44" height="299" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="395" y="210" width="44" height="370" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1087" y="382" width="44" height="198" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="977" y="235" width="44" height="345" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="523" y="445" width="44" height="135" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1062" y="189" width="44" height="391" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="222" y="427" width="44" height="153" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="605" y="446" width="44" height="134" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="388" y="420" width="44" height="160" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="51" y="239" width="44" height="341" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="584" y="350" width="44" height="230" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="943" y="223" width="44" height="357" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="152" y="161" width="44" height="419" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="707" y="438" width="44" height="142" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="609" y="384" width="44" height="196" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="780" y="296" width="44" height="284" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="630" y="239" width="44" height="341" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="338" y="435" width="44" height="145" rx="6" fill="hsl(216, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="579" y="455" width="44" height="125" rx="6" fill="hsl(36, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Kafka in Go: The Consumer Group That</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Actually Works</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(216, 70%, 60%)">golang4u.com</text>
+</svg>

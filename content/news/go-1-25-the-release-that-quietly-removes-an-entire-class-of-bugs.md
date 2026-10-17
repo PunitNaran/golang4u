@@ -1,6 +1,7 @@
 ---
 
 title: "Go 1.25: The Release That Quietly Removes an Entire Class of Bugs"
+image: /images/covers/go-1-25-the-release-that-quietly-removes-an-entire-class-of-bugs.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Go 1.25: The Release That Quietly Removes an Entire Class of Bugs"

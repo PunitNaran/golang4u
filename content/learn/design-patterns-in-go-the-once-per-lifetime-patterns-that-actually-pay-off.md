@@ -1,6 +1,7 @@
 ---
 
 title: "Design Patterns in Go: The Once-per-Lifetime Patterns That Actually Pay Off"
+image: /images/covers/design-patterns-in-go-the-once-per-lifetime-patterns-that-actually-pay-off.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Design Patterns in Go: The Once-per-Lifetime Patterns That Actually Pay Off"
