@@ -206,11 +206,11 @@ sequenceDiagram
     participant Svc as UserService (orchestration)
     participant U as User (entity)
     participant ST as Store (record)
-    Svc->>U: NewUser("alice","IN") — validates once
-    U-->>Svc: *User (structurally valid, or an error)
-    Svc->>ST: Store{User} — embed the entity, add system state
-    Svc->>ST: NewStore() — mint 4 collision-free referral codes
-    ST-->>Svc: Store (private ReferralCodes attached)
+    Svc-->>U: NewUser("alice","IN") — validates once
+    U--->>Svc: *User (structurally valid, or an error)
+    Svc-->>ST: Store{User} — embed the entity, add system state
+    Svc-->>ST: NewStore() — mint 4 collision-free referral codes
+    ST--->>Svc: Store (private ReferralCodes attached)
     Note over Svc,ST: the API serializes the *User* half; ReferralCodes never leave the record
 ```
 

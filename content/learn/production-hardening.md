@@ -30,9 +30,9 @@ Slowloris: open 1,000 connections, send `G`… wait 10 s … `E`… wait 10 s…
 sequenceDiagram
     participant A as Attacker (1000 conns)
     participant S as http.Server
-    A->>S: "G" (partial request line)
+    A-->>S: "G" (partial request line)
     Note over S: ReadHeaderTimeout = 2s
-    A->>S: "E" after 10s
+    A-->>S: "E" after 10s
     S--xA: connection torn down at 2s (no handler ever ran)
 ```
 

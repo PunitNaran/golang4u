@@ -22,12 +22,12 @@ sequenceDiagram
     participant J as jobs chan (cap = size)
     participant W1 as worker 1
     participant W2 as worker 2
-    P->>J: Submit(fn1)
-    P->>J: Submit(fn2)
-    P->>J: Submit(fn3)  -- blocks: channel full, pool at cap
-    W1->>J: range: take fn1
-    W1->>W1: fn1()
-    W1->>J: range: take fn3 (unblocked)
+    P-->>J: Submit(fn1)
+    P-->>J: Submit(fn2)
+    P-->>J: Submit(fn3)  -- blocks: channel full, pool at cap
+    W1-->>J: range: take fn1
+    W1-->>W1: fn1()
+    W1-->>J: range: take fn3 (unblocked)
     Note over J: the channel *is* the cap: at most `size`<br/>closures are in flight at once
 ```
 

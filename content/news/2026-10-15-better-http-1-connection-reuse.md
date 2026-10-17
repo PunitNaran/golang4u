@@ -19,12 +19,12 @@ Every HTTP version runs over TCP, usually over TLS. The setup ladder before your
 sequenceDiagram
     participant C as Client
     participant S as Server
-    C->>S: SYN (TCP 1/3)
-    S-->>C: SYN-ACK (2/3)
-    C->>S: ACK + first TLS message (3/3)
+    C-->>S: SYN (TCP 1/3)
+    S--->>C: SYN-ACK (2/3)
+    C-->>S: ACK + first TLS message (3/3)
     Note over C,S: TLS 1.3: keys in 1 RTT (1.2: 2 RTT)
-    C->>S: GET / (HTTP request)
-    S-->>C: 200 OK
+    C-->>S: GET / (HTTP request)
+    S--->>C: 200 OK
 ```
 
 Count the round trips: **1 RTT** for TCP (the first TLS message piggybacks the final ACK), **1–2 RTT** for TLS (1.3 compresses it to 1), then the request itself. Cross-region, one way is often 50+ ms: ~300 ms can go to *establishing* the connection when the actual response is cheap. The only cure is **reusing** the connection for the next request.

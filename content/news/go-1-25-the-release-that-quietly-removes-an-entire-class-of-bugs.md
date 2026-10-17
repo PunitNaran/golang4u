@@ -44,14 +44,14 @@ sequenceDiagram
     participant T as go test ./...
     participant V as vet (printf checks)
     participant RT as runtime diagnostics
-    Dev->>T: go test ./...
-    T->>V: run the printf family checks
-    V-->>T: Sprintf: format/arg mismatch -> FAIL
-    T-->>Dev: red build (not a production log line)
-    Dev->>T: run again after fixing the Sprintf
-    T->>RT: a test goroutine exits; its WithCancel was never called
-    RT-->>Dev: "context.WithCancel at foo.go:42 leaked (never cancelled)"
-    T-->>Dev: green build, leak named
+    Dev-->>T: go test ./...
+    T-->>V: run the printf family checks
+    V--->>T: Sprintf: format/arg mismatch -> FAIL
+    T--->>Dev: red build (not a production log line)
+    Dev-->>T: run again after fixing the Sprintf
+    T-->>RT: a test goroutine exits; its WithCancel was never called
+    RT--->>Dev: "context.WithCancel at foo.go:42 leaked (never cancelled)"
+    T--->>Dev: green build, leak named
 ```
 
 ---

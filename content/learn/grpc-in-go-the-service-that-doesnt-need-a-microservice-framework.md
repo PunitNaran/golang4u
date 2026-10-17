@@ -203,16 +203,16 @@ sequenceDiagram
     participant C as Client
     participant T as HTTP/2 (one conn, many streams)
     participant S as Server handler (one goroutine per stream)
-    C->>T: Stream() open
-    T->>S: Recv #1 -> msg-0
-    S->>T: Send #1 -> msg-0
-    T->>C: msg-0 (client reader prints it)
-    C->>T: Recv #2 -> msg-1, Send #2 -> msg-1
-    C->>T: Recv #3 -> msg-2, Send #3 -> msg-2
-    C->>T: CloseSend() (half-close)
-    S->>T: Recv returns io.EOF
-    S->>T: status OK
-    T->>C: stream closed cleanly
+    C-->>T: Stream() open
+    T-->>S: Recv #1 --> msg-0
+    S-->>T: Send #1 --> msg-0
+    T-->>C: msg-0 (client reader prints it)
+    C-->>T: Recv #2 --> msg-1, Send #2 --> msg-1
+    C-->>T: Recv #3 --> msg-2, Send #3 --> msg-2
+    C-->>T: CloseSend() (half-close)
+    S-->>T: Recv returns io.EOF
+    S-->>T: status OK
+    T-->>C: stream closed cleanly
 ```
 
 ```mermaid
@@ -221,7 +221,7 @@ stateDiagram-v2
     Open --> Streaming: client Sends / server Recvs
     Streaming --> Streaming: matched Send/Recv pairs
     Streaming --> HalfClosed: client CloseSend()
-    HalfClosed --> Done: server drains (Recv -> io.EOF)
+    HalfClosed --> Done: server drains (Recv --> io.EOF)
     Streaming --> Failed: Send/Recv error (deadline, reset)
     Done --> [*]
     Failed --> [*]

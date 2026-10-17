@@ -180,10 +180,10 @@ sequenceDiagram
     participant N as Node (Go runtime, 10MB static)
     participant G as Agent goroutine (one per concurrent agent)
     participant M as Model service (Python, the ML ecosystem)
-    N->>G: spawn goroutine for agent-N
-    G->>M: POST /predict (JSON: agent-id + instruction)
-    M-->>G: 200 OK (reply + latency)
-    G->>G: dispatch tool calls, update state, reply
+    N-->>G: spawn goroutine for agent-N
+    G-->>M: POST /predict (JSON: agent-id + instruction)
+    M--->>G: 200 OK (reply + latency)
+    G-->>G: dispatch tool calls, update state, reply
     Note over N,M: the boundary is the API; the language is an implementation detail
 ```
 

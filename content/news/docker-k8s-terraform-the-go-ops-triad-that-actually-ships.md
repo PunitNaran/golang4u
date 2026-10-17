@@ -22,14 +22,14 @@ sequenceDiagram
     participant TF as terraform
     participant D as docker
     participant K as kubectl
-    M->>TF: apply -chdir=infra
-    TF-->>M: exit 0 (state file written)
-    M->>D: build -t golang4u:<sha> .
-    D->>D: push golang4u:<sha>
-    D-->>M: exit 0
-    M->>K: set image deployment/golang4u golang4u=golang4u:<sha>
-    K->>K: rollout status --timeout=60s
-    K-->>M: exit 0 (rollout done)
+    M-->>TF: apply -chdir=infra
+    TF--->>M: exit 0 (state file written)
+    M-->>D: build -t golang4u:<sha> .
+    D-->>D: push golang4u:<sha>
+    D--->>M: exit 0
+    M-->>K: set image deployment/golang4u golang4u=golang4u:<sha>
+    K-->>K: rollout status --timeout=60s
+    K--->>M: exit 0 (rollout done)
 ```
 
 ```mermaid

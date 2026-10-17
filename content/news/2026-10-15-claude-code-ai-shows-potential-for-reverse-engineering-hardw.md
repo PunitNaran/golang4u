@@ -168,12 +168,12 @@ The protocol is so small it is worth drawing: one request byte goes out, a strea
 sequenceDiagram
     participant C as SaneClient (Go, ~40 lines)
     participant D as Scanner (Pustek 8200i)
-    C->>D: 0x01 OPEN
-    D-->>C: frame{status=0x00} (ok: it is a scanner)
-    C->>D: 0x02 SCAN
-    D-->>C: frame{status=0x80} (continuation: more lines follow)
-    D-->>C: frame{status=0x80} (continuation)
-    D-->>C: frame{status=0x00} (final line, continuation cleared)
+    C-->>D: 0x01 OPEN
+    D--->>C: frame{status=0x00} (ok: it is a scanner)
+    C-->>D: 0x02 SCAN
+    D--->>C: frame{status=0x80} (continuation: more lines follow)
+    D--->>C: frame{status=0x80} (continuation)
+    D--->>C: frame{status=0x00} (final line, continuation cleared)
     Note over C: client stops at the final frame; never hard-codes a count
 ```
 

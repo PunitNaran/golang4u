@@ -341,18 +341,18 @@ sequenceDiagram
     participant S as Service
     participant R as Repository
     participant DB[(DB)]
-    C->>M: POST /forms/news
-    M->>M: IP in blocklist? over bucket? token valid?
-    M->>H: c with "user" set, body bound-ready
-    H->>H: bind + validate (struct tags)
-    H->>S: CreateNews(ctx, NewsFormData)
-    S->>S: decrypt ECIES field, compute blind index
-    S->>R: Save(user, news)
-    R->>DB: insert
-    DB-->>R: ok
-    R-->>S: nil
-    S-->>H: nil
-    H-->>C: 200 + JSON
+    C-->>M: POST /forms/news
+    M-->>M: IP in blocklist? over bucket? token valid?
+    M-->>H: c with "user" set, body bound-ready
+    H-->>H: bind + validate (struct tags)
+    H-->>S: CreateNews(ctx, NewsFormData)
+    S-->>S: decrypt ECIES field, compute blind index
+    S-->>R: Save(user, news)
+    R-->>DB: insert
+    DB--->>R: ok
+    R--->>S: nil
+    S--->>H: nil
+    H--->>C: 200 + JSON
     Note over M,DB: a layer re-checking what an earlier layer proved = paid twice
 ```
 

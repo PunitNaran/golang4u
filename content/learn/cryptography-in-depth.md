@@ -72,13 +72,13 @@ The whole exchange is a single round-trip of *opaque bytes*. No key ever travels
 sequenceDiagram
     participant A as Alice (Browser)
     participant B as Bob (Server)
-    B->>A: publish static public key B
-    A->>A: generate ephemeral keypair (a, A)
-    A->>A: S = ECDH(a, B)  = (ab)G
-    A->>A: K = HKDF(S) ; C = AES-GCM(M, K)
-    A->>B: [A] + [Nonce] + [C]
-    B->>B: S = ECDH(b, A) = (ab)G
-    B->>B: K = HKDF(S) ; M = AES-GCM open(C)
+    B-->>A: publish static public key B
+    A-->>A: generate ephemeral keypair (a, A)
+    A-->>A: S = ECDH(a, B)  = (ab)G
+    A-->>A: K = HKDF(S) ; C = AES-GCM(M, K)
+    A-->>B: [A] + [Nonce] + [C]
+    B-->>B: S = ECDH(b, A) = (ab)G
+    B-->>B: K = HKDF(S) ; M = AES-GCM open(C)
     Note over A,B: S is never transmitted; only A is
 ```
 

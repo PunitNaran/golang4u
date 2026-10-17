@@ -166,10 +166,10 @@ This tells the browser: "Only page on `golang4u.com` can iframe `golang4u.com`."
 sequenceDiagram
 participant B as browser
 participant X as xss'd <script>
-B->>X: inline script fires (no CSP)
-X->>X: document.cookie exfil
-B-->>B: with CSP default-src 'self': <script> not on allowlist -> blocked, violation logged
-X--xB: window.postMessage only way left -> a controlled channel
+B-->X
+X-->X
+B-->B
+X--xB: postMessage is the only channel left (a controlled one)
 ```
 **The Vulnerability**: XSS (Cross-Site Scripting).
 A user posts a comment: `<script>stealCookies()</script>`. If you render this, the script runs in everyone's browser.

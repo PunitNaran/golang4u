@@ -286,17 +286,17 @@ sequenceDiagram
     participant B as Broker (topic, 4 partitions)
     participant H as Handler
     participant D as Dedupe (TTL map)
-    B-->>R: batch (100 msgs, partition 2)
-    R->>D: check each message ID
-    D-->>R: 99 new, 1 redelivered from a prior batch
-    R->>H: handle the 99
-    H-->>R: ok
-    R->>B: CommitOffsets(partition 2, last offset)
+    B--->>R: batch (100 msgs, partition 2)
+    R-->>D: check each message ID
+    D--->>R: 99 new, 1 redelivered from a prior batch
+    R-->>H: handle the 99
+    H--->>R: ok
+    R-->>B: CommitOffsets(partition 2, last offset)
     Note over R: process crashes between handler and commit
-    B-->>R: redelivers the same 100
-    R->>D: check IDs -> all 100 inside the TTL window
-    D-->>R: skip all 100
-    R->>B: CommitOffsets (same offsets, no double-processing)
+    B--->>R: redelivers the same 100
+    R-->>D: check IDs --> all 100 inside the TTL window
+    D--->>R: skip all 100
+    R-->>B: CommitOffsets (same offsets, no double-processing)
 ```
 
 ## Commit strategy: the actual trade

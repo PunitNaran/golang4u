@@ -194,12 +194,12 @@ sequenceDiagram
     participant V as Vendor module (out-of-tree)
     participant K as Kernel core (in-tree)
     participant H as Call site with a vendor hook
-    V->>K: module_init: register the hook (one line, no recompile)
-    K->>H: later: a code path checks "any hook registered?"
+    V-->>K: module_init: register the hook (one line, no recompile)
+    K-->>H: later: a code path checks "any hook registered?"
     alt a hook is registered
-        H->>V: call the vendor function (one indirect call)
+        H-->>V: call the vendor function (one indirect call)
     else no vendor present
-        H-->>K: the mainline path (the check is a single NULL test)
+        H--->>K: the mainline path (the check is a single NULL test)
     end
 ```
 

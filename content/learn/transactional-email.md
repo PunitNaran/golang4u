@@ -22,22 +22,22 @@ Sending an email is a TCP conversation with numbered replies. On port 587 (submi
 sequenceDiagram
     participant C as Client (net/smtp)
     participant S as SMTP server
-    C->>S: EHLO golang4u.com
-    S-->>C: 250 (server capabilities)
-    C->>S: STARTTLS
-    S-->>C: 220 (begin TLS)
+    C-->>S: EHLO golang4u.com
+    S--->>C: 250 (server capabilities)
+    C-->>S: STARTTLS
+    S--->>C: 220 (begin TLS)
     Note over C,S: TLS handshake (the rest is encrypted)
-    C->>S: EHLO (again, post-TLS)
-    C->>S: AUTH (base64 user:pass)
-    S-->>C: 235 authenticated
-    C->>S: MAIL FROM:<a@golang4u.com>
-    S-->>C: 250
-    C->>S: RCPT TO:<user@example.com>
-    S-->>C: 250
-    C->>S: DATA
-    S-->>C: 354
-    C->>S: Subject:…\r\nTo:…\r\n\r\nHello\r\n.\
-    S-->>C: 250 queued
+    C-->>S: EHLO (again, post-TLS)
+    C-->>S: AUTH (base64 user:pass)
+    S--->>C: 235 authenticated
+    C-->>S: MAIL FROM:<a@golang4u.com>
+    S--->>C: 250
+    C-->>S: RCPT TO:<user@example.com>
+    S--->>C: 250
+    C-->>S: DATA
+    S--->>C: 354
+    C-->>S: Subject:…\r\nTo:…\r\n\r\nHello\r\n.\
+    S--->>C: 250 queued
 ```
 
 Three protocol sharp edges, all handled for you by the stdlib:

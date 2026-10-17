@@ -38,18 +38,18 @@ stateDiagram-v2
 sequenceDiagram
     participant C as Caller (login handler)
     participant J as MemoryJailer
-    C->>J: Try("alice")
-    J->>J: count++ (atomic, under the lock)
-    J-->>C: (1, false)
-    C->>J: Try("alice") x4 more
-    J->>J: 5th count > MaxTries=4: jail, streak=1
-    J->>J: jailUntil = now + BaseDelay
-    J-->>C: (0, true)
-    C->>J: Try("alice") before expiry
-    J-->>C: (0, true) — the jail is state, it sticks
+    C-->>J: Try("alice")
+    J-->>J: count++ (atomic, under the lock)
+    J--->>C: (1, false)
+    C-->>J: Try("alice") x4 more
+    J-->>J: 5th count > MaxTries=4: jail, streak=1
+    J-->>J: jailUntil = now + BaseDelay
+    J--->>C: (0, true)
+    C-->>J: Try("alice") before expiry
+    J--->>C: (0, true) — the jail is state, it sticks
     Note over J: sweeper: entry deleted when the window<br/>and the jail have both expired
-    C->>J: Try("alice") after BaseDelay
-    J-->>C: (1, false) — principal is free again
+    C-->>J: Try("alice") after BaseDelay
+    J--->>C: (1, false) — principal is free again
 ```
 
 ---

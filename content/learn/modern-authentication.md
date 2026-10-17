@@ -128,11 +128,11 @@ sequenceDiagram
 participant C as client
 participant S as server
 participant DB as token store
-C->>S: GET /api (access: 15m PASETO)
-S->>DB: lookup refresh (opaque, hashed)
-DB-->>S: found + not-yet-used
-S->>DB: mark that refresh used (single-use)
-S-->>C: 200 + new refresh issued (rotation)
+C-->S
+S-->DB
+DB-->S
+S-->DB
+S-->C
 ```
 This is the most critical function in the system.
 
@@ -241,17 +241,17 @@ sequenceDiagram
     participant C as Client
     participant S as Server
     participant D as Token Store (DB)
-    C->>S: GET /me (Access Token)
-    S-->>C: 401 (access expired)
-    C->>S: POST /refresh (Refresh Cookie)
-    S->>D: load refresh jti, check reuse
-    D-->>S: seen before? (rotation replay)
-    S->>S: verify sig + user not banned
+    C-->S
+    S-->C
+    C-->S
+    S-->D
+    D-->S
+    S-->S
     alt replay detected
-        S->>D: revoke the whole token family
-        S-->>C: 401 + clear both cookies
+        S-->D
+        S-->C
     else first use
-        S-->>C: new Access (15m) + rotated Refresh (7d)
+        S-->C
     end
 ```
 

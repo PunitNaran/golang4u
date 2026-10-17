@@ -64,17 +64,17 @@ sequenceDiagram
     participant C as client
     participant I as issuer (holds 32B private key)
     participant V as any verifier (holds 32B public key)
-    C->>I: POST /login
-    I->>I: NewV4AsymmetricSecretKey().Public()
-    I->>I: NewToken() + V4Sign(priv, nil)
-    I-->>C: v4.public.<base64>  (the access token)
-    C->>V: GET /api  (Authorization: Bearer ***
-    V->>V: NewParser() + AddRule(ForAudience, IssuedBy)
-    V->>V: ParseV4Public(pub, token, nil)  -> crypto + rules
+    C-->>I: POST /login
+    I-->>I: NewV4AsymmetricSecretKey().Public()
+    I-->>I: NewToken() + V4Sign(priv, nil)
+    I--->>C: v4.public.<base64>  (the access token)
+    C-->>V: GET /api  (Authorization: Bearer ***
+    V-->>V: NewParser() + AddRule(ForAudience, IssuedBy)
+    V-->>V: ParseV4Public(pub, token, nil)  --> crypto + rules
     alt signature ok, not expired, aud+iss match
-        V-->>C: 200 OK
+        V--->>C: 200 OK
     else tampered / expired / wrong audience
-        V-->>C: 401 (one error, no ambiguity)
+        V--->>C: 401 (one error, no ambiguity)
     end
 ```
 

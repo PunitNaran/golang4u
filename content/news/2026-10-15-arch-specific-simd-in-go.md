@@ -30,7 +30,7 @@ flowchart LR
   A["Your Go program"] -->|Go 1.26| B["archsimd: amd64 only"]
   A -->|Go 1.27| C["archsimd: amd64 + arm64 NEON + wasm"]
   A --> D["portable simd package (size-agnostic, Highway-like)"]
-  D -. loweres / emulates .-> C
+  D -. loweres / emulates .--> C
   C --> E["real instructions: AVX-512 / NEON / wasm simd"]
 ```
 
