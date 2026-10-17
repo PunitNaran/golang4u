@@ -128,11 +128,11 @@ sequenceDiagram
 participant C as client
 participant S as server
 participant DB as token store
-C-->S
-S-->DB
-DB-->S
-S-->DB
-S-->C
+C->S
+S->DB
+DB->S
+S->DB
+S->C
 ```
 This is the most critical function in the system.
 
@@ -241,17 +241,17 @@ sequenceDiagram
     participant C as Client
     participant S as Server
     participant D as Token Store (DB)
-    C-->S
-    S-->C
-    C-->S
-    S-->D
-    D-->S
-    S-->S
+    C->S
+    S->C
+    C->S
+    S->D
+    D->S
+    S->S
     alt replay detected
-        S-->D
-        S-->C
+        S->D
+        S->C
     else first use
-        S-->C
+        S->C
     end
 ```
 

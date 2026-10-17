@@ -165,11 +165,11 @@ This tells the browser: "Only page on `golang4u.com` can iframe `golang4u.com`."
 ```mermaid
 sequenceDiagram
 participant B as browser
-participant X as xss'd <script>
-B-->X
-X-->X
-B-->B
-X--xB: postMessage is the only channel left (a controlled one)
+participant X as xss'd script tag
+B->X
+X->X
+B->B
+X-->B: postMessage is the only channel left (a controlled one)
 ```
 **The Vulnerability**: XSS (Cross-Site Scripting).
 A user posts a comment: `<script>stealCookies()</script>`. If you render this, the script runs in everyone's browser.
@@ -255,14 +255,14 @@ The ordering in the table is the *order of enforcement* too: a request is denied
 ```mermaid
 flowchart TD
     R["Raw request"] --> IP["IP filter - O(32) radix"]
-    IP -->|banned| X1["403 - never touches DB"]
-    IP -->|pass| RL["Rate limit - token bucket per route"]
-    RL -->|over bucket| X2["429"]
-    RL -->|pass| AUTH["PASETO verify - signature + rules"]
-    AUTH -->|bad/revoked| X3["401"]
-    AUTH -->|ok| HAND["Handler + service"]
+    IP ->|banned| X1["403 - never touches DB"]
+    IP ->|pass| RL["Rate limit - token bucket per route"]
+    RL ->|over bucket| X2["429"]
+    RL ->|pass| AUTH["PASETO verify - signature + rules"]
+    AUTH ->|bad/revoked| X3["401"]
+    AUTH ->|ok| HAND["Handler + service"]
     HAND --> DB[("DB - encrypted fields + blind index")]
-    HAND -->|response| HDR["Secure headers on the way out"]
+    HAND ->|response| HDR["Secure headers on the way out"]
     HDR --> C["Browser - HSTS/CSP/XFO enforced"]
 ```
 
