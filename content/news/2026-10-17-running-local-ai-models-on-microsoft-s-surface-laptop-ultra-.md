@@ -1,4 +1,5 @@
 ---
+---
 
 title: "Running local AI models on Microsoft’s Surface Laptop Ultra: What we found"
 image: /images/covers/2026-10-17-running-local-ai-models-on-microsoft-s-surface-laptop-ultra-.svg

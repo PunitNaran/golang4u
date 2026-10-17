@@ -1,4 +1,5 @@
 ---
+---
 
 title: "Arch-specific SIMD in Go"
 image: /images/covers/2026-10-17-arch-specific-simd-in-go.svg

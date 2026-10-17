@@ -1,4 +1,5 @@
 ---
+---
 
 title: "The agent did the work. The audit log couldn’t say who asked."
 image: /images/covers/2026-10-17-the-agent-did-the-work-the-audit-log-couldn-t-say-who-asked.svg

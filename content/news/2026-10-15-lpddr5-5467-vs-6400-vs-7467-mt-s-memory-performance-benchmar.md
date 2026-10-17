@@ -1,4 +1,5 @@
 ---
+---
 
 
 title: "LPDDR5 5467 vs. 6400 vs. 7467 MT/s: what the memory speed actually costs a laptop"

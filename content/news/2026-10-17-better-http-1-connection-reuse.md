@@ -1,4 +1,5 @@
 ---
+---
 
 title: "Better HTTP/1 connection reuse"
 image: /images/covers/2026-10-17-better-http-1-connection-reuse.svg

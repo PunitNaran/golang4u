@@ -1,4 +1,5 @@
 ---
+---
 
 title: "Go 1.27 is released"
 image: /images/covers/2026-10-17-go-1-27-is-released.svg

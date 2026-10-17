@@ -1,4 +1,5 @@
 ---
+---
 
 title: "GNOME OS Preview Announced In Road Toward A Stable Release"
 image: /images/covers/2026-10-17-gnome-os-preview-announced-in-road-toward-a-stable-release.svg

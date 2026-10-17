@@ -1,4 +1,5 @@
 ---
+---
 
 title: "Linux Lands Fix for Rare, Varying SMP Boot Hangs Affecting Kernels Since 2024"
 image: /images/covers/2026-10-17-linux-lands-fix-for-rare-varying-smp-boot-hangs-affecting-ke.svg

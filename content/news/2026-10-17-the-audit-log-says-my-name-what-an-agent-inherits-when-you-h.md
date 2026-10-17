@@ -1,4 +1,5 @@
 ---
+---
 
 title: "The audit log says my name: what an agent inherits when you hand it your credentials"
 image: /images/covers/2026-10-17-the-audit-log-says-my-name-what-an-agent-inherits-when-you-h.svg

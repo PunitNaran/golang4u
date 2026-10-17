@@ -1,4 +1,5 @@
 ---
+---
 
 title: "“Everybody with a $20 account is now a researcher”: How Akrites is tackling the flood of AI bug reports"
 image: /images/covers/2026-10-17-everybody-with-a-20-account-is-now-a-researcher-how-akrites-.svg

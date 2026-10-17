@@ -1,4 +1,5 @@
 ---
+---
 
 title: "“Don’t use ‘open weight’ and ‘open source’ interchangeably”: Percona CEO on why AI terminology matters"
 image: /images/covers/2026-10-17-don-t-use-open-weight-and-open-source-interchangeably-percon.svg

@@ -1,4 +1,5 @@
 ---
+---
 
 title: "Introducing the pkg.go.dev API"
 image: /images/covers/2026-10-17-introducing-the-pkg-go-dev-api.svg

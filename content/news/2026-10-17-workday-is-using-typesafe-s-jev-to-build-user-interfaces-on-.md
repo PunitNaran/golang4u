@@ -1,4 +1,5 @@
 ---
+---
 
 title: "Workday is using TypeSafe’s Jev to build user interfaces on the fly"
 image: /images/covers/2026-10-17-workday-is-using-typesafe-s-jev-to-build-user-interfaces-on-.svg

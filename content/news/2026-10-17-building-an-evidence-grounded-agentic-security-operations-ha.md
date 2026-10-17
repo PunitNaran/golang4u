@@ -1,4 +1,5 @@
 ---
+---
 
 title: "Building an evidence-grounded agentic security operations harness on Cloudflare"
 image: /images/covers/2026-10-17-building-an-evidence-grounded-agentic-security-operations-ha.svg

@@ -1,4 +1,5 @@
 ---
+---
 
 title: "Type Construction and Cycle Detection"
 image: /images/covers/2026-10-17-type-construction-and-cycle-detection.svg
