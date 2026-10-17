@@ -1,5 +1,4 @@
 ---
----
 
 title: "Introduction to Go Programming Language"
 image: /images/covers/2026-10-17-introduction-to-go-programming-language.svg

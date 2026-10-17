@@ -1,5 +1,4 @@
 ---
----
 
 title: "Everything we launched during Birthday Week 2026"
 image: /images/covers/2026-10-17-everything-we-launched-during-birthday-week-2026.svg

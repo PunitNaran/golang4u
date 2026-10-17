@@ -1,5 +1,4 @@
 ---
----
 
 title: "Ubuntu 26.10 released"
 image: /images/covers/2026-10-17-ubuntu-26-10-released.svg

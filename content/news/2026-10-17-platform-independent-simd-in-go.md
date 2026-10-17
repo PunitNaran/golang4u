@@ -1,5 +1,4 @@
 ---
----
 
 title: "Platform-independent SIMD in Go"
 image: /images/covers/2026-10-17-platform-independent-simd-in-go.svg

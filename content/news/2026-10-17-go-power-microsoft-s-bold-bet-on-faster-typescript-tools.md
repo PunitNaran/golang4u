@@ -1,5 +1,4 @@
 ---
----
 
 title: "Go Power: Microsoft’s Bold Bet on Faster TypeScript Tools"
 image: /images/covers/2026-10-17-go-power-microsoft-s-bold-bet-on-faster-typescript-tools.svg

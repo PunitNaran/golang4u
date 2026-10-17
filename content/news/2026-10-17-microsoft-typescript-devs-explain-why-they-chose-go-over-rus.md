@@ -1,5 +1,4 @@
 ---
----
 
 title: "Microsoft TypeScript Devs Explain Why They Chose Go Over Rust, C#"
 image: /images/covers/2026-10-17-microsoft-typescript-devs-explain-why-they-chose-go-over-rus.svg

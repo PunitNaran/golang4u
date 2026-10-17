@@ -1,5 +1,4 @@
 ---
----
 
 
 title: "Platform-Independent SIMD in Go: the write-once vector layer"

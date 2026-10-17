@@ -1,5 +1,4 @@
 ---
----
 
 title: "Cloudflare and OpenAI: Making AI discovery better for everyone"
 image: /images/covers/2026-10-17-cloudflare-and-openai-making-ai-discovery-better-for-everyon.svg

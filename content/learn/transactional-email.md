@@ -1,5 +1,4 @@
 ---
----
 
 
 title: "The Golang4U Email Bible: Native SMTP & Transactional Systems"

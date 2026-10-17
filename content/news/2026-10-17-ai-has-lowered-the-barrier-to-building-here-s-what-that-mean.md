@@ -1,5 +1,4 @@
 ---
----
 
 title: "AI has lowered the barrier to building. Here’s what that means for engineers."
 image: /images/covers/2026-10-17-ai-has-lowered-the-barrier-to-building-here-s-what-that-mean.svg

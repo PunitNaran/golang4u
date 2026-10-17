@@ -1,5 +1,4 @@
 ---
----
 
 title: "[$] LWN.net Weekly Edition for October 15, 2026"
 image: /images/covers/2026-10-17-lwn-net-weekly-edition-for-october-15-2026.svg

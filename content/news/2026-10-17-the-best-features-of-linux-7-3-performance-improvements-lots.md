@@ -1,5 +1,4 @@
 ---
----
 
 title: "The Best Features Of Linux 7.3: Performance Improvements, Lots From Valve"
 image: /images/covers/2026-10-17-the-best-features-of-linux-7-3-performance-improvements-lots.svg

@@ -1,5 +1,4 @@
 ---
----
 
 title: "Claude can now build your dashboards"
 image: /images/covers/2026-10-17-claude-can-now-build-your-dashboards.svg

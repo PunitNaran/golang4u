@@ -1,5 +1,4 @@
 ---
----
 
 
 title: "KDE Releases Its 30th Anniversary Documentary: A Story of Free-Software Underdogs"

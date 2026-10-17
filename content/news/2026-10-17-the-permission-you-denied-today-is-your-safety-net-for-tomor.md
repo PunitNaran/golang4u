@@ -1,5 +1,4 @@
 ---
----
 
 title: "The permission you denied today is your safety net for tomorrow"
 image: /images/covers/2026-10-17-the-permission-you-denied-today-is-your-safety-net-for-tomor.svg

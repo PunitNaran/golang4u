@@ -1,5 +1,4 @@
 ---
----
 
 title: "After 23 Years, Longtime Linux Developer To 'Step Back For A While'"
 image: /images/covers/2026-10-17-after-23-years-longtime-linux-developer-to-step-back-for-a-w.svg

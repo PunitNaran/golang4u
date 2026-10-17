@@ -1,5 +1,4 @@
 ---
----
 
 title: "Microsoft joins Google in backing Go for AI agents — OpenAI and Anthropic lag"
 image: /images/covers/2026-10-17-microsoft-joins-google-in-backing-go-for-ai-agents-openai-an.svg

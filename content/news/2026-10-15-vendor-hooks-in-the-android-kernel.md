@@ -1,5 +1,4 @@
 ---
----
 
 
 title: "Vendor hooks in the Android kernel: the Go way of thinking about a kernel extension point"

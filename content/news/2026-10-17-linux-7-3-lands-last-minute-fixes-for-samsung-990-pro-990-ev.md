@@ -1,5 +1,4 @@
 ---
----
 
 title: "Linux 7.3 Lands Last-Minute Fixes For Samsung 990 PRO & 990 EVO Plus SSDs"
 image: /images/covers/2026-10-17-linux-7-3-lands-last-minute-fixes-for-samsung-990-pro-990-ev.svg

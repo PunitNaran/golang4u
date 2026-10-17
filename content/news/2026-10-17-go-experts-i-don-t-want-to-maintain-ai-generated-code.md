@@ -1,5 +1,4 @@
 ---
----
 
 title: "Go Experts: ‘I Don’t Want to Maintain AI-Generated Code’"
 image: /images/covers/2026-10-17-go-experts-i-don-t-want-to-maintain-ai-generated-code.svg

@@ -1,5 +1,4 @@
 ---
----
 
 title: "Code that passes every test can still break the next AI agent that touches it"
 image: /images/covers/2026-10-17-code-that-passes-every-test-can-still-break-the-next-ai-agen.svg

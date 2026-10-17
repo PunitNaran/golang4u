@@ -1,5 +1,4 @@
 ---
----
 
 title: "Anthropic’s been eyeing confidential AI. It just made its move with another acquihire."
 image: /images/covers/2026-10-17-anthropic-s-been-eyeing-confidential-ai-it-just-made-its-mov.svg

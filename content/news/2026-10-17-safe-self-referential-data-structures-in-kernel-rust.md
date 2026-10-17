@@ -1,5 +1,4 @@
 ---
----
 
 title: "[$] Safe self-referential data structures in kernel Rust"
 image: /images/covers/2026-10-17-safe-self-referential-data-structures-in-kernel-rust.svg

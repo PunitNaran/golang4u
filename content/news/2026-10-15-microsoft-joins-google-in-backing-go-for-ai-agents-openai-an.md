@@ -1,5 +1,4 @@
 ---
----
 
 
 title: "Microsoft Joins Google in Backing Go for AI Agents — OpenAI and Anthropic Lag"

@@ -1,5 +1,4 @@
 ---
----
 
 title: "Results from the 2026 TAB election"
 image: /images/covers/2026-10-17-results-from-the-2026-tab-election.svg

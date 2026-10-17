@@ -1,5 +1,4 @@
 ---
----
 
 title: "Security updates for Thursday"
 image: /images/covers/2026-10-17-security-updates-for-thursday.svg

@@ -1,5 +1,4 @@
 ---
----
 
 title: "[$] Recent and future changes to the Linux NFS server"
 image: /images/covers/2026-10-17-recent-and-future-changes-to-the-linux-nfs-server.svg

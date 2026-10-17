@@ -1,5 +1,4 @@
 ---
----
 
 title: "GitHub Copilot is going local — but Microsoft won’t say what gets sent to the cloud"
 image: /images/covers/2026-10-17-github-copilot-is-going-local-but-microsoft-won-t-say-what-g.svg

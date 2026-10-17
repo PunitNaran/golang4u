@@ -1,5 +1,4 @@
 ---
----
 
 title: "GNOME's New Local/Cloud AI Chat App Gains More Features"
 image: /images/covers/2026-10-17-gnome-s-new-local-cloud-ai-chat-app-gains-more-features.svg
