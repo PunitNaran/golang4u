@@ -9,6 +9,7 @@ description: "The definitive, deep-dive guide to the Golang4U backend architectu
 tags: ["Go", "Architecture", "Design Patterns", "Dependency Injection", "Backend", "Echo", "Standard Go Layout", "Service-Repository"]
 categories: ["Architecture", "Engineering Handbook"]
 featuredImage: ""
+draft: true
 ---
 
 # Preface: Why Read This?
@@ -328,6 +329,50 @@ This keeps the "HTTPness" in the handler. The Service shouldn't decide if an err
 
 ---
 
+# Chapter 8: The Request Lifecycle, End to End
+
+The three chapters above are the *static* picture: who depends on whom. This is the *dynamic* one — the same request, traced through the layers, and exactly where each one does its one job.
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant M as Middleware (IP / rate / PASETO)
+    participant H as Handler
+    participant S as Service
+    participant R as Repository
+    participant DB[(DB)]
+    C->>M: POST /forms/news
+    M->>M: IP in blocklist? over bucket? token valid?
+    M->>H: c with "user" set, body bound-ready
+    H->>H: bind + validate (struct tags)
+    H->>S: CreateNews(ctx, NewsFormData)
+    S->>S: decrypt ECIES field, compute blind index
+    S->>R: Save(user, news)
+    R->>DB: insert
+    DB-->>R: ok
+    R-->>S: nil
+    S-->>H: nil
+    H-->>C: 200 + JSON
+    Note over M,DB: a layer re-checking what an earlier layer proved = paid twice
+```
+
+The **one rule** that makes the whole diagram true: **a layer reads only what the layer above it handed down, and it never reaches sideways.** The handler owns the `echo.Context`; the service receives a `ctx` (the `context.Context`) plus plain data; the repository owns the DB handle. No layer imports the layer below it *through* the one above. That single line is why the folder tree in Chapter 1 and the DI wiring in Chapter 2 are the *same* decision, seen from two angles.
+
+| Layer | Owns | Receives | Never touches |
+|---|---|---|---|
+| **Handler** | the `echo.Context`, binding, validation | decoded `[]byte`, bound struct | business rules, the DB |
+| **Service** | business rules, encryption, the blind index | plain data structs, `context.Context` | `echo`, HTTP status codes |
+| **Repository** | the DB handle, key wrapping | domain structs | the web, validation |
+| **Middleware** | request *shape* (IP, rate, token) | the raw request | business logic |
+
+The table is the contract. The most common architectural bug in a Go codebase is not "it doesn't compile" — it's a **service that does `c.JSON`** or a **handler that opens a DB handle**. Both are *layer leakage*, and both show up first as a test you can't write in isolation.
+
+**Note**: the dependency direction is the invariant; the folder names are the decoration. You can rename `internal/service` to `internal/domain` and nothing breaks. You *can't* have the Service import the Handler. If you find yourself wanting to move logic up a layer to "fix" a handler, the layer boundary is the real defect, and the move will break the mock you have in the test.
+
+**Warning**: a "thin" handler is a *spec*, not a *guarantee*. The moment a handler starts computing something (a total, a price, an `if user.Role == "admin"`) it has crossed from "protocol translation" into "business logic," and your unit test for it has quietly become an integration test in disguise. The smell is not the code; it's the test needing a DB.
+
+---
+
 # Conclusion
 
 The Golang4U architecture is an exercise in **Discipline**.
@@ -340,3 +385,14 @@ But by adhering to this **Service-Oriented-Architecture**, we gain:
 3.  **Confidence**: We can test every piece in isolation.
 
 This is the standard for professional Go engineering.
+
+---
+
+## Takeaways
+
+- **`internal/` enforces the boundary the compiler can't see.** It is the only thing standing between your `handler` and a third party importing it — and between your `service` and `echo`. The folder is the API contract; the import path is the proof.
+- **One constructor per struct, one composition root.** `SetupServer` is the *only* place that knows all the dependencies exist at once. Every other function *asks* for its deps. That is what makes the test able to swap the DB for a map without touching a line of production code.
+- **Handler = protocol, Service = rules, Repo = storage.** The instant a service calls `c.JSON` or a handler opens a DB handle, the boundary is a lie, and the first test that needs a real database is the symptom. The layer you can't mock is the layer that's leaking.
+- **The store wrapper is metadata, not data.** `Store{User, Disable, Lifetime}` lets the system carry system-level state (ban flag, TTL) without polluting the user-facing object the API returns. Adding a flag is a field, not a schema migration.
+- **Errors are values with *meaning*, and the meaning is decided at exactly one layer.** The repo says "no document," the service wraps it, the handler maps it to a status. The moment two layers both decide the HTTP code, the 404/500 boundary becomes a coin flip.
+- **Renaming is free; re-pointing a dependency is the event.** Refactor the names and the build still passes. The only change that ever breaks a consumer is the one that moves a dependency across a layer. Optimize for that not happening.

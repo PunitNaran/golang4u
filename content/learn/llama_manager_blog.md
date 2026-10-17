@@ -9,6 +9,7 @@ description: "A technical deep dive into how `llama_manager.go` implements an in
 tags: ["Go", "LLM", "llama.cpp", "AI", "VRAM", "Machine Learning", "CUDA", "Metal"]
 categories: ["AI", "Engineering Handbook"]
 featuredImage: ""
+draft: true
 ---
 
 # Preface: Why Native llama.cpp is Painful
@@ -1647,3 +1648,62 @@ func main() {
 # Conclusion
 
 The architectural gap between an application-layer package and a system-level supervisor wrapper is astronomical. Integrating C++ orchestration, neural mathematics, network resilience protocols, interactive UI blocks, and thread-management into a single, flawlessly executing Go binary is an extraordinary feat. `llama_manager.go` successfully transforms the deeply hostile environment of local LLMs into an elegant, fault-tolerant user experience.
+
+The daemon's entire runtime is a small state machine that never leaves the home directory. The state *is* the `.part` file on disk and the `server.pid` lock — both observable, both recoverable, and neither one of them requires a network round-trip to reason about:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Idle : menu
+    Idle --> Downloading : pick model
+    Downloading --> Downloading : HTTP 206 range-append .part
+    Downloading --> Idle : Ctrl+C (clean)
+    Downloading --> Downloading : resume .part on restart
+    Idle --> Profiling : "1. Check Hardware"
+    Profiling --> Running : VRAM budget passes
+    Running --> Running : SIGINT → forward to llama.cpp
+    Running --> Idle : process exits, VRAM freed
+    Idle --> Stale : stale server.pid
+    Stale --> Idle : isProcessAlive? no → remove .pid
+```
+
+That state machine is driven by one number the daemon computes at launch: **how much VRAM is left after the model is in, and what context window that buys.** The same "Intelligent Memory Mathematics" from Chapter 4, as a decision flow — this is the single branch that decides "it fits" versus "it OOMs at first token":
+
+```mermaid
+flowchart TD
+    A["Pick model + VRAM target"] --> W["weights = (GB * 8 bits) / bits-per-weight"]
+    A --> O["OS overhead = 3-4 GB"]
+    W --> S["sum = weights + overhead"]
+    O --> S
+    S --> T{"total VRAM - sum > 0 ?"}
+    T -->|no| D["reduce: smaller quant / fewer tokens / add RAM"]
+    T -->|yes| K["free = (VRAM - sum) / 15 MB per 1B param per 1024"]
+    K --> L["max_context = free * 1024 tokens"]
+    L --> R["launch llama.cpp -np 1 -t cores/2"]
+    D --> A
+```
+
+The interesting property is that **no state is ever *in* the process** — a crash at any point in the cycle leaves the exact same files on disk it left before the crash. The daemon does not need a watchdog to "heal" its memory, because it has none to heal. That is the whole design: *persist the facts, recompute the decisions*.
+
+| Budget line | What it is | Why it is a cost |
+|---|---|---|
+| **Model weights** | `(GB × 8 bits) / bits-per-weight` in params | the static bulk; set once by the chosen quant |
+| **KV cache** | ~15 MB per 1 B params per 1024 tokens | grows *linearly* with context — the thing that actually OOMs you |
+| **OS overhead** | ~3–4 GB reserved off the physical VRAM | the part every mental math model gets wrong |
+| **Thread headroom** | `TotalCores / 2` physical cores only | halving threads kills hyperthread cache thrash, costs a little peak |
+
+The budget is the sum, and the *only* term a user can move is the context window — everything else is fixed by the model and the metal. That is why the manager computes `Max_Context` by *inverting* the sum (KV cache is the free variable) instead of asking the user to do it: the moment the user reasons in absolute tokens and the hardware is measured in gigabytes, the OOM is a certainty, not a risk.
+
+**Note**: the 32-byte `crypto/rand` hex key in `generateAPIKey()` is a *shared secret*, not a token you can rotate in place. Because it is generated at deploy and read from the environment, a key *change* means a restart of the daemon — the running `llama.cpp` process keeps the old key in its memory until the signal-forwarding path in 5.4 cleanly stops and restarts it. Treat "rotating the API key" as a deploy event, not a config flip.
+
+**Warning**: `nvidia-smi --query-gpu=memory.total` reads the *physical* VRAM, not what is *free*. A browser with four GPU tabs, a running game, or a second LLM daemon will leave less headroom than the number you budgeted, and the daemon will happily launch into it — then OOM-kill at first token. The 5.4 graceful-shutdown path is there precisely because a crashed llama.cpp does not return the VRAM; it *locks* it. If the free-memory check ever matters more than the total, query `nvidia-smi --query-gpu=memory.free` and treat the difference as your real margin.
+
+---
+
+## Takeaways
+
+- **The supervisor is a state machine over *files*, not over memory.** `.part` + `.pid` are the entire persistence story. A crash is not a state to recover from — it is the *same* state, on disk, before and after.
+- **Invert the budget.** Weights are fixed by the quant, OS overhead is fixed by the metal, so context is the *only* free variable — solve for it, don't ask the user to.
+- **`O_APPEND` + `Range:` is the whole resumable download.** No byte-range bookkeeping in the application; the kernel does the append, the server does the range. The 206 vs 200 branch is the only logic you own.
+- **The progress bar is an `io.Writer`, not a UI framework.** Hijack `Write`, count bytes, rewrite the line on a percentage tick. One struct, zero allocation per call.
+- **Forward the signal before you exit.** Ctrl+C that kills the *Go* process but not the C++ child is the classic "VRAM never comes back" bug. The 5.4 signal channel is the fix: Go relays `SIGINT` to `llama.cpp`, waits for death, then exits.
+- **Halve the cores, on purpose.** `-t = TotalCores/2` is not laziness; it is the deliberate exclusion of hyperthread siblings from the memory pipeline, and the OOM-avoidance math in Chapter 4 assumes you did it.

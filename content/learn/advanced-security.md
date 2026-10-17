@@ -9,6 +9,7 @@ description: "A definitive guide to securing a Go backend. We dissect the `ipFil
 tags: ["Go", "Security", "Middleware", "IPFilter", "RateLimit", "Cybersecurity", "Zero Trust", "HSTS", "CSP"]
 categories: ["Security", "Engineering Handbook"]
 featuredImage: ""
+draft: true
 ---
 
 # Preface: The Zero Trust Mindset
@@ -160,6 +161,16 @@ XFrameOptions: "SAMEORIGIN",
 This tells the browser: "Only page on `golang4u.com` can iframe `golang4u.com`."
 
 ### 3.3 CSP (Content-Security-Policy)
+
+```mermaid
+sequenceDiagram
+participant B as browser
+participant X as xss'd <script>
+B->>X: inline script fires (no CSP)
+X->>X: document.cookie exfil
+B-->>B: with CSP default-src 'self': <script> not on allowlist -> blocked, violation logged
+X--xB: window.postMessage only way left -> a controlled channel
+```
 **The Vulnerability**: XSS (Cross-Site Scripting).
 A user posts a comment: `<script>stealCookies()</script>`. If you render this, the script runs in everyone's browser.
 
@@ -216,6 +227,53 @@ In production (Kubernetes), these are injected as k8s Secrets.
 
 ---
 
+# Chapter 6: Threat-Model-Driven Hardening
+
+The five controls above are not a menu you pick from — they are the **answer to a threat model**. The lazy way to "add security" is to bolt on the control whose name you remember. The right way is to start from the threat and work backward to the cheapest control that kills it.
+
+A **threat model** is a list of (actor, capability, asset) triples. For `golang4u` the three actors that matter are:
+
+| Actor | Capability | Asset at risk |
+|---|---|---|
+| Anonymous IP | unbounded request rate | server CPU, DB, login (brute force) |
+| Authenticated user | valid token + browser | other users' data, the admin's session |
+| Server admin / insider | DB + log + RAM access | every user's *plaintext* email, the keys |
+
+Every control in Chapters 1–5 exists to close one of these cells. The table below is the *whole* hardening program, one row per threat, with the control that answers it and the layer it lives in:
+
+| Threat (actor → asset) | Control | Layer | Cost model |
+|---|---|---|---|
+| Bad IP floods the API | radix-tree IP block list | network | O(32) per request, 0 on a hit |
+| Good user's script floods the login | token-bucket rate limit (per route) | application | O(1) per request |
+| Coffee-shop MITM strips TLS | HSTS + X-Frame-Options + CSP | presentation | one header, zero per request |
+| DB leaks emails in the clear | ECIES at-rest + HMAC blind index | data | one GCM + one HMAC per email |
+| RCE lands as root | rootless container + k8s Secrets | infra | per-deploy, not per request |
+| Insider reads a *live* token in RAM | short access (15 m) + stateful refresh | auth | one DB check per refresh |
+
+The ordering in the table is the *order of enforcement* too: a request is denied at the **cheapest** layer it can be denied at, so an expensive layer never sees traffic a cheap one already rejected.
+
+```mermaid
+flowchart TD
+    R["Raw request"] --> IP["IP filter - O(32) radix"]
+    IP -->|banned| X1["403 - never touches DB"]
+    IP -->|pass| RL["Rate limit - token bucket per route"]
+    RL -->|over bucket| X2["429"]
+    RL -->|pass| AUTH["PASETO verify - signature + rules"]
+    AUTH -->|bad/revoked| X3["401"]
+    AUTH -->|ok| HAND["Handler + service"]
+    HAND --> DB[("DB - encrypted fields + blind index")]
+    HAND -->|response| HDR["Secure headers on the way out"]
+    HDR --> C["Browser - HSTS/CSP/XFO enforced"]
+```
+
+Notice the shape: **each layer only has to do what the previous layer is too coarse to do.** The IP filter is the bouncer (coarse, cheap, O(32)); the rate limiter is the doorman (per-route, O(1)); the token check is the badge (per-user, one sig verify); the DB is the vault (only the encrypted stuff). A layer that re-checks something an earlier layer already proved is wasted work — and a layer that *forgets* to prove it is the bug.
+
+**Note**: the threat model is the *spec*, and the code is the *proof*. If you add a control you cannot point at a row in the table above for, it is a feature, not a defense — and the first thing to get deleted under load. If you find a threat with *no* row, that is a missing control, and it is the one to build next.
+
+**Warning**: `c.RealIP()` (the `X-Forwarded-For` the IP filter trusts) is only as good as your edge. Behind a single known load balancer it is correct; behind *public* internet where any client can set the header, an attacker can spoof *their own* source IP and dodge the block list entirely. If the LB does not strip/overwrite `X-Forwarded-For` from untrusted clients, the IP filter is a suggester, not a decider — pin it to the LB's IP at the edge.
+
+---
+
 # Conclusion
 
 Review the checklist for **Golang4U**:
@@ -226,3 +284,14 @@ Review the checklist for **Golang4U**:
 5.  [x] **Rootless Docker**: Stops the RCE from taking over the server.
 
 This is what "Production Ready" looks like.
+
+---
+
+## Takeaways
+
+- **Model the threat, then buy the cheapest control that kills it.** Every control above maps to exactly one (actor, capability, asset) cell. A control with no cell is a feature; a threat with no control is your next incident.
+- **Enforce at the cheapest layer that can.** Deny a bad IP at the radix tree (O(32)) before it spends a cycle on a signature verify (O(1) but pricier) before it costs a DB round-trip. The ordering is the design.
+- **Each layer proves what the previous one is too coarse to prove.** Coarse → fine → per-user → per-row. The moment a layer re-proves what an earlier layer proved, you have paid for the same work twice and the second copy is where the bug lives.
+- **Headers are a browser sandbox, not a firewall.** HSTS stops the stripping, X-Frame-Options stops the iframe, CSP stops the script — all three are *client-side* enforcement that only works because the browser obeys. A client that ignores them is exactly as open as a server that didn't send them.
+- **The DB leak is the insider threat, and it is the only one a header can't fix.** HSTS/CSP/rate-limit all assume the *server* is honest. Encryption at rest + the HMAC blind index is the only control that survives the case where it isn't.
+- **`X-Forwarded-For` is only as trustworthy as your edge.** One LB that strips it from untrusted clients = the IP filter is a real filter. Public internet that doesn't = it's a suggestion you can override by spoofing your own source.

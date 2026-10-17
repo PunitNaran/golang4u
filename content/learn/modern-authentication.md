@@ -9,6 +9,7 @@ description: "The definitive guide to the Golang4U authentication system. We exp
 tags: ["Go", "Authentication", "PASETO", "PASERK", "Security", "Code Walkthrough", "JWT", "Ed25519"]
 categories: ["Authentication", "Engineering Handbook"]
 featuredImage: ""
+draft: true
 ---
 
 # Preface: Authentication vs Authorization
@@ -121,6 +122,18 @@ func (maker *PasetoMaker) CreateToken(username string, duration time.Duration) (
 *   `Expiration`: Mandatory.
 
 ### 3.2 Verifying the Token
+
+```mermaid
+sequenceDiagram
+participant C as client
+participant S as server
+participant DB as token store
+C->>S: GET /api (access: 15m PASETO)
+S->>DB: lookup refresh (opaque, hashed)
+DB-->>S: found + not-yet-used
+S->>DB: mark that refresh used (single-use)
+S-->>C: 200 + new refresh issued (rotation)
+```
 This is the most critical function in the system.
 
 ```go
@@ -223,6 +236,50 @@ If a hacker steals your Refresh Token, they have 7 days of access.
 By Rotating it (issuing a new one on every use), we detect theft.
 *   If the Hacker uses the Old Token -> We detect reuse -> We invalid the entire family of tokens. (Reuse Detection).
 
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    participant D as Token Store (DB)
+    C->>S: GET /me (Access Token)
+    S-->>C: 401 (access expired)
+    C->>S: POST /refresh (Refresh Cookie)
+    S->>D: load refresh jti, check reuse
+    D-->>S: seen before? (rotation replay)
+    S->>S: verify sig + user not banned
+    alt replay detected
+        S->>D: revoke the whole token family
+        S-->>C: 401 + clear both cookies
+    else first use
+        S-->>C: new Access (15m) + rotated Refresh (7d)
+    end
+```
+
+The rotation is what converts a *stolen* refresh token from a 7-day lease into a *detectable* one: the moment the attacker replays the old value, the server sees a second use of the same `jti` and nukes the family — not just that one token.
+
+---
+
+## JWT vs PASETO, side by side
+
+This is the "session vs token" decision, reduced to its one real axis: **who gets to choose the algorithm.**
+
+| Axis | JWT (RFC 7519) | PASETO v4 (this system) |
+|---|---|---|
+| Algorithm | chosen per token via `alg` header (`HS256`/`RS256`/`none`…) | pinned by the `v4` prefix — no negotiation |
+| `alg:"none"` | possible (strip the signature) | structurally impossible |
+| `RS256`↔`HS256` confusion | a live CVE class (sign with the public key) | no public/symmetric pair to confuse |
+| `kid` / JWKS lookup | yes — a round-trip per verify to find the key | no — one key held in memory |
+| `aud` enforcement | a field you must check yourself (and often don't) | a *rule* applied inside `ParseV4Public` — can't be skipped |
+| Revocability | stateless — valid anywhere, any time, until `exp` | stateless `local` token + stateful refresh store = revocable |
+| Confidentiality | `local` only (HS) — payload is *base64*, not secret | `v4 local` is *encrypted* (X25519 KEM + XChaCha20) |
+| Footers | not a standard part of the grammar | a footer can hide data → we forbid it by rule |
+
+The JWT failure mode is always the same: the token *tells* the verifier how to read it, and the verifier listens. PASETO inverts the trust: the **version string** is the only instruction, and it is checked before a single byte is parsed.
+
+**Note**: "stateless" is the marketing word for "we don't look the token up." The *access* token here is stateless (verify-only, 15 min), but the *refresh* token is deliberately stateful (DB lookup, rotation). You get the O(1) verify path for every request and the revocation power of a session for the one token that matters. "JWT vs session" is a false binary once you let the two tokens have different liveness semantics.
+
+**Warning**: `ParseV4Local` will happily verify a *structurally valid* `v4.local` token signed with a *different* 32-byte key than the one that minted it, as long as that key is what you pass in. In a multi-tenant or hot-restart deployment, verify the *key id / generation* is stable across the process lifetime, or a rotated key silently rejects every live access token with `401` and logs nothing useful.
+
 ---
 
 # Conclusion
@@ -234,3 +291,14 @@ It is a carefully designed machine:
 3.  **Strict Lifecycle**: Access (15m) / Refresh (7d) Rotation.
 
 This provides the speed of stateless architecture with the security controls of stateful sessions.
+
+---
+
+## Takeaways
+
+- **The `alg` header is the whole problem.** Every classic JWT attack (`none`, `HS/RS` confusion) is the token telling the verifier how to read it. Pin the algorithm in the *format* (`v4` ⇒ Ed25519) and the class of bug disappears — you cannot confuse a token with itself.
+- **Stateless ≠ irrevocable.** Keep the *access* token stateless (fast verify) and make the *refresh* token stateful (DB-rotated, replay-detected). You get O(1) per request and the "kill the whole family on replay" power of a session.
+- **Rotation is your theft detector, not your anti-replay.** A stolen 7-day refresh token is harmless *if* every use issues a new one and a *second* use of the old one revokes the family. The rotation is the canary.
+- **One key per purpose.** Access and refresh use *different* keys and *different* paths (`/refresh`). A compromise of one surface does not hand over the other.
+- **The middleware order is the security model.** Cookie → header → *then* crypto. A token the client *says* it has is worth nothing until the signature checks.
+- **Forbid the footer by rule.** An unencrypted footer is a side channel; `ParseV4Local` plus a `len(footer)==0` check closes it.
