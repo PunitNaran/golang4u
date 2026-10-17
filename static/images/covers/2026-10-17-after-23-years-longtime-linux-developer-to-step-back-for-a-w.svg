@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(45, 45%, 16%)"/><stop offset="1" stop-color="hsl(85, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="423" y="281" width="44" height="299" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="877" y="186" width="44" height="394" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="999" y="243" width="44" height="337" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="624" y="498" width="44" height="82" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="102" y="185" width="44" height="395" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1010" y="469" width="44" height="111" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="105" y="466" width="44" height="114" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="991" y="387" width="44" height="193" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="205" y="198" width="44" height="382" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="756" y="463" width="44" height="117" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1016" y="166" width="44" height="414" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="904" y="506" width="44" height="74" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="675" y="410" width="44" height="170" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="625" y="313" width="44" height="267" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1036" y="172" width="44" height="408" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="146" y="325" width="44" height="255" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="490" y="170" width="44" height="410" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="468" y="240" width="44" height="340" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="502" y="388" width="44" height="192" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="881" y="172" width="44" height="408" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="658" y="229" width="44" height="351" rx="6" fill="hsl(225, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="914" y="218" width="44" height="362" rx="6" fill="hsl(45, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">After 23 Years, Longtime Linux Developer</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">To 'Step Back For A While'</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(225, 70%, 60%)">golang4u.com</text>
+</svg>

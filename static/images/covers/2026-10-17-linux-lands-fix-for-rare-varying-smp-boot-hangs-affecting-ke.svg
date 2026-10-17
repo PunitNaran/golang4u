@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(172, 45%, 16%)"/><stop offset="1" stop-color="hsl(212, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<line x1="0" y1="0" x2="0" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="90" y1="0" x2="90" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="180" y1="0" x2="180" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="270" y1="0" x2="270" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="360" y1="0" x2="360" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="450" y1="0" x2="450" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="540" y1="0" x2="540" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="630" y1="0" x2="630" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="720" y1="0" x2="720" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="810" y1="0" x2="810" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="900" y1="0" x2="900" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="990" y1="0" x2="990" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="1080" y1="0" x2="1080" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="1170" y1="0" x2="1170" y2="630" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="0" x2="1200" y2="0" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="90" x2="1200" y2="90" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="180" x2="1200" y2="180" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="270" x2="1200" y2="270" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="360" x2="1200" y2="360" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="450" x2="1200" y2="450" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<line x1="0" y1="540" x2="1200" y2="540" stroke="hsl(172, 85%, 55%)" stroke-opacity="0.10"/>
+<circle cx="523" cy="124" r="7" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="349" cy="86" r="9" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="943" cy="43" r="6" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="842" cy="284" r="9" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="472" cy="310" r="17" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="702" cy="196" r="18" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="68" cy="47" r="13" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="525" cy="63" r="6" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="306" cy="314" r="18" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="575" cy="46" r="13" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="540" cy="186" r="14" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="462" cy="254" r="13" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="613" cy="93" r="13" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<circle cx="487" cy="488" r="10" fill="hsl(352, 70%, 60%)" fill-opacity="0.8"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Linux Lands Fix for Rare, Varying SMP</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Boot Hangs Affecting Kernels Since 2024</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(352, 70%, 60%)">golang4u.com</text>
+</svg>

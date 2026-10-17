@@ -1,6 +1,8 @@
 ---
 
+
 title: "The Golang4U Email Bible: Native SMTP & Transactional Systems"
+image: /images/covers/transactional-email.svg
 date: 2026-02-14T11:00:00+08:00
 lastmod: 2026-02-14T11:00:00+08:00
 author: "Punit Naran"
@@ -10,7 +12,7 @@ tags: ["Go", "Email", "SMTP", "TransactionEmail", "StandardLib", "NoDependencies
 categories: ["Architecture", "Engineering Handbook"]
 featuredImage: ""
 
----
+
 
 Every startup guide says: "sign up for SendGrid / Mailgun / AWS SES." The cost: API keys to rotate, webhooks to build, SDKs to pin, and lock-in that turns a provider switch into a rewrite. Golang4U's answer is the **standard library**: `net/smtp` is battle-hardened and speaks the raw protocol of the internet. This post is the email system we actually run — a reliable transactional mailer built on `net/smtp`, a worker-pool queue, and no vendor.
 

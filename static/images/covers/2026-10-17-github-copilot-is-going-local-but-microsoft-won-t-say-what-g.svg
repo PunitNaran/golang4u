@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(38, 45%, 16%)"/><stop offset="1" stop-color="hsl(78, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<circle cx="849" cy="237" r="55" fill="none" stroke="hsl(38, 85%, 55%)" stroke-opacity="0.45" stroke-width="4"/>
+<circle cx="849" cy="237" r="110" fill="none" stroke="hsl(38, 85%, 55%)" stroke-opacity="0.4" stroke-width="5"/>
+<circle cx="849" cy="237" r="165" fill="none" stroke="hsl(38, 85%, 55%)" stroke-opacity="0.35" stroke-width="6"/>
+<circle cx="849" cy="237" r="220" fill="none" stroke="hsl(38, 85%, 55%)" stroke-opacity="0.3" stroke-width="7"/>
+<circle cx="849" cy="237" r="275" fill="none" stroke="hsl(38, 85%, 55%)" stroke-opacity="0.25" stroke-width="8"/>
+<circle cx="849" cy="237" r="330" fill="none" stroke="hsl(38, 85%, 55%)" stroke-opacity="0.19999999999999996" stroke-width="9"/>
+<circle cx="849" cy="237" r="385" fill="none" stroke="hsl(38, 85%, 55%)" stroke-opacity="0.14999999999999997" stroke-width="10"/>
+<circle cx="849" cy="237" r="440" fill="none" stroke="hsl(38, 85%, 55%)" stroke-opacity="0.09999999999999998" stroke-width="11"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="488" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">GitHub Copilot is going local — but</text>
+<text x="60" y="540" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Microsoft won’t say what gets sent to the</text>
+<text x="60" y="592" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">cloud</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(218, 70%, 60%)">golang4u.com</text>
+</svg>

@@ -1,6 +1,8 @@
 ---
 
+
 title: "The Golang4U Hardening Bible: DDoS-Proofing & OOM Prevention"
+image: /images/covers/production-hardening.svg
 date: 2026-02-14T15:00:00+08:00
 lastmod: 2026-02-14T15:00:00+08:00
 author: "Punit Naran"
@@ -10,7 +12,7 @@ tags: ["Go", "DevOps", "DDoS", "OOM", "GOMEMLIMIT", "Production", "Docker", "Kub
 categories: ["DevOps", "Engineering Handbook"]
 featuredImage: ""
 
----
+
 
 Your code is correct. It passed every test. Then the 3 a.m. page: OOM kill, a hung pool of connections, a Slowloris-shaped incident. The difference is that **default settings are tuned for a laptop demo, not a production box**. This post is the Golang4U hardening playbook, told through the runtime's own knobs: `GOMEMLIMIT`, the HTTP server timeout ladder, and database pooling.
 

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(351, 45%, 16%)"/><stop offset="1" stop-color="hsl(31, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="612" y="381" width="44" height="199" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="496" y="356" width="44" height="224" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="231" y="494" width="44" height="86" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="401" y="236" width="44" height="344" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="293" y="248" width="44" height="332" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="991" y="290" width="44" height="290" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="707" y="383" width="44" height="197" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="453" y="310" width="44" height="270" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="303" y="214" width="44" height="366" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="255" y="260" width="44" height="320" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="413" y="511" width="44" height="69" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="913" y="343" width="44" height="237" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="377" y="189" width="44" height="391" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="234" y="305" width="44" height="275" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="229" y="305" width="44" height="275" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="863" y="395" width="44" height="185" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="504" y="381" width="44" height="199" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="177" y="389" width="44" height="191" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="100" y="257" width="44" height="323" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="427" y="285" width="44" height="295" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="298" y="255" width="44" height="325" rx="6" fill="hsl(171, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="519" y="480" width="44" height="100" rx="6" fill="hsl(351, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">The Golang4U Email Bible: Native SMTP &amp;</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Transactional Systems</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(171, 70%, 60%)">golang4u.com</text>
+</svg>

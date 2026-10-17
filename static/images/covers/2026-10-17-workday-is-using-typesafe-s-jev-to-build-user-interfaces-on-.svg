@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(165, 45%, 16%)"/><stop offset="1" stop-color="hsl(205, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="550" y="473" width="44" height="107" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="351" y="454" width="44" height="126" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="343" y="292" width="44" height="288" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="422" y="446" width="44" height="134" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="198" y="457" width="44" height="123" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="877" y="333" width="44" height="247" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1012" y="369" width="44" height="211" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="718" y="300" width="44" height="280" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1120" y="257" width="44" height="323" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1104" y="204" width="44" height="376" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="738" y="377" width="44" height="203" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="700" y="167" width="44" height="413" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="965" y="326" width="44" height="254" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="148" y="354" width="44" height="226" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="406" y="187" width="44" height="393" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="568" y="184" width="44" height="396" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="574" y="281" width="44" height="299" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="470" y="406" width="44" height="174" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1026" y="468" width="44" height="112" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="342" y="201" width="44" height="379" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="295" y="183" width="44" height="397" rx="6" fill="hsl(345, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="940" y="323" width="44" height="257" rx="6" fill="hsl(165, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Workday is using TypeSafe’s Jev to build</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">user interfaces on the fly</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(345, 70%, 60%)">golang4u.com</text>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(55, 45%, 16%)"/><stop offset="1" stop-color="hsl(95, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="99" y="484" width="44" height="96" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1107" y="341" width="44" height="239" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="905" y="406" width="44" height="174" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="797" y="280" width="44" height="300" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="420" y="277" width="44" height="303" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="960" y="189" width="44" height="391" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1101" y="409" width="44" height="171" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="816" y="299" width="44" height="281" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="683" y="423" width="44" height="157" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="982" y="177" width="44" height="403" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="661" y="170" width="44" height="410" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="941" y="451" width="44" height="129" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="662" y="174" width="44" height="406" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1068" y="353" width="44" height="227" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="824" y="287" width="44" height="293" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="340" y="428" width="44" height="152" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="127" y="434" width="44" height="146" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="147" y="280" width="44" height="300" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="401" y="359" width="44" height="221" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="758" y="287" width="44" height="293" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="606" y="168" width="44" height="412" rx="6" fill="hsl(235, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="353" y="518" width="44" height="62" rx="6" fill="hsl(55, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">The Golang4U Hardening Bible:</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">DDoS-Proofing &amp; OOM Prevention</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(235, 70%, 60%)">golang4u.com</text>
+</svg>

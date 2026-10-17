@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(10, 45%, 16%)"/><stop offset="1" stop-color="hsl(50, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="73" y="393" width="44" height="187" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1077" y="285" width="44" height="295" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="470" y="302" width="44" height="278" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1066" y="177" width="44" height="403" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="981" y="508" width="44" height="72" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="242" y="208" width="44" height="372" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1012" y="357" width="44" height="223" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="97" y="244" width="44" height="336" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1115" y="397" width="44" height="183" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="670" y="259" width="44" height="321" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="790" y="199" width="44" height="381" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="235" y="240" width="44" height="340" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="942" y="219" width="44" height="361" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="616" y="203" width="44" height="377" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1026" y="366" width="44" height="214" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="90" y="518" width="44" height="62" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1118" y="235" width="44" height="345" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="361" y="473" width="44" height="107" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="492" y="311" width="44" height="269" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="553" y="329" width="44" height="251" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="358" y="317" width="44" height="263" rx="6" fill="hsl(190, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="225" y="298" width="44" height="282" rx="6" fill="hsl(10, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Go Experts: ‘I Don’t Want to Maintain</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">AI-Generated Code’</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(190, 70%, 60%)">golang4u.com</text>
+</svg>

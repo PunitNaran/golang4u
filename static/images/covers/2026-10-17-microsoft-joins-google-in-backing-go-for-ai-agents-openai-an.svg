@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(306, 45%, 16%)"/><stop offset="1" stop-color="hsl(346, 55%, 24%)"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<rect x="1072" y="327" width="44" height="253" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="430" y="493" width="44" height="87" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="1010" y="225" width="44" height="355" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="333" y="437" width="44" height="143" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="623" y="476" width="44" height="104" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="160" y="303" width="44" height="277" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="722" y="166" width="44" height="414" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="370" y="379" width="44" height="201" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="871" y="197" width="44" height="383" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="719" y="488" width="44" height="92" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="852" y="439" width="44" height="141" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="982" y="380" width="44" height="200" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="673" y="309" width="44" height="271" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="760" y="275" width="44" height="305" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="314" y="427" width="44" height="153" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="1107" y="412" width="44" height="168" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="39" y="421" width="44" height="159" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="98" y="337" width="44" height="243" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="83" y="314" width="44" height="266" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="855" y="324" width="44" height="256" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="558" y="443" width="44" height="137" rx="6" fill="hsl(126, 70%, 60%)" fill-opacity="0.5"/>
+<rect x="205" y="175" width="44" height="405" rx="6" fill="hsl(306, 85%, 55%)" fill-opacity="0.5"/>
+<rect x="0" y="430" width="1200" height="200" fill="#000" fill-opacity="0.45"/>
+<text x="60" y="484" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">Microsoft joins Google in backing Go for</text>
+<text x="60" y="536" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">AI agents — OpenAI and Anthropic lag</text>
+<text x="60" y="590" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="hsl(126, 70%, 60%)">golang4u.com</text>
+</svg>
