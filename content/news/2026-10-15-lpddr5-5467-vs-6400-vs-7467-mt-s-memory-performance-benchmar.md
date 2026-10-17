@@ -1,12 +1,14 @@
 ---
 
+
 title: "LPDDR5 5467 vs. 6400 vs. 7467 MT/s: what the memory speed actually costs a laptop"
+image: /images/covers/2026-10-15-lpddr5-5467-vs-6400-vs-7467-mt-s-memory-performance-benchmar.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Phoronix benchmarks the Star Labs StarFighter Ultra (Core Ultra 9 285H, 8x8GB LPDDR5-7467) at three memory speeds. The vendor default is 6400, not the rated 7467. The Go lens: a ~60-line stdlib Go microbenchmark is the cheapest 'lab instrument' a laptop with a speed knob in the BIOS can have, and the interesting number is the perf-per-watt ratio, not the raw delta."
 tags: ["Go", "Community", "Hardware", "Memory", "Benchmarks"]
 draft: false
----
+
 
 # LPDDR5 5467 vs. 6400 vs. 7467 MT/s: the memory speed is a *power* knob as much as a *speed* knob
 

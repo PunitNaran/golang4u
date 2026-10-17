@@ -1,12 +1,14 @@
 ---
 
+
 title: "KDE Releases Its 30th Anniversary Documentary: A Story of Free-Software Underdogs"
+image: /images/covers/2026-10-15-kde-releases-documentary.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "KDE's 30th-anniversary documentary is a systems story: a 30-year project that had to keep a whole desktop stack coherent, whose freeness depended on a commercial company's license change, and whose side project (KHTML) out-competed the web. The Go lens: a 40-line stdlib fetcher that verifies the announcement is live, plus the three lessons a 30-year-old codebase carries."
 tags: ["Go", "Community", "Linux", "KDE", "History"]
 draft: false
----
+
 
 # The KDE Documentary: three decades of "free-software underdogs," told as a systems story
 

@@ -1,12 +1,14 @@
 ---
 
+
 title: "Vendor hooks in the Android kernel: the Go way of thinking about a kernel extension point"
+image: /images/covers/2026-10-15-vendor-hooks-in-the-android-kernel.svg
 date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "At the 2026 Linux Plumbers Conference, Todd Kjos (Google) ran the Android-track session on vendor hooks — the mechanism that lets phone vendors keep out-of-tree kernel changes close to mainline without a full fork. The Go lens: a vendor hook is a one-branch indirection, a named call point, and a small registration function. That is an *idiom* — and Go has a perfectly portable 40-line model of it (a function-pointer table, a registration, a call-site check) you can compile, run, and extend on any platform. The kernel is a fork, the Go model is a function pointer."
 tags: ["Go", "Community", "Linux", "Android", "Kernel", "LPC"]
 draft: false
----
+
 
 # Vendor hooks in the Android kernel: the Go way of thinking about a kernel extension point
 
