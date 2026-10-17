@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Ubuntu 26.10 'Stonking Stingray' as the new six-month non-LTS update: Linux 7.3, GNOME 51, the finished Rust coreutils migration, and new RISC-V + amd64v3 images, framed for Go cross-compilers."
 tags: ["Go", "Community"]
-draft: true
+draft: false
 
 ---
 

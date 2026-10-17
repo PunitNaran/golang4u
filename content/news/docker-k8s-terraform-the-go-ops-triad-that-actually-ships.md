@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Docker, K8s, and Terraform: The Go Ops Triad That Actually Ships"
 tags: ["Go", "DevOps", "Kubernetes", "Docker", "Terraform"]
-draft: true
+draft: false
 ---
 
 The three tools every Go deploy runs on are all written in Go: **Docker** builds the image, **Kubernetes** runs the image, **Terraform** provisions the infrastructure the image runs on. That is the whole ops pipeline — `build → run → provision` — and the reason it is boring is that each step is a Go binary with a stable CLI and a well-defined exit code. The tools that do not ship (Ansible, Chef, Puppet, Salt) are all config-push frameworks: agent-based, stateful, and one more thing to keep alive. The triad is pull-based, declarative, and stateless — which is exactly what Go's `go build` culture likes.

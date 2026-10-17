@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Go 1.25: The Release That Quietly Removes an Entire Class of Bugs"
 tags: ["Go"]
-draft: true
+draft: false
 ---
 
 Most Go releases add a thing: a syntax, a package, a flag. Go 1.25 is the release that stopped adding features and started *removing* the things that cause 3am pages — no new syntax, no new standard-library package, no new `GODEBUG` flag you have to remember. Just a series of small, surgical changes to the compiler and the runtime that take whole *categories* of bug off the table.

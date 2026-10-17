@@ -5,7 +5,7 @@ date: 2026-10-17T09:00:00+00:00
 author: "Punit Naran"
 description: "A file-upload endpoint is a backdoor: a shell in a .jpg, a virus in a PDF, a 50GB file that fills the disk. This post treats every upload as a potential bomb and defuses it the Go way: http.DetectContentType (magic bytes, not the Content-Type header) for the format check, a ClamAV streaming scan over a TCP pipe so the file is *checked before it is stored*, a body-size limit that severs the request before it hits RAM, and an IP ban that turns the endpoint into a honeypot. The streaming frame client (a SANE-style request/response protocol) is the Go idiom for 'consume a byte stream without buffering the whole thing'."
 tags: ["Go", "Security", "ClamAV", "FileUploads", "Streaming", "Magic Bytes", "DoS"]
-draft: true
+draft: false
 ---
 
 # Secure file uploads in Go: magic-byte sniffing, streaming to ClamAV, and a SANE-style frame client

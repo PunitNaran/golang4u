@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Go 1.27's net/http change makes 100 sequential HTTP/1 GETs ~5x faster by draining unread response bodies; the mechanics of why an unread body kills connection reuse, and the fix."
 tags: ["Go", "Community"]
-draft: true
+draft: false
 
 ---
 

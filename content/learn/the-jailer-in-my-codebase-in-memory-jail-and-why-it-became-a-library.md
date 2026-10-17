@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "The Jailer in My Codebase: In-Memory Jail and Why It Became a Library"
 tags: ["Go", "Security", "Jail"]
-draft: true
+draft: false
 ---
 
 Every login system grows a jail. Mine started as a `map[string]int` of failed logins and a comment saying "5 and they're out". Six sprints later it was a 300-line blob with three kinds of counters, two kinds of windows, and a backoff that someone hand-tuned in production at 3am. The *data* never changed; the **rules** did — what counts as a try, what "exceeding" a budget means, who gets jailed and for how long.

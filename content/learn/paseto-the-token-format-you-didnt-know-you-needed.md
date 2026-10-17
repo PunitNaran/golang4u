@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "PASETO: The Token Format You Didn't Know You Needed"
 tags: ["Go", "Auth", "Cryptography"]
-draft: true
+draft: false
 ---
 
 JWT has been the default for a decade, and the default is the problem. Every

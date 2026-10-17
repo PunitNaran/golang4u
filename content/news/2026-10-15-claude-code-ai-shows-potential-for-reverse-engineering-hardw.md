@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Christian Schaller (Red Hat) used Claude Code to turn USB traffic captured from a Windows vendor driver into a working SANE scanner driver, then a GNOME app. The Go lens: the client half of that protocol is ~40 lines of stdlib, the AI did the decode, the human did the edge cases."
 tags: ["Go", "Community", "Hardware", "USB", "AI"]
-draft: true
+draft: false
 ---
 
 # Claude Code Reverse-Engineered a Scanner: the 80% of hardware RE that is tedious

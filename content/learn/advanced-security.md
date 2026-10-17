@@ -9,7 +9,7 @@ description: "A definitive guide to securing a Go backend. We dissect the `ipFil
 tags: ["Go", "Security", "Middleware", "IPFilter", "RateLimit", "Cybersecurity", "Zero Trust", "HSTS", "CSP"]
 categories: ["Security", "Engineering Handbook"]
 featuredImage: ""
-draft: true
+draft: false
 ---
 
 # Preface: The Zero Trust Mindset

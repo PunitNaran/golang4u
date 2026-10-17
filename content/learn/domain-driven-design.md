@@ -5,7 +5,7 @@ date: 2026-10-17T09:00:00+00:00
 author: "Punit Naran"
 description: "Anemic Domain Models are data bags with all the logic in Services. The Rich Model puts behavior on the struct. This post is the Golang4U domain layer: the User business entity (constructor-validated, never nil-shaped), the Store persistence record (system metadata the API must never leak), and the collision-free referral-code minting algorithm that lives on the record, not the service. Every code block here compiles with the stdlib alone."
 tags: ["Go", "DDD", "Rich Model", "Domain-Driven-Design", "Validation"]
-draft: true
+draft: false
 ---
 
 # Domain-Driven Design in Go: the Rich Model, the User/Store split, and the referral-code algorithm

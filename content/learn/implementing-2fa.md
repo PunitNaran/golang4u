@@ -5,7 +5,7 @@ date: 2026-10-17T09:00:00+00:00
 author: "Punit Naran"
 description: "Two-factor authentication is a function of time and a shared secret, and the whole standard (RFC 6238) fits in ~80 lines of Go stdlib: crypto/hmac, crypto/rand, encoding/base32. This post implements TOTP from the RFC, the 3-phase setup/activate/commit state machine that prevents the classic 'I scanned the QR but my phone broke' lockout, a ±1 clock-drift window, and one-shot recovery codes stored as hashes — all with no third-party TOTP SDK."
 tags: ["Go", "Authentication", "2FA", "TOTP", "RFC 6238", "Recovery Codes", "State Machine"]
-draft: true
+draft: false
 ---
 
 # Implementing 2FA in Go: TOTP from RFC 6238, the 3-phase enrollment state machine, and recovery codes

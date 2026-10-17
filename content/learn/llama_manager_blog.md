@@ -9,7 +9,7 @@ description: "A technical deep dive into how `llama_manager.go` implements an in
 tags: ["Go", "LLM", "llama.cpp", "AI", "VRAM", "Machine Learning", "CUDA", "Metal"]
 categories: ["AI", "Engineering Handbook"]
 featuredImage: ""
-draft: true
+draft: false
 ---
 
 # Preface: Why Native llama.cpp is Painful

@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Design Patterns in Go: The Once-per-Lifetime Patterns That Actually Pay Off"
 tags: ["Go", "DesignPatterns"]
-draft: true
+draft: false
 ---
 
 Every Go developer has read *Design Patterns* (Gang of Four, 1994) and thought

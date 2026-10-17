@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "gRPC in Go: The Service That Doesn't Need a Microservice Framework"
 tags: ["Go", "gRPC", "Networking"]
-draft: true
+draft: false
 ---
 
 The Java gRPC story is a framework: an `@Grpc` annotation, a `Service` base class, a `Client` interface, a config file. The Go story is the opposite, and it is the reason gRPC in Go feels like using stdlib: **gRPC is a `conn` + a generated stub**. There is no `GrpcClient` base class to configure, no service registry to wire. The service is a struct that implements a generated interface; the client is two lines.

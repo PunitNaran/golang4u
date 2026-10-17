@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Go 1.27 adds an experimental, fully portable, size-agnostic simd package — a Highway-style 'write once, run on every arch' vector API that emulates on non-SIMD platforms so the code always runs. The Go lens: why size is a *runtime* property (16 lanes on AVX-512, 4 on NEON), the Load/Store/MulAdd core, the ToArch()/FromArch escape hatch for the one missing op, and an innerProduct you can compile with GOEXPERIMENT=simd."
 tags: ["Go", "Community", "SIMD", "Performance", "1.27"]
-draft: true
+draft: false
 ---
 
 # Platform-Independent SIMD in Go: the write-once vector layer

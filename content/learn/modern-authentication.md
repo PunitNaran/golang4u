@@ -9,7 +9,7 @@ description: "The definitive guide to the Golang4U authentication system. We exp
 tags: ["Go", "Authentication", "PASETO", "PASERK", "Security", "Code Walkthrough", "JWT", "Ed25519"]
 categories: ["Authentication", "Engineering Handbook"]
 featuredImage: ""
-draft: true
+draft: false
 ---
 
 # Preface: Authentication vs Authorization

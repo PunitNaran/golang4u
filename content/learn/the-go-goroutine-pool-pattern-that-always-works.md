@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "The Go Goroutine Pool Pattern That Always Works"
 tags: ["Go"]
-draft: true
+draft: false
 ---
 
 The goroutine pool is the most over-engineered pattern in the Go ecosystem and the most under-engineered one in production. The standard library gives you `sync.WaitGroup` (a barrier, not a pool) and `errgroup` (a fan-out, not a pool); everything else — the 40-line `WorkerPool` on StackOverflow, the channel-based "pool" in every blog post — is a re-implementation of the same 50-line pattern, each with a slightly different name for the *slot* and a slightly different condition for *slot free*.

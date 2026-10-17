@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Kafka in Go: The Consumer Group That Actually Works"
 tags: ["Go", "Kafka", "Messaging"]
-draft: true
+draft: false
 ---
 
 Every Go service that "integrates with Kafka" starts the same way and ends the same way: a `NewConsumerGroup`, a fetch loop, and a 3am page — the consumer died, the group rebalanced, the committed offset was for the previous batch, and the next batch got delivered twice. The failure is never in the broker. It is in three decisions your service makes: **how it joins the group, when it commits, and what it does on a rebalance.**

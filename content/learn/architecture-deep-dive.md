@@ -9,7 +9,7 @@ description: "The definitive, deep-dive guide to the Golang4U backend architectu
 tags: ["Go", "Architecture", "Design Patterns", "Dependency Injection", "Backend", "Echo", "Standard Go Layout", "Service-Repository"]
 categories: ["Architecture", "Engineering Handbook"]
 featuredImage: ""
-draft: true
+draft: false
 ---
 
 # Preface: Why Read This?

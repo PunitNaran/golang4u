@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Go 1.27 extends its experimental SIMD intrinsics to arm64 (NEON) and wasm alongside amd64; a Go developer's guide to the archsimd API, the GFNI bit-reversal trick, and the trade-offs."
 tags: ["Go", "Community"]
-draft: true
+draft: false
 
 ---
 

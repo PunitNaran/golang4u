@@ -5,7 +5,7 @@ date: 2026-10-15T09:00:00+00:00
 author: "Punit Naran"
 description: "Go has become the lingua franca of cloud infrastructure, and now Microsoft (alongside Google) is building its agent framework in Go — while OpenAI and Anthropic's agent tooling is still Python-first. The Go lens: the agent infrastructure layer is a 10MB static binary with a goroutine per agent; the Python model layer is a 100MB runtime. The boundary is an API, not a language. The Go agent runtime, in ~60 lines of stdlib, is what the two companies are standardizing."
 tags: ["Go", "Community", "AI", "Cloud", "Agents"]
-draft: true
+draft: false
 ---
 
 # Microsoft Joins Google in Backing Go for AI Agents
