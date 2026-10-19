@@ -330,31 +330,6 @@
     }
 
     // ============================================================
-    // SKIP TO CONTENT (Accessibility)
-    // ============================================================
-    function initSkipToContent() {
-        const skipLink = document.createElement('a');
-        skipLink.href = '#main-content';
-        skipLink.className = 'skip-to-content';
-        skipLink.textContent = 'Skip to main content';
-        skipLink.style.cssText = `
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: #6366f1;
-            color: white;
-            padding: 0.5rem 1rem;
-            z-index: 100000;
-            transition: top 0.2s ease;
-            text-decoration: none;
-            font-weight: 600;
-        `;
-        skipLink.addEventListener('focus', () => { skipLink.style.top = '0'; });
-        skipLink.addEventListener('blur', () => { skipLink.style.top = '-40px'; });
-        document.body.insertBefore(skipLink, document.body.firstChild);
-    }
-
-    // ============================================================
     // SEARCH TOGGLE
     // ============================================================
     function initSearch() {
@@ -381,7 +356,6 @@
     // ============================================================
     function init() {
         initTheme();
-        initSkipToContent();
         initMobileMenu();
         initSearch();
 
