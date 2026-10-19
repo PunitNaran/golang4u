@@ -19,15 +19,19 @@
             {{- end -}}
             {{- partial "recentlyUpdated.html" . -}}
             {{- range $pages.PageGroups -}}
+                {{- if ne .Key "0001" -}}
                 <h3 class="group-title">{{ .Key }}</h3>
+                {{- end -}}
                 {{- range .Pages -}}
                     <article class="archive-item">
                         <a href="{{ .RelPermalink }}" class="archive-item-link">
                             {{- .Title -}}
                         </a>
+                        {{- if not .Date.IsZero -}}
                         <span class="archive-item-date">
                             {{- $.Site.Params.section.dateFormat | default "01-02" | .Date.Format -}}
                         </span>
+                        {{- end -}}
                     </article>
                 {{- end -}}
             {{- end -}}
