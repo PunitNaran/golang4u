@@ -29,5 +29,14 @@
         </div>
         {{ end }}
     </div>
+    <script>
+    // ponytail: UK visitors get amazon.co.uk + UK affiliate tag; everyone else keeps US tag
+    fetch("https://ipwho.is").then(function (r) { return r.json(); }).then(function (d) {
+        if (d.country !== "GB") return;
+        document.querySelectorAll('a[href*="amazon.com"]').forEach(function (a) {
+            a.href = a.href.replace("amazon.com", "amazon.co.uk").replace("golang4u0a-20", "golang4u04-21");
+        });
+    }).catch(function () {});
+    </script>
 </div>
 {{ end }}
