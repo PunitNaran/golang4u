@@ -111,6 +111,14 @@
             <div id="remove-ref-result" class="result-box"></div>
         </div>
 
+        <div class="admin-section">
+            <h2>Approve Pending Signups</h2>
+            <p style="color:#94a3b8; font-size:0.9rem;">Non-referred accounts wait here until approved. Approving enables the account.</p>
+            <button type="button" class="submit-btn secondary-btn" id="load-pending">Load Pending</button>
+            <div id="pending-users" style="margin-top:1rem;"></div>
+            <div id="pending-result" class="result-box"></div>
+        </div>
+
         <a href="/dashboard" class="back-link">← Back to Dashboard</a>
     </div>
 
@@ -319,6 +327,7 @@
             this.setupForm('enable-form', '/enable_code', 'enable-result', 'Code Enabled!');
             this.setupRemoveReferralForm();
             this.setupResetPasswordForm();
+            this.setupPendingUsers();
 
             // Initial Data Load
             this.fetchPendingPosts();
@@ -413,6 +422,73 @@
                     btn.disabled = false; btn.innerText = originalText;
                 }
             });
+        }
+
+        setupPendingUsers() {
+            const btn = document.getElementById('load-pending');
+            const list = document.getElementById('pending-users');
+            const resultBox = document.getElementById('pending-result');
+            if (!btn) return;
+
+            const load = async () => {
+                btn.disabled = true;
+                btn.innerText = 'Loading...';
+                resultBox.style.display = 'none';
+                list.innerHTML = '';
+                try {
+                    const csrfM = document.cookie.match(/csrf_token=([^;]+)/);
+                    const res = await fetch(`${this.apiUrl}/admin/users/pending`, {
+                        method: 'GET',
+                        headers: { ...(csrfM ? { 'X-CSRF-Token': csrfM[1]} : {}) },
+                        credentials: 'include',
+                    });
+                    if (!res.ok) throw new Error(await res.text());
+                    const users = await res.json();
+                    if (!users.length) {
+                        list.innerHTML = '<p style="color:#94a3b8">No pending signups.</p>';
+                        return;
+                    }
+                    users.forEach((u) => {
+                        const row = document.createElement('div');
+                        row.style.cssText = 'display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid #1e293b';
+                        row.innerHTML = `<span style="flex:1">${u.avatar_name} <small style="color:#64748b">(${u.role})</small></span>`;
+                        const b = document.createElement('button');
+                        b.className = 'submit-btn secondary-btn';
+                        b.innerText = 'Approve';
+                        b.onclick = async () => {
+                            b.disabled = true; b.innerText = 'Approving...';
+                            try {
+                                const r = await fetch(`${this.apiUrl}/admin/users/approve`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json', ...(csrfM ? { 'X-CSRF-Token': csrfM[1] } : {}) },
+                                    credentials: 'include',
+                                    body: JSON.stringify({ avatar_name: u.avatar_name }),
+                                });
+                                if (!r.ok) throw new Error(await r.text());
+                                resultBox.innerText = `Approved ${u.avatar_name}`;
+                                resultBox.style.display = 'block';
+                                resultBox.style.color = '#4ade80';
+                                window.toaster.show('User approved', 'success');
+                                b.innerText = 'Done';
+                            } catch (err) {
+                                resultBox.innerText = `Error: ${err.message}`;
+                                resultBox.style.display = 'block';
+                                resultBox.style.color = '#f87171';
+                                b.disabled = false; b.innerText = 'Approve';
+                            }
+                        };
+                        row.appendChild(b);
+                        list.appendChild(row);
+                    });
+                } catch (err) {
+                    resultBox.innerText = `Error: ${err.message}`;
+                    resultBox.style.display = 'block';
+                    resultBox.style.color = '#f87171';
+                } finally {
+                    btn.disabled = false; btn.innerText = 'Load Pending';
+                }
+            };
+            btn.addEventListener('click', load);
         }
 
         setupForm(formId, endpoint, resultId, successMsg) {
