@@ -347,16 +347,17 @@ partial "scratch/style.html" -}}
 
     {{/* Mobile + readability fixes; loaded last in the document so it
         wins the cascade over the page-local <style> blocks */}}
-    <link rel="stylesheet" href="/css/mobile.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=2">
 
     {{/* SOTA design-token layer: Inter + tight tracking, Go-brand accent,
         multi-layer blue-tinted shadows, 8px spacing scale, ring-shadow depth.
         Loaded LAST so its tokens override the DoIt theme defaults. */}}
-    <link rel="stylesheet" href="/css/design-tokens.css">
+    <link rel="stylesheet" href="/css/design-tokens.css?v=2">
 
     {{/* Component polish: cookie banner, skip-link, gopher ring, nav CTAs,
-        section hierarchy. Loaded LAST so its presentation rules win. */}}
-    <link rel="stylesheet" href="/css/sota-polish.css">
+        section hierarchy. Loaded LAST so its presentation rules win.
+        ?v= busts Cloudflare edge cache after edits. */}}
+    <link rel="stylesheet" href="/css/sota-polish.css?v=2">
 
     {{- /* ECIES Encryption Logic */ -}}
     <script src="/js/crypto_utils.js"></script>
