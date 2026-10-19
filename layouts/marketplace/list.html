@@ -1,9 +1,25 @@
 {{ define "content" }}
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-8 text-center">{{ .Title }}</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <h1 class="text-3xl font-bold mb-4 text-center">{{ .Title }}</h1>
+
+    <!-- ponytail: search + category-filter + pagination over the already-rendered
+         cards (vanilla JS, no dep). Client-side because a static build has no
+         per-query pages; site-wide search lives in the header. Ceiling: fine to
+         ~500 cards, move to a /marketplace/search page + server query beyond that. -->
+    <div class="mb-6">
+        <input type="search" id="g4u-filter-search"
+               placeholder="Filter products…"
+               class="w-full md:w-96 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+               aria-label="Filter products">
+    </div>
+
+    <div class="flex flex-wrap gap-2 mb-8" id="g4u-filter-chips"></div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="g4u-product-grid">
         {{ range .Pages }}
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div class="g4u-product-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+             data-category="{{ .Params.category | lower }}"
+             data-title="{{ .Title | lower }}">
             {{ if and (or .Params.affiliateLink .Params.amazonLink) }}
             <a href="{{ .Params.affiliateLink | default .Params.amazonLink }}" target="_blank" rel="nofollow noopener noreferrer">
             {{ else }}
@@ -29,6 +45,88 @@
         </div>
         {{ end }}
     </div>
+
+    <p id="g4u-filter-empty" class="hidden text-center text-gray-500 dark:text-gray-400 mt-6">No products match your search.</p>
+    <nav id="g4u-pagination" class="mt-8 flex flex-wrap justify-center gap-2" aria-label="Product pages"></nav>
+
+    <script>
+    (function () {
+        var grid = document.getElementById('g4u-product-grid');
+        var cards = Array.prototype.slice.call(grid.querySelectorAll('.g4u-product-card'));
+        var search = document.getElementById('g4u-filter-search');
+        var chips = document.getElementById('g4u-filter-chips');
+        var empty = document.getElementById('g4u-filter-empty');
+        var pager = document.getElementById('g4u-pagination');
+        var PAGE_SIZE = 12;
+        var state = { q: '', cat: '', page: 1 };
+
+        // category chips built from the data, not hardcoded
+        var cats = {};
+        cards.forEach(function (c) { var k = c.getAttribute('data-category'); if (k) cats[k] = (cats[k] || 0) + 1; });
+        var names = Object.keys(cats).sort();
+        var label = function (s) { return s.charAt(0).toUpperCase() + s.slice(1); };
+        var mk = function (t) {
+            var b = document.createElement('button');
+            b.textContent = t;
+            b.className = 'px-3 py-1.5 rounded-full text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-yellow-400 transition-colors';
+            return b;
+        };
+        var all = mk('All (' + cards.length + ')');
+        all.addEventListener('click', function () { state.cat = ''; state.page = 1; apply(); });
+        chips.appendChild(all);
+        names.forEach(function (c) {
+            var b = mk(label(c) + ' (' + cats[c] + ')');
+            b.dataset.cat = c;
+            b.addEventListener('click', function () { state.cat = c; state.page = 1; apply(); });
+            chips.appendChild(b);
+        });
+
+        function matches(c) {
+            if (state.cat && c.getAttribute('data-category') !== state.cat) return false;
+            if (state.q && c.getAttribute('data-title').indexOf(state.q) === -1) return false;
+            return true;
+        }
+
+        function apply() {
+            var list = cards.filter(matches);
+            empty.classList.toggle('hidden', list.length > 0);
+            grid.querySelectorAll('.g4u-product-card').forEach(function (c) { c.style.display = 'none'; });
+            var start = (state.page - 1) * PAGE_SIZE;
+            list.slice(start, start + PAGE_SIZE).forEach(function (c) { c.style.display = ''; });
+            renderPager(list.length);
+            Array.prototype.forEach.call(chips.children, function (b) {
+                var on = b.dataset.cat ? b.dataset.cat === state.cat : !state.cat;
+                b.classList.toggle('bg-yellow-400', on);
+                b.classList.toggle('text-gray-900', on);
+                b.classList.toggle('border-yellow-400', on);
+            });
+        }
+
+        function renderPager(total) {
+            pager.innerHTML = '';
+            var pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+            if (state.page > pages) state.page = pages;
+            if (pages < 2) return;
+            for (var p = 1; p <= pages; p++) {
+                (function (p) {
+                    var b = mk(String(p));
+                    if (p === state.page) b.classList.add('bg-yellow-400', 'text-gray-900', 'border-yellow-400');
+                    b.addEventListener('click', function () { state.page = p; apply(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+                    pager.appendChild(b);
+                })(p);
+            }
+        }
+
+        var t;
+        search.addEventListener('input', function (e) {
+            clearTimeout(t);
+            t = setTimeout(function () { state.q = e.target.value.trim().toLowerCase(); state.page = 1; apply(); }, 150);
+        });
+
+        apply();
+    })();
+    </script>
+
     <script>
     // ponytail: UK visitors get amazon.co.uk + UK affiliate tag; everyone else keeps US tag
     fetch("https://ipwho.is").then(function (r) { return r.json(); }).then(function (d) {
