@@ -79,6 +79,38 @@
             <div id="enable-result" class="result-box"></div>
         </div>
 
+        <div class="admin-section">
+            <h2>Reset User Password</h2>
+            <form id="reset-pw-form">
+                <div class="form-group">
+                    <label for="rp_user">Target Username (Avatar Name)</label>
+                    <input type="text" id="rp_user" name="rp_user" required placeholder="User whose password to reset">
+                </div>
+                <div class="form-group">
+                    <label for="rp_pass">New Password (sent encrypted)</label>
+                    <input type="text" id="rp_pass" name="rp_pass" required placeholder="New password">
+                </div>
+                <button type="submit" class="submit-btn">Reset Password</button>
+            </form>
+            <div id="reset-pw-result" class="result-box"></div>
+        </div>
+
+        <div class="admin-section">
+            <h2>Remove Referral Code</h2>
+            <form id="remove-ref-form">
+                <div class="form-group">
+                    <label for="rr_user">Target Username (Avatar Name)</label>
+                    <input type="text" id="rr_user" name="rr_user" required placeholder="User owning the code">
+                </div>
+                <div class="form-group">
+                    <label for="rr_code">Referral Code to Revoke</label>
+                    <input type="text" id="rr_code" name="rr_code" required placeholder="REF-XXXX-YYYY">
+                </div>
+                <button type="submit" class="submit-btn secondary-btn">Remove Code</button>
+            </form>
+            <div id="remove-ref-result" class="result-box"></div>
+        </div>
+
         <a href="/dashboard" class="back-link">← Back to Dashboard</a>
     </div>
 
@@ -285,9 +317,102 @@
             // Setup Forms
             this.setupForm('generate-form', '/generate_referrals', 'gen-result', 'Codes Generated!');
             this.setupForm('enable-form', '/enable_code', 'enable-result', 'Code Enabled!');
+            this.setupRemoveReferralForm();
+            this.setupResetPasswordForm();
 
             // Initial Data Load
             this.fetchPendingPosts();
+        }
+
+        setupRemoveReferralForm() {
+            const form = document.getElementById('remove-ref-form');
+            if (!form) return;
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                const resultBox = document.getElementById('remove-ref-result');
+                const originalText = btn.innerText;
+                btn.disabled = true; btn.innerText = 'Processing...';
+                resultBox.style.display = 'none';
+                try {
+                    const fd = new FormData(e.target);
+                    const data = {
+                        avatar_name: fd.get('rr_user'),
+                        code: fd.get('rr_code'),
+                    };
+                    const csrfM = document.cookie.match(/csrf_token=([^;]+)/);
+                    const res = await fetch(`${this.apiUrl}/admin/users/remove-referral`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...(csrfM ? { 'X-CSRF-Token': csrfM[1] } : {}),
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(data),
+                    });
+                    if (!res.ok) throw new Error(await res.text());
+                    const json = await res.json();
+                    resultBox.innerText = `Code removed. Remaining: ${JSON.stringify(json)}`;
+                    resultBox.style.display = 'block';
+                    resultBox.style.color = '#4ade80';
+                    window.toaster.show('Code removed', 'success');
+                    form.reset();
+                } catch (err) {
+                    resultBox.innerText = `Error: ${err.message}`;
+                    resultBox.style.display = 'block';
+                    resultBox.style.color = '#f87171';
+                    window.toaster.show('Operation failed', 'error');
+                } finally {
+                    btn.disabled = false; btn.innerText = originalText;
+                }
+            });
+        }
+
+        setupResetPasswordForm() {
+            const form = document.getElementById('reset-pw-form');
+            if (!form) return;
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                const resultBox = document.getElementById('reset-pw-result');
+                const originalText = btn.innerText;
+                btn.disabled = true; btn.innerText = 'Encrypting...';
+                resultBox.style.display = 'none';
+                try {
+                    const fd = new FormData(e.target);
+                    // Encrypt the new password with the server's P-256 key so it
+                    // never crosses the wire (or the admin's logs) in plaintext.
+                    const encrypted = await CryptoUtils.encrypt(fd.get('rp_pass'));
+                    const data = {
+                        avatar_name: fd.get('rp_user'),
+                        new_password: encrypted,
+                    };
+                    const csrfM = document.cookie.match(/csrf_token=([^;]+)/);
+                    const res = await fetch(`${this.apiUrl}/admin/users/reset-password`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...(csrfM ? { 'X-CSRF-Token': csrfM[1] } : {}),
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(data),
+                    });
+                    if (!res.ok) throw new Error(await res.text());
+                    const json = await res.json();
+                    resultBox.innerText = `Password reset: ${JSON.stringify(json)}`;
+                    resultBox.style.display = 'block';
+                    resultBox.style.color = '#4ade80';
+                    window.toaster.show('Password reset', 'success');
+                    form.reset();
+                } catch (err) {
+                    resultBox.innerText = `Error: ${err.message}`;
+                    resultBox.style.display = 'block';
+                    resultBox.style.color = '#f87171';
+                    window.toaster.show('Operation failed', 'error');
+                } finally {
+                    btn.disabled = false; btn.innerText = originalText;
+                }
+            });
         }
 
         setupForm(formId, endpoint, resultId, successMsg) {
@@ -317,9 +442,13 @@
                         data = Object.fromEntries(formData.entries());
                     }
 
+                    const csrfM = document.cookie.match(/csrf_token=([^;]+)/);
                     const res = await fetch(`${this.apiUrl}${endpoint}`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...(csrfM ? { 'X-CSRF-Token': csrfM[1] } : {}),
+                        },
                         credentials: 'include',
                         body: JSON.stringify(data)
                     });
@@ -439,9 +568,13 @@
             if (!confirm(`Mark this post as ${status}?`)) return;
 
             try {
+                const csrfM = document.cookie.match(/csrf_token=([^;]+)/);
                 const res = await fetch(`${this.apiUrl}/admin/posts/status`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(csrfM ? { 'X-CSRF-Token': csrfM[1] } : {}),
+                    },
                     credentials: 'include',
                     body: JSON.stringify({ id, status })
                 });

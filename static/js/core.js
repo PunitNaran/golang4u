@@ -119,6 +119,13 @@ class BaseController {
         const controller = new AbortController();
         this.abortControllers.set(key, controller);
 
+        // Double-submit CSRF: echo the csrf_token cookie as a header.
+        // The middleware compares them; only needed for mutating verbs
+        // (GET is safe and not checked by echo's CSRF middleware).
+        if (!options.headers) options.headers = {};
+        const csrfM = document.cookie.match(/csrf_token=([^;]+)/);
+        if (csrfM) options.headers['X-CSRF-Token'] = csrfM[1];
+
         try {
             const res = await fetch(`${this.apiUrl}${endpoint}`, {
                 credentials: 'include', // Default to including cross-origin cookies
