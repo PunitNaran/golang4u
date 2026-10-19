@@ -4,6 +4,7 @@ date: 2026-10-19T09:00:00+00:00
 author: "Punit Naran"
 description: "Smooth extended desk mat with non-slip rubber base."
 tags: ["Go", "Marketplace"]
+category: "Golang Mugs, Deskware & Accessories"
 affiliateLink: "https://www.amazon.com/s?k=Golang+Gopher+Extended+XL+Mouse+Pad&tag=golang4u0a-20"
 draft: true
 ---

@@ -4,6 +4,7 @@ date: 2026-10-19T09:00:00+00:00
 author: "Punit Naran"
 description: "Iconic blue mascot plushie for your developer setup desk."
 tags: ["Go", "Marketplace"]
+category: "Golang Gopher Toys, Plushies & Collectibles"
 affiliateLink: "https://www.amazon.com/s?k=Official+Golang+Gopher+Plush+Toy&tag=golang4u0a-20"
 draft: true
 ---

@@ -4,6 +4,7 @@ date: 2026-10-19T09:00:00+00:00
 author: "Punit Naran"
 description: "Structure-focused guide linking theoretical fundamentals to hands-on software design."
 tags: ["Go", "Marketplace"]
+category: "Core & Beginner Golang Books"
 affiliateLink: "https://www.amazon.com/s?k=Let+Us+Go%21+A+Complete+Beginner%27s+Guide+Rahul+Sid+Patil&tag=golang4u0a-20"
 draft: true
 ---

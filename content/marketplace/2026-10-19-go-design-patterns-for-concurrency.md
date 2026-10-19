@@ -4,6 +4,7 @@ date: 2026-10-19T09:00:00+00:00
 author: "Punit Naran"
 description: "Lock-free channels, atomic counters, and synchronization primitives."
 tags: ["Go", "Marketplace"]
+category: "Concurrency, Architecture & Networking Books"
 affiliateLink: "https://www.amazon.com/s?k=Go+Design+Patterns+for+Concurrency&tag=golang4u0a-20"
 draft: true
 ---

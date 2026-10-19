@@ -4,6 +4,7 @@ date: 2026-10-19T09:00:00+00:00
 author: "Punit Naran"
 description: "Complete audio narration covering type systems, goroutines, and testing."
 tags: ["Go", "Marketplace"]
+category: "Golang Audiobooks & Audio Learning"
 affiliateLink: "https://www.amazon.com/s?k=Go+in+Action+%28Audiobook%29+William+Kennedy+et+al.&i=audible&tag=golang4u0a-20"
 draft: true
 ---

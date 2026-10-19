@@ -4,6 +4,7 @@ date: 2026-10-19T09:00:00+00:00
 author: "Punit Naran"
 description: "Strategic and tactical DDD patterns formatted specifically for Go services."
 tags: ["Go", "Marketplace"]
+category: "Intermediate & Advanced Golang Books"
 affiliateLink: "https://www.amazon.com/s?k=Domain-Driven+Design+in+Go&tag=golang4u0a-20"
 draft: true
 ---

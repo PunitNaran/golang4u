@@ -4,6 +4,7 @@ date: 2026-10-19T09:00:00+00:00
 author: "Punit Naran"
 description: "Compact desktop vinyl figure."
 tags: ["Go", "Marketplace"]
+category: "Golang Gopher Toys, Plushies & Collectibles"
 affiliateLink: "https://www.amazon.com/s?k=Mini+Golang+Gopher+Desk+Figurine&tag=golang4u0a-20"
 draft: true
 ---

@@ -4,6 +4,7 @@ date: 2026-10-19T09:00:00+00:00
 author: "Punit Naran"
 description: "Deep exploration of system programming concepts using idiomatic Go constructs."
 tags: ["Go", "Marketplace"]
+category: "Core & Beginner Golang Books"
 affiliateLink: "https://www.amazon.com/s?k=Programming+in+Go%3A+Creating+Applications+for+the+21st+Century+Mark+Summerfield&tag=golang4u0a-20"
 draft: true
 ---

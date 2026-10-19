@@ -4,6 +4,7 @@ date: 2026-10-19T09:00:00+00:00
 author: "Punit Naran"
 description: "Asynchronous message passing, pub/sub mechanics, and stream processing in Go."
 tags: ["Go", "Marketplace"]
+category: "Web Development, Microservices & Cloud-Native Go"
 affiliateLink: "https://www.amazon.com/s?k=Event-Driven+Architecture+in+Go+%28Kafka+%26+RabbitMQ%29&tag=golang4u0a-20"
 draft: true
 ---
