@@ -52,17 +52,25 @@ body[theme='dark'] {
   background: var(--g4u-accent-strong) !important;
 }
 
-/* ---- 2. Skip-to-content: clearly visible (a11y) ---- */
+/* ---- 2. Skip-to-content: hidden until keyboard-focused (standard a11y).
+     Previously display:block + always-visible, it rendered on top of the
+     header at the top-left. Now off-screen until :focus/:focus-visible. */
 .skip-link, .a11y-skip, #nav .skip-link, a[aria-label*="skip" i] {
-  color: var(--g4u-ink) !important;
-  background: var(--g4u-accent-tint) !important;
-  border: 1px solid var(--g4u-border) !important;
+  position: absolute;
+  top: -4rem;
+  left: 0.5rem;
+  z-index: 1000;
+  color: #fff !important;
+  background: var(--g4u-accent) !important;
+  border: 1px solid var(--g4u-accent) !important;
   border-radius: var(--r-sm);
-  padding: 0.3rem 0.6rem;
-  font-weight: 500;
+  padding: 0.4rem 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
 }
-.skip-link:focus {
-  color: var(--g4u-ink) !important;
+.skip-link:focus, .a11y-skip:focus, #nav .skip-link:focus, a[aria-label*="skip" i]:focus,
+.skip-link:focus-visible, .a11y-skip:focus-visible, #nav .skip-link:focus-visible, a[aria-label*="skip" i]:focus-visible {
+  top: 0.5rem;
   box-shadow: var(--focus-ring);
 }
 
