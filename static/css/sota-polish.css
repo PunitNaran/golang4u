@@ -13,6 +13,13 @@
    All presentation-only; no layout/JS changes.
    ========================================================================== */
 
+.archive-empty {
+  color: var(--g4u-ink, #555);
+  font-size: 0.95rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
 :root {
   --g4u-banner-bg: #0f1a2b;        /* deep navy, NOT bright blue */
   --g4u-banner-bg-soft: #132134;
