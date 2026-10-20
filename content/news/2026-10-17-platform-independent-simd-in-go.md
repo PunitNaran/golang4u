@@ -5,7 +5,7 @@ date: 2026-10-17T09:00:00+00:00
 author: "Punit Naran"
 description: "Go 1.27's experimental simd package is a portable, vector-size-agnostic SIMD API: write one algorithm and it runs on AVX/AVX2/AVX512, NEON, and wasm, with an efficient emulation fallback everywhere else. This post explains the design, the API, and the bridge to architecture-specific code."
 tags: ["Go", "Performance", "SIMD"]
-draft: true
+draft: false
 ---
 
 Before 1.26, the only way to get SIMD performance out of a Go program was to write Go assembly, a bar high enough that plenty of code that *could* vectorize simply never did. The experimental `archsimd` package (1.26) lowered that bar for `amd64`, and 1.27 extends it to `arm64` NEON and `wasm`. But architecture-specific SIMD has a second problem that assembly never fully solves: **the platforms disagree about everything** — vector sizes, which operations exist, how masks are represented, which features need runtime detection. `amd64` has 128/256/512-bit vectors; `arm64` has 128-bit NEON and 128–2048-bit SVE; `wasm` has a single fixed 128-bit size. `AVX512` uses dedicated mask registers; `NEON` and `wasm` get by with vector bitmasks; `SVE` allocates one bit per byte with the least-significant bit governing the operation.

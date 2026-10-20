@@ -5,7 +5,7 @@ date: 2026-10-18T09:00:00+00:00
 author: "Punit Naran"
 description: "Phoronix benchmarks the 96-core Threadripper PRO 9995WX on Linux 7.3: I/O, io_uring, mutex, fork, network, and compile workloads all move up. This post translates the kernel results into what a Go workload on 96 cores actually gains, and how to measure it yourself."
 tags: ["Go", "Linux", "Performance"]
-draft: true
+draft: false
 ---
 
 On October 16, 2026, Michael Larabel published the latest in a long-running Phoronix series: benchmarks of the **Linux 7.3** kernel state on a **96-core AMD Ryzen Threadripper PRO 9995WX** workstation (192 threads), comparing it against the shipping Linux 7.2. The headline, in the author's words, is that the kernel "looks great" — and the numbers back it up. I/O tests for **PCIe Gen 4/5 NVMe** storage posted clear gains, and that I/O improvement propagated into real application workloads: **PostgreSQL**, **MariaDB**, and **TigerBeetle** (the Go-based financial-transactions database) all ran faster on 7.3, network throughput came up, and the kernel's own micro-benchmarks — `fork`, **`io_uring`**, and **mutex** contention — all moved. Compilation workloads were "subtly but consistently faster," and CPU-based AI inference showed small gains.

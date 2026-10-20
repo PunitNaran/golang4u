@@ -5,7 +5,7 @@ date: 2026-10-17T09:00:00+00:00
 author: "Punit Naran"
 description: "Go 1.26 replaces the type checker's bespoke cycle detection with a single systematic guard, turning a class of compiler panics into clean diagnostics."
 tags: ["Go", "Community"]
-draft: true
+draft: false
 ---
 
 # Type Construction and Cycle Detection

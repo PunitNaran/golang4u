@@ -5,7 +5,7 @@ date: 2026-10-17T09:00:00+00:00
 author: "Punit Naran"
 description: "pkg.go.dev now ships an official stateless REST API for module, package, version, and vulnerability metadata. This post walks through the /v1beta endpoints, the precision-over-convenience ambiguity rule, and a working Go client you can drop into your own tooling."
 tags: ["Go", "pkg.go.dev", "Tooling"]
-draft: true
+draft: false
 ---
 
 For years the only way to get data *out* of pkg.go.dev was to scrape the HTML. Dependency dashboards, CI checkers, internal package browsers, and — increasingly — AI assistants that need to reason about the Go ecosystem all ended up parsing `<a>` tags from rendered package pages. That was never going to survive a refactoring. On May 21, 2026, the Go team shipped the fix: an official, documented, versioned **REST API** for pkg.go.dev, currently served under the `/v1beta` path, with a machine-readable **OpenAPI specification** published alongside it.

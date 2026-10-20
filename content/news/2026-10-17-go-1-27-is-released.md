@@ -5,7 +5,7 @@ date: 2026-10-17T09:00:00+00:00
 author: "Punit Naran"
 description: "Go 1.27 ships generic methods, a new encoding/json/v2 implementation that also backs the v1 API, a native uuid package, post-quantum crypto/mldsa (FIPS 204), size-specialized allocation, and a generally-available goroutine-leak profile. This post walks through each change with working code."
 tags: ["Go", "Release", "Tooling"]
-draft: true
+draft: false
 ---
 
 Go 1.27 was released in August 2026, and it is one of the larger releases in the language's history: **generic methods** finally exist, the standard library gained a **`uuid` package**, a new **post-quantum** signature scheme made it into `crypto/tls` and `crypto/x509`, a long-anticipated **`encoding/json/v2`** package landed (and quietly became the implementation behind the v1 `encoding/json`), the runtime got **size-specialized memory allocation** and a **generally-available goroutine-leak profile**, and the toolchain gained a batch of new `go fix` modernizers.

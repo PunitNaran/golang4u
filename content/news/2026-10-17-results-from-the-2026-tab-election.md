@@ -5,7 +5,7 @@ date: 2026-10-17T09:00:00+00:00
 author: "Punit Naran"
 description: "The Linux Foundation Technical Advisory Board (TAB) 2026 election re-elected Kees Cook, Dave Hansen, Miguel Ojeda, and Shuah Khan, with Laurent Pinchart joining the board. This post explains what the TAB is, how the kernel's governance chain works, and what the new roster means for Go developers running on Linux."
 tags: ["Go", "Linux", "Governance"]
-draft: true
+draft: false
 ---
 
 On October 16, 2026, LWN reported a small headline with outsized consequences for anyone who runs Go on Linux: the results of the **2026 election for the Linux Foundation Technical Advisory Board (TAB)** were announced. **Kees Cook, Dave Hansen, Miguel Ojeda, and Shuah Khan** have all been **re-elected**, and **Laurent Pinchart** is **joining the board**.

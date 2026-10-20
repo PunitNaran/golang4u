@@ -5,7 +5,7 @@ date: 2026-10-17T09:00:00+00:00
 author: "Punit Naran"
 description: "Microsoft's Corsa initiative ports the TypeScript compiler to Go, delivering a 10x build-time win — and a rare public case study in why Go beat Rust for this job."
 tags: ["Go", "Community"]
-draft: true
+draft: false
 ---
 
 # Go Power: Microsoft’s Bold Bet on Faster TypeScript Tools

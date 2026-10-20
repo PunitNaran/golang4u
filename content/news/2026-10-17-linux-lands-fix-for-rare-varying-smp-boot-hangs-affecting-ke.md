@@ -5,7 +5,7 @@ date: 2026-10-17T09:00:00+00:00
 author: "Punit Naran"
 description: "A rare SMP boot hang in kernels since 2024 was traced to the non-blocking console kthreads starting too early; the fix postpones their startup — a lesson in concurrency timing that translates directly to goroutine design in Go."
 tags: ["Go", "Community"]
-draft: true
+draft: false
 ---
 
 # Linux Lands Fix for Rare, Varying SMP Boot Hangs Affecting Kernels Since 2024
