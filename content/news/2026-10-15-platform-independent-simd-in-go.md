@@ -4,6 +4,7 @@
 
 
 
+---
 title: "Platform-Independent SIMD in Go: the write-once vector layer"
 image: /images/covers/2026-10-15-platform-independent-simd-in-go.svg
 date: 2026-10-15T09:00:00+00:00

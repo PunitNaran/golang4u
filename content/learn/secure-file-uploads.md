@@ -4,6 +4,7 @@
 
 
 
+---
 title: "Secure file uploads in Go: magic-byte sniffing, streaming to ClamAV, and a SANE-style frame client that never touches the disk"
 image: /images/covers/secure-file-uploads.svg
 date: 2026-10-17T09:00:00+00:00

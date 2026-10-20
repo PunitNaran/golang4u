@@ -4,6 +4,7 @@
 
 
 
+---
 title: "Vendor hooks in the Android kernel: the Go way of thinking about a kernel extension point"
 image: /images/covers/2026-10-15-vendor-hooks-in-the-android-kernel.svg
 date: 2026-10-15T09:00:00+00:00

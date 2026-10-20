@@ -4,6 +4,7 @@
 
 
 
+---
 title: "Implementing 2FA in Go: TOTP from RFC 6238, the 3-phase enrollment state machine, and recovery codes — stdlib only"
 image: /images/covers/implementing-2fa.svg
 date: 2026-10-17T09:00:00+00:00
@@ -11,8 +12,7 @@ author: "Punit Naran"
 description: "Two-factor authentication is a function of time and a shared secret, and the whole standard (RFC 6238) fits in ~80 lines of Go stdlib: crypto/hmac, crypto/rand, encoding/base32. This post implements TOTP from the RFC, the 3-phase setup/activate/commit state machine that prevents the classic 'I scanned the QR but my phone broke' lockout, a ±1 clock-drift window, and one-shot recovery codes stored as hashes — all with no third-party TOTP SDK."
 tags: ["Go", "Authentication", "2FA", "TOTP", "RFC 6238", "Recovery Codes", "State Machine"]
 draft: false
-
-
+---
 # Implementing 2FA in Go: TOTP from RFC 6238, the 3-phase enrollment state machine, and recovery codes
 
 The standard "you need a TOTP SDK" answer is *wrong for Go*: the entire TOTP standard (RFC 6238) is **a function of time and a shared secret, computed with HMAC-SHA1** — and Go's stdlib already ships `crypto/hmac`, `crypto/rand`, and `encoding/base32`. *A* *complete* *2FA* *implementation* (secret *generation,* *code* *generation,* *validation* *with* *a* *drift* *window,* *the* *`otpauth://` *enrollment* *URI,* *the* *3-phase* *setup/activate/commit* *state* *machine,* *and* *one-shot* *recovery* *codes) *fits* *in* *under* *200* *lines* *of* *stdlib* *Go.* *The* *thesis* *of* *this* *post* *is* *that* *the* *two* *hard* *parts* *of* *2FA* *are* *not* *the* *crypto* (the *crypto* *is* *one* *HMAC* *call) *— *they* *are* *the* *state* *machine* (a *user* *who* *scans* *a* *QR* *but* *never* *activates* *must* *never* *be* *locked* *out) *and* *the* *recovery* *path* (a *user* *who* *loses* *their* *phone* *must* *not* *be* *gone* *for* *good). *The* *state* *machine* *and* *the* *recovery* *codes* *are* *where* *2FA* *systems* *actually* *fail,* *and* *they* *are* *exactly* *the* *parts* *a* *SDK* *hides* *from* *you.*

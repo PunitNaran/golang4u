@@ -9,6 +9,8 @@ title = "Golang4U"
 theme = "DoIt"
 
 [params]
+  # front page (home) shows only these sections; default (empty) = every section
+  mainSections = ["learn", "news"]
   # API URL Configuration
   # Production URL (default)
   # api.golang4u.com is the Go/Echo server (tunnel -> OCI). The apex
